@@ -29,6 +29,13 @@ export default function Header({ isLoggedIn, currentUser, onSignIn, onLogout }: 
           <Icon name="Shield" size={14} />
           Discord
         </a>
+        <a
+          className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
+          href="/admin"
+        >
+          <Icon name="Lock" size={14} />
+          Admin
+        </a>
         {isLoggedIn ? (
           <div className="flex items-center gap-2">
             <span className="text-sm text-zinc-400">Hi, {currentUser}</span>

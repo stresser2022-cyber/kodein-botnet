@@ -1,18 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Icon from '@/components/ui/icon';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  created_at: string | null;
-  last_login: string | null;
-  is_active: boolean;
-}
+import AdminLogin from '@/components/admin/AdminLogin';
+import AdminHeader from '@/components/admin/AdminHeader';
+import AdminFilters from '@/components/admin/AdminFilters';
+import AdminUsersTable, { User } from '@/components/admin/AdminUsersTable';
 
 export default function Admin() {
   const [adminKey, setAdminKey] = useState('');
@@ -155,6 +147,20 @@ export default function Admin() {
     });
   };
 
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch = 
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.id.toString().includes(searchTerm);
+    
+    const matchesStatus = 
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && user.is_active) ||
+      (statusFilter === 'inactive' && !user.is_active);
+    
+    return matchesSearch && matchesStatus;
+  });
+
   const handleSelectAll = () => {
     const visibleUserIds = filteredUsers.map(u => u.id);
     if (selectedUsers.size === filteredUsers.length && filteredUsers.length > 0) {
@@ -221,298 +227,56 @@ export default function Admin() {
     fetchUsers(adminKey);
   };
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch = 
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.id.toString().includes(searchTerm);
-    
-    const matchesStatus = 
-      statusFilter === 'all' ||
-      (statusFilter === 'active' && user.is_active) ||
-      (statusFilter === 'inactive' && !user.is_active);
-    
-    return matchesSearch && matchesStatus;
-  });
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+  };
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen w-full bg-black flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-black border border-white/20 rounded-lg p-8">
-          <div className="flex items-center gap-2 mb-6">
-            <Icon name="Shield" size={24} />
-            <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
-          </div>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="text-sm text-zinc-300 mb-2 block">Admin Key</label>
-              <Input
-                type="password"
-                value={adminKey}
-                onChange={(e) => setAdminKey(e.target.value)}
-                className="bg-white/5 border-white/20 text-white"
-                placeholder="Enter admin key"
-              />
-            </div>
-            <Button type="submit" className="w-full bg-white text-black hover:bg-white/90">
-              Access Panel
-            </Button>
-          </form>
-        </div>
-      </div>
+      <AdminLogin 
+        adminKey={adminKey}
+        setAdminKey={setAdminKey}
+        onLogin={handleLogin}
+      />
     );
   }
 
   return (
     <div className="min-h-screen w-full bg-black">
-      <header className="border-b border-white/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Icon name="Shield" size={24} />
-            <h1 className="text-xl font-bold text-white">Admin Panel</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => fetchUsers(adminKey)}
-              className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
-              disabled={loading}
-            >
-              <Icon name="RefreshCw" size={16} />
-              Refresh
-            </button>
-            <button
-              onClick={() => navigate('/')}
-              className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
-            >
-              <Icon name="Home" size={16} />
-              Home
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center gap-2"
-            >
-              <Icon name="LogOut" size={16} />
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+      <AdminHeader
+        onRefresh={() => fetchUsers(adminKey)}
+        onHome={() => navigate('/')}
+        onLogout={handleLogout}
+        loading={loading}
+      />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Registered Users</h2>
-              <p className="text-zinc-400">
-                Showing {filteredUsers.length} of {total} users
-              </p>
-            </div>
-            {selectedUsers.size > 0 && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-zinc-400">
-                  {selectedUsers.size} selected
-                </span>
-                <button
-                  onClick={() => handleBulkAction('activate')}
-                  disabled={isProcessing}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50"
-                >
-                  <Icon name="CheckCircle" size={16} />
-                  Activate Selected
-                </button>
-                <button
-                  onClick={() => handleBulkAction('deactivate')}
-                  disabled={isProcessing}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
-                >
-                  <Icon name="XCircle" size={16} />
-                  Deactivate Selected
-                </button>
-              </div>
-            )}
-          </div>
+        <AdminFilters
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          filteredCount={filteredUsers.length}
+          totalCount={total}
+          selectedCount={selectedUsers.size}
+          isProcessing={isProcessing}
+          onBulkActivate={() => handleBulkAction('activate')}
+          onBulkDeactivate={() => handleBulkAction('deactivate')}
+        />
 
-          <div className="flex gap-4 items-center">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Icon 
-                  name="Search" 
-                  size={18} 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" 
-                />
-                <Input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by ID, username, or email..."
-                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-zinc-500"
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => setStatusFilter('all')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  statusFilter === 'all'
-                    ? 'bg-white text-black'
-                    : 'bg-white/5 text-zinc-300 hover:bg-white/10'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setStatusFilter('active')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  statusFilter === 'active'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-white/5 text-zinc-300 hover:bg-white/10'
-                }`}
-              >
-                Active
-              </button>
-              <button
-                onClick={() => setStatusFilter('inactive')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  statusFilter === 'inactive'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-white/5 text-zinc-300 hover:bg-white/10'
-                }`}
-              >
-                Inactive
-              </button>
-            </div>
-
-            {(searchTerm || statusFilter !== 'all') && (
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setStatusFilter('all');
-                }}
-                className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
-              >
-                <Icon name="X" size={16} />
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-12">
-            <Icon name="Loader2" size={32} className="animate-spin mx-auto text-white" />
-          </div>
-        ) : users.length === 0 ? (
-          <div className="text-center py-12 text-zinc-400">
-            No users registered yet
-          </div>
-        ) : filteredUsers.length === 0 ? (
-          <div className="text-center py-12 text-zinc-400">
-            <Icon name="SearchX" size={48} className="mx-auto mb-4 opacity-50" />
-            <p>No users found matching your filters</p>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setStatusFilter('all');
-              }}
-              className="mt-4 button-ghost px-4 py-2 rounded-md"
-            >
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          <div className="bg-white/5 border border-white/20 rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-white/5">
-                  <tr>
-                    <th className="px-4 py-3 text-left">
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
-                        onChange={handleSelectAll}
-                        className="w-4 h-4 rounded border-white/20 bg-white/5 text-white cursor-pointer"
-                      />
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      Username
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      Created At
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      Last Login
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-white/5 transition-colors">
-                      <td className="px-4 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedUsers.has(user.id)}
-                          onChange={() => handleSelectUser(user.id)}
-                          className="w-4 h-4 rounded border-white/20 bg-white/5 text-white cursor-pointer"
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                        {user.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                        {user.username}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
-                        {user.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
-                        {formatDate(user.created_at)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
-                        {formatDate(user.last_login)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {user.is_active ? (
-                          <span className="px-2 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">
-                            Active
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 text-xs font-medium bg-red-500/20 text-red-400 rounded-full">
-                            Inactive
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() => handleToggleStatus(user.id, user.is_active)}
-                          className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                            user.is_active
-                              ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-                              : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                          }`}
-                        >
-                          {user.is_active ? 'Deactivate' : 'Activate'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        <AdminUsersTable
+          users={filteredUsers}
+          selectedUsers={selectedUsers}
+          onSelectUser={handleSelectUser}
+          onSelectAll={handleSelectAll}
+          onToggleStatus={handleToggleStatus}
+          formatDate={formatDate}
+          loading={loading}
+          hasNoUsers={users.length === 0}
+          hasNoFilteredUsers={filteredUsers.length === 0}
+          onClearFilters={handleClearFilters}
+        />
       </main>
     </div>
   );

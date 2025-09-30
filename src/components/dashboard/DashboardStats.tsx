@@ -14,8 +14,10 @@ export default function DashboardStats() {
     running_attacks: 0
   });
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchStats = async () => {
       try {
         const response = await fetch('https://functions.poehali.dev/7b4a6500-26cb-418d-8a2d-d5f5d4601582');
@@ -67,8 +69,10 @@ export default function DashboardStats() {
       {statsDisplay.map((stat, index) => (
         <div 
           key={index}
-          className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]"
-          style={{ animationDelay: `${index * 0.1}s` }}
+          className={`bg-[#0f0f0f] border border-white/10 rounded-lg p-6 transition-opacity duration-500 ${
+            mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
+          }`}
+          style={mounted ? { animationDelay: `${index * 0.1}s` } : {}}
         >
           <div className="flex items-start justify-between mb-4">
             <p className="text-sm text-zinc-400">{stat.title}</p>

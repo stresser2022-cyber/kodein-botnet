@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface Attack {
@@ -27,12 +28,24 @@ export default function AttackTable({
   loading,
   onStopAll
 }: AttackTableProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const filteredAttacks = attacks.filter(a => 
     filterTarget === '' || a.target.toLowerCase().includes(filterTarget.toLowerCase())
   );
 
   return (
-    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm w-full min-w-0 justify-self-stretch self-start opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]" style={{ animationDelay: '0.2s' }}>
+    <div 
+      data-slot="card" 
+      className={`bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm w-full min-w-0 justify-self-stretch self-start transition-opacity ${
+        mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
+      }`}
+      style={mounted ? { animationDelay: '0.2s' } : {}}
+    >
       <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
         <div data-slot="card-title" className="leading-none font-semibold">Your Attacks</div>
         <div data-slot="card-description" className="text-muted-foreground text-sm">Manage your attacks in one click.</div>

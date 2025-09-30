@@ -44,11 +44,13 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     running_attacks: 0
   });
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   const SETTINGS_API = 'https://functions.poehali.dev/b3667882-e8de-45d6-8bb7-8c54646552a1';
   const ATTACKS_API = 'https://functions.poehali.dev/2cec0d22-6495-4fc9-83d1-0b97c37fac2b';
 
   useEffect(() => {
+    setMounted(true);
     fetchUserPlan();
   }, [currentUser]);
 
@@ -129,7 +131,9 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   if (loading) {
     return (
-      <div className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]">
+      <div className={`bg-[#0f0f0f] border border-white/10 rounded-lg p-6 transition-opacity ${
+        mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
+      }`}>
         <div className="flex items-center justify-center h-32">
           <Icon name="Loader2" size={24} className="animate-spin text-white/50" />
         </div>
@@ -138,7 +142,12 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
   }
 
   return (
-    <div className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]" style={{ animationDelay: '0.2s' }}>
+    <div 
+      className={`bg-[#0f0f0f] border border-white/10 rounded-lg p-6 transition-opacity ${
+        mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
+      }`}
+      style={mounted ? { animationDelay: '0.2s' } : {}}
+    >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-white">Your Plan</h2>
         <Icon name={getPlanIcon(userPlan.plan)} size={24} className="text-white/70" />

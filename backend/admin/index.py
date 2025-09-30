@@ -169,7 +169,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     UPDATE users 
                     SET plan = %s, plan_expires_at = %s
                     WHERE id = %s
-                    RETURNING id, username, plan, plan_expires_at
+                    RETURNING id, username, plan, plan_expires_at, is_active
                     """,
                     (plan, plan_expires_at, user_id)
                 )

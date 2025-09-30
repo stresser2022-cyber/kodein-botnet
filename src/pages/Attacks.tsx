@@ -146,27 +146,27 @@ export default function Attacks() {
                       <SelectValue placeholder="Select a method" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white max-h-60">
-                      <SelectItem value="!dns">!dns</SelectItem>
-                      <SelectItem value="!udp">!udp</SelectItem>
-                      <SelectItem value="!pps">!pps</SelectItem>
-                      <SelectItem value="!tcp">!tcp</SelectItem>
-                      <SelectItem value="!tcpdrop">!tcpdrop</SelectItem>
-                      <SelectItem value="!fivem">!fivem</SelectItem>
-                      <SelectItem value="!discord">!discord</SelectItem>
-                      <SelectItem value="!rand">!rand</SelectItem>
-                      <SelectItem value="!ack">!ack</SelectItem>
-                      <SelectItem value="!socket">!socket</SelectItem>
-                      <SelectItem value="!syn">!syn</SelectItem>
-                      <SelectItem value="!gudp">!gudp</SelectItem>
-                      <SelectItem value="!udpbypass">!udpbypass</SelectItem>
-                      <SelectItem value="!tcp-spoof">!tcp-spoof</SelectItem>
-                      <SelectItem value="!ovh">!ovh</SelectItem>
-                      <SelectItem value="!udpdrop">!udpdrop</SelectItem>
-                      <SelectItem value="!tls">!tls</SelectItem>
-                      <SelectItem value="!http">!http</SelectItem>
-                      <SelectItem value="!flood">!flood</SelectItem>
-                      <SelectItem value="!browser">!browser</SelectItem>
-                      <SelectItem value="!priv-flood">!priv-flood</SelectItem>
+                      <SelectItem value="dns">dns</SelectItem>
+                      <SelectItem value="udp">udp</SelectItem>
+                      <SelectItem value="pps">pps</SelectItem>
+                      <SelectItem value="tcp">tcp</SelectItem>
+                      <SelectItem value="tcpdrop">tcpdrop</SelectItem>
+                      <SelectItem value="fivem">fivem</SelectItem>
+                      <SelectItem value="discord">discord</SelectItem>
+                      <SelectItem value="rand">rand</SelectItem>
+                      <SelectItem value="ack">ack</SelectItem>
+                      <SelectItem value="socket">socket</SelectItem>
+                      <SelectItem value="syn">syn</SelectItem>
+                      <SelectItem value="gudp">gudp</SelectItem>
+                      <SelectItem value="udpbypass">udpbypass</SelectItem>
+                      <SelectItem value="tcp-spoof">tcp-spoof</SelectItem>
+                      <SelectItem value="ovh">ovh</SelectItem>
+                      <SelectItem value="udpdrop">udpdrop</SelectItem>
+                      <SelectItem value="tls">tls</SelectItem>
+                      <SelectItem value="http">http</SelectItem>
+                      <SelectItem value="flood">flood</SelectItem>
+                      <SelectItem value="browser">browser</SelectItem>
+                      <SelectItem value="priv-flood">priv-flood</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

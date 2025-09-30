@@ -4,6 +4,7 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import AttackForm from '@/components/attacks/AttackForm';
 import AttackTable from '@/components/attacks/AttackTable';
 import { useAttacks } from '@/hooks/useAttacks';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 export default function Attacks() {
   const navigate = useNavigate();
@@ -31,8 +32,8 @@ export default function Attacks() {
     stopAllAttacks
   } = useAttacks(currentUser);
 
-  const handleLaunchAttack = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLaunchAttack = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     
     const success = await launchAttack(target, port, duration, method);
     
@@ -43,6 +44,22 @@ export default function Attacks() {
       setMethod('');
     }
   };
+
+  useKeyboardShortcuts([
+    {
+      key: 'Enter',
+      ctrl: true,
+      action: () => handleLaunchAttack(),
+      description: 'Launch Attack'
+    },
+    {
+      key: 'x',
+      ctrl: true,
+      shift: true,
+      action: stopAllAttacks,
+      description: 'Stop All Attacks'
+    }
+  ]);
 
   return (
     <div className="dark flex min-h-screen bg-[#0a0a0a] text-white">

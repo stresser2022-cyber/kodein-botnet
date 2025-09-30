@@ -7,13 +7,45 @@ Returns: HTTP response dict with statusCode, headers, body
 
 import json
 import os
-import hashlib
+import bcrypt
+import jwt
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
+from datetime import datetime, timedelta
+
+JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production')
+JWT_ALGORITHM = 'HS256'
+JWT_EXPIRATION_HOURS = 24
 
 def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_password(password: str, password_hash: str) -> bool:
+    import hashlib
+    # Support legacy SHA256 hashes (64 chars hex)
+    if len(password_hash) == 64:
+        try:
+            int(password_hash, 16)
+            return hashlib.sha256(password.encode()).hexdigest() == password_hash
+        except ValueError:
+            pass
+    # Bcrypt hashes start with $2b$
+    if password_hash.startswith('$2b$'):
+        try:
+            return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
+        except Exception:
+            return False
+    return False
+
+def create_jwt_token(user_id: int, username: str) -> str:
+    payload = {
+        'user_id': user_id,
+        'username': username,
+        'exp': datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS),
+        'iat': datetime.utcnow()
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
@@ -128,15 +160,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False
                     }
                 
-                password_hash = hash_password(password)
-                
                 cur.execute(
-                    "SELECT id, username, email, is_active FROM users WHERE email = %s AND password_hash = %s",
-                    (email, password_hash)
+                    "SELECT id, username, email, password_hash, is_active FROM users WHERE email = %s",
+                    (email,)
                 )
                 user = cur.fetchone()
                 
-                if not user:
+                if not user or not verify_password(password, user['password_hash']):
                     return {
                         'statusCode': 401,
                         'headers': cors_headers,
@@ -158,12 +188,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
                 conn.commit()
                 
+                token = create_jwt_token(user['id'], user['username'])
+                
                 return {
                     'statusCode': 200,
                     'headers': cors_headers,
                     'body': json.dumps({
                         'success': True,
                         'message': 'Logged in successfully',
+                        'token': token,
                         'user': {
                             'id': user['id'],
                             'username': user['username'],

@@ -1,5 +1,6 @@
 import Icon from '@/components/ui/icon';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '@/hooks/useTheme';
 
 interface DashboardSidebarProps {
   currentUser: string;
@@ -15,10 +16,12 @@ export default function DashboardSidebar({
   onLogout 
 }: DashboardSidebarProps) {
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const menuItems = [
     { icon: 'LayoutDashboard', label: 'Dashboard', path: '/dashboard' },
     { icon: 'Zap', label: 'Attacks', path: '/dashboard/attacks' },
+    { icon: 'History', label: 'History', path: '/dashboard/history' },
     { icon: 'FileText', label: 'Documentation', path: '/dashboard/docs' }
   ];
 
@@ -102,6 +105,14 @@ export default function DashboardSidebar({
           <Icon name="Send" size={20} />
           {!collapsed && <span className="text-sm">Telegram</span>}
         </a>
+        <button
+          onClick={toggleTheme}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-md mb-1 text-zinc-400 hover:bg-white/5 hover:text-white transition-colors"
+          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} size={20} />
+          {!collapsed && <span className="text-sm">{theme === 'dark' ? 'Light' : 'Dark'}</span>}
+        </button>
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-zinc-400 hover:bg-white/5 hover:text-white transition-colors"

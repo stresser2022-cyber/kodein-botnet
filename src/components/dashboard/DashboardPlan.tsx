@@ -129,7 +129,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   if (loading) {
     return (
-      <div className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6">
+      <div className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]">
         <div className="flex items-center justify-center h-32">
           <Icon name="Loader2" size={24} className="animate-spin text-white/50" />
         </div>
@@ -138,7 +138,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
   }
 
   return (
-    <div className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6">
+    <div className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]" style={{ animationDelay: '0.2s' }}>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-white">Your Plan</h2>
         <Icon name={getPlanIcon(userPlan.plan)} size={24} className="text-white/70" />

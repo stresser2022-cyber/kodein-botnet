@@ -67,7 +67,8 @@ export default function DashboardStats() {
       {statsDisplay.map((stat, index) => (
         <div 
           key={index}
-          className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6"
+          className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]"
+          style={{ animationDelay: `${index * 0.1}s` }}
         >
           <div className="flex items-start justify-between mb-4">
             <p className="text-sm text-zinc-400">{stat.title}</p>

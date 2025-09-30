@@ -34,15 +34,15 @@ export default function DashboardSidebar({
 
   return (
     <div 
-      className={`fixed left-0 top-0 h-screen bg-[#0a0a0a] border-r border-white/10 transition-all duration-300 ${
+      className={`fixed left-0 top-0 h-screen bg-sidebar-background border-r border-sidebar-border transition-all duration-300 ${
         collapsed ? 'w-16' : 'w-64'
       } flex flex-col z-50`}
     >
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+      <div className="p-4 border-b border-sidebar-border flex items-center justify-between">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <Icon name="Shield" size={20} />
-            <span className="text-white font-semibold">Kodein Services</span>
+            <Icon name="Shield" size={20} className="text-sidebar-foreground" />
+            <span className="text-sidebar-foreground font-semibold">Kodein Services</span>
           </div>
         )}
         <button
@@ -64,8 +64,8 @@ export default function DashboardSidebar({
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2 rounded-md mb-1 transition-colors ${
                 isActive(item.path)
-                  ? 'bg-white/10 text-white'
-                  : 'text-zinc-400 hover:bg-white/5 hover:text-white'
+                  ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                  : 'text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
               }`}
             >
               <Icon name={item.icon as any} size={20} />
@@ -84,8 +84,8 @@ export default function DashboardSidebar({
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2 rounded-md mb-1 transition-colors ${
                 isActive(item.path)
-                  ? 'bg-white/10 text-white'
-                  : 'text-zinc-400 hover:bg-white/5 hover:text-white'
+                  ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                  : 'text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
               }`}
             >
               <Icon name={item.icon as any} size={20} />

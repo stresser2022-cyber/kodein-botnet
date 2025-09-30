@@ -73,9 +73,13 @@
   }
 
   body {
-    @apply bg-black text-white;
+    @apply bg-background text-foreground;
     font-family: "Inter", sans-serif;
     overflow-x: hidden;
+  }
+
+  html {
+    @apply dark;
   }
 
   h1,

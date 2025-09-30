@@ -71,7 +71,7 @@ export default function Documentation() {
   }
 
   return (
-    <div className="dark flex min-h-screen bg-[#0a0a0a] text-white">
+    <div className="flex min-h-screen bg-background text-foreground">
       <DashboardSidebar 
         currentUser={currentUser}
         collapsed={sidebarCollapsed} 

@@ -210,7 +210,19 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-white">Your Plan</h2>
-        <Icon name={getPlanIcon(userPlan.plan)} size={24} className="text-white/70" />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setLoading(true);
+              fetchUserPlan();
+            }}
+            className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
+            title="Refresh plan data"
+          >
+            <Icon name="RefreshCw" size={18} className="text-white/70 hover:text-white" />
+          </button>
+          <Icon name={getPlanIcon(userPlan.plan)} size={24} className="text-white/70" />
+        </div>
       </div>
 
       <div className={`bg-gradient-to-r ${getPlanColor(userPlan.plan)} rounded-lg p-4 mb-6`}>

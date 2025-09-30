@@ -22,6 +22,8 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
   const [isProcessing, setIsProcessing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -154,10 +156,11 @@ export default function Admin() {
   };
 
   const handleSelectAll = () => {
-    if (selectedUsers.size === users.length) {
+    const visibleUserIds = filteredUsers.map(u => u.id);
+    if (selectedUsers.size === filteredUsers.length && filteredUsers.length > 0) {
       setSelectedUsers(new Set());
     } else {
-      setSelectedUsers(new Set(users.map(u => u.id)));
+      setSelectedUsers(new Set(visibleUserIds));
     }
   };
 
@@ -217,6 +220,20 @@ export default function Admin() {
 
     fetchUsers(adminKey);
   };
+
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch = 
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.id.toString().includes(searchTerm);
+    
+    const matchesStatus = 
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && user.is_active) ||
+      (statusFilter === 'inactive' && !user.is_active);
+    
+    return matchesSearch && matchesStatus;
+  });
 
   if (!isAuthenticated) {
     return (
@@ -282,34 +299,103 @@ export default function Admin() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Registered Users</h2>
-            <p className="text-zinc-400">Total users: {total}</p>
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">Registered Users</h2>
+              <p className="text-zinc-400">
+                Showing {filteredUsers.length} of {total} users
+              </p>
+            </div>
+            {selectedUsers.size > 0 && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-zinc-400">
+                  {selectedUsers.size} selected
+                </span>
+                <button
+                  onClick={() => handleBulkAction('activate')}
+                  disabled={isProcessing}
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Icon name="CheckCircle" size={16} />
+                  Activate Selected
+                </button>
+                <button
+                  onClick={() => handleBulkAction('deactivate')}
+                  disabled={isProcessing}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Icon name="XCircle" size={16} />
+                  Deactivate Selected
+                </button>
+              </div>
+            )}
           </div>
-          {selectedUsers.size > 0 && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-zinc-400">
-                {selectedUsers.size} selected
-              </span>
+
+          <div className="flex gap-4 items-center">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Icon 
+                  name="Search" 
+                  size={18} 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" 
+                />
+                <Input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by ID, username, or email..."
+                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-zinc-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2">
               <button
-                onClick={() => handleBulkAction('activate')}
-                disabled={isProcessing}
-                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                onClick={() => setStatusFilter('all')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  statusFilter === 'all'
+                    ? 'bg-white text-black'
+                    : 'bg-white/5 text-zinc-300 hover:bg-white/10'
+                }`}
               >
-                <Icon name="CheckCircle" size={16} />
-                Activate Selected
+                All
               </button>
               <button
-                onClick={() => handleBulkAction('deactivate')}
-                disabled={isProcessing}
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                onClick={() => setStatusFilter('active')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  statusFilter === 'active'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white/5 text-zinc-300 hover:bg-white/10'
+                }`}
               >
-                <Icon name="XCircle" size={16} />
-                Deactivate Selected
+                Active
+              </button>
+              <button
+                onClick={() => setStatusFilter('inactive')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  statusFilter === 'inactive'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-white/5 text-zinc-300 hover:bg-white/10'
+                }`}
+              >
+                Inactive
               </button>
             </div>
-          )}
+
+            {(searchTerm || statusFilter !== 'all') && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                }}
+                className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
+              >
+                <Icon name="X" size={16} />
+                Clear
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
@@ -320,6 +406,20 @@ export default function Admin() {
           <div className="text-center py-12 text-zinc-400">
             No users registered yet
           </div>
+        ) : filteredUsers.length === 0 ? (
+          <div className="text-center py-12 text-zinc-400">
+            <Icon name="SearchX" size={48} className="mx-auto mb-4 opacity-50" />
+            <p>No users found matching your filters</p>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setStatusFilter('all');
+              }}
+              className="mt-4 button-ghost px-4 py-2 rounded-md"
+            >
+              Clear filters
+            </button>
+          </div>
         ) : (
           <div className="bg-white/5 border border-white/20 rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
@@ -329,7 +429,7 @@ export default function Admin() {
                     <th className="px-4 py-3 text-left">
                       <input
                         type="checkbox"
-                        checked={selectedUsers.size === users.length && users.length > 0}
+                        checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
                         onChange={handleSelectAll}
                         className="w-4 h-4 rounded border-white/20 bg-white/5 text-white cursor-pointer"
                       />
@@ -358,7 +458,7 @@ export default function Admin() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                  {users.map((user) => (
+                  {filteredUsers.map((user) => (
                     <tr key={user.id} className="hover:bg-white/5 transition-colors">
                       <td className="px-4 py-4 whitespace-nowrap">
                         <input

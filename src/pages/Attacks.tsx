@@ -150,7 +150,7 @@ export default function Attacks() {
                         <SelectTrigger className="border-input data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 h-auto">
                           <SelectValue placeholder="Select a method" />
                         </SelectTrigger>
-                        <SelectContent className="max-h-60">
+                        <SelectContent className="max-h-60 bg-black border-zinc-800">
                           <SelectItem value="dns">dns</SelectItem>
                           <SelectItem value="udp">udp</SelectItem>
                           <SelectItem value="pps">pps</SelectItem>

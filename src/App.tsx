@@ -11,7 +11,6 @@ import Attacks from "./pages/Attacks";
 import Plans from "./pages/Plans";
 import Deposit from "./pages/Deposit";
 import Documentation from "./pages/Documentation";
-import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,7 +29,6 @@ const App = () => (
           <Route path="/dashboard/plans" element={<Plans />} />
           <Route path="/dashboard/deposit" element={<Deposit />} />
           <Route path="/dashboard/docs" element={<Documentation />} />
-          <Route path="/dashboard/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

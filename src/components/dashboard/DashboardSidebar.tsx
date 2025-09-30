@@ -94,17 +94,6 @@ export default function DashboardSidebar({
 
       <div className="border-t border-white/10 p-3">
         <Link
-          to="/dashboard/settings"
-          className={`flex items-center gap-3 px-3 py-2 rounded-md mb-1 transition-colors ${
-            isActive('/dashboard/settings')
-              ? 'bg-white/10 text-white'
-              : 'text-zinc-400 hover:bg-white/5 hover:text-white'
-          }`}
-        >
-          <Icon name="Settings" size={20} />
-          {!collapsed && <span className="text-sm">Settings</span>}
-        </Link>
-        <Link
           to="https://t.me/join_kodein"
           target="_blank"
           className="flex items-center gap-3 px-3 py-2 rounded-md mb-1 text-zinc-400 hover:bg-white/5 hover:text-white transition-colors"

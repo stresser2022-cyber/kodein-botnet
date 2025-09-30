@@ -100,7 +100,7 @@ export default function Attacks() {
             <div className="bg-card rounded-xl border border-border py-6 shadow-sm">
               <div className="px-6 pb-6">
                 <h2 className="text-xl font-semibold mb-1">Panel</h2>
-                <p className="text-sm text-muted-foreground mb-6">Launch new attack in one click.</p>
+                <p className="text-sm text-gray-400 mb-6">Launch new attack in one click.</p>
               </div>
               <div className="px-6">
               <form onSubmit={handleLaunchAttack} className="space-y-4">
@@ -112,7 +112,7 @@ export default function Attacks() {
                       value={target}
                       onChange={(e) => setTarget(e.target.value)}
                       placeholder="1.1.1.1"
-                      className="bg-transparent border-input text-white placeholder:text-muted-foreground focus-visible:ring-ring/50"
+                      className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-ring/50"
                     />
                   </div>
 
@@ -124,7 +124,7 @@ export default function Attacks() {
                       value={port}
                       onChange={(e) => setPort(e.target.value)}
                       placeholder="443"
-                      className="bg-transparent border-input text-white placeholder:text-muted-foreground focus-visible:ring-ring/50"
+                      className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-ring/50"
                     />
                   </div>
                 </div>
@@ -144,10 +144,10 @@ export default function Attacks() {
                 <div>
                   <Label htmlFor="method" className="text-sm text-white mb-2 block">Method</Label>
                   <Select value={method} onValueChange={setMethod}>
-                    <SelectTrigger className="bg-transparent border-input text-white">
+                    <SelectTrigger className="bg-transparent border-gray-700 text-white">
                       <SelectValue placeholder="Select a method" />
                     </SelectTrigger>
-                    <SelectContent className="bg-card border-border text-white max-h-60">
+                    <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white max-h-60">
                       <SelectItem value="dns">dns</SelectItem>
                       <SelectItem value="udp">udp</SelectItem>
                       <SelectItem value="pps">pps</SelectItem>
@@ -192,21 +192,21 @@ export default function Attacks() {
               </form>
               </div>
               <div className="px-6 pt-6">
-                <Button type="submit" onClick={handleLaunchAttack} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-xs">
+                <Button type="submit" onClick={handleLaunchAttack} className="w-full bg-white hover:bg-gray-200 text-black font-medium shadow-xs">
                   Start
                 </Button>
               </div>
             </div>
 
-            <div className="bg-card rounded-xl border border-border py-6 shadow-sm">
+            <div className="bg-[#141414] rounded-xl border border-gray-800 py-6 shadow-sm">
               <div className="flex items-start justify-between mb-6 px-6">
                 <div>
                   <h2 className="text-xl font-semibold mb-1">Your Attacks</h2>
-                  <p className="text-sm text-muted-foreground">Manage your attacks in one click.</p>
+                  <p className="text-sm text-gray-400">Manage your attacks in one click.</p>
                 </div>
                 <Button 
                   onClick={handleStopAll}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+                  className="bg-white hover:bg-gray-200 text-black shadow-xs"
                   size="sm"
                   disabled={attacks.length === 0}
                 >
@@ -221,12 +221,12 @@ export default function Attacks() {
                   value={filterTarget}
                   onChange={(e) => setFilterTarget(e.target.value)}
                   placeholder="Filter target..."
-                  className="bg-transparent border-input text-white placeholder:text-muted-foreground focus-visible:ring-ring/50"
+                  className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-ring/50"
                 />
               </div>
 
-              <div className="rounded-lg border border-border overflow-hidden">
-                <div className="grid grid-cols-6 gap-4 p-3 text-xs font-medium text-muted-foreground border-b border-border bg-muted/50">
+              <div className="rounded-lg border border-gray-800 overflow-hidden">
+                <div className="grid grid-cols-6 gap-4 p-3 text-xs font-medium text-gray-400 border-b border-gray-800 bg-[#0a0a0a]">
                   <div className="flex items-center gap-1">
                     ID
                     <Icon name="ArrowUpDown" size={12} />
@@ -254,13 +254,13 @@ export default function Attacks() {
                 </div>
 
                 {filteredAttacks.length === 0 ? (
-                  <div className="p-8 text-center text-muted-foreground text-sm">
+                  <div className="p-8 text-center text-gray-400 text-sm">
                     No results.
                   </div>
                 ) : (
                   <div>
                     {filteredAttacks.map((attack) => (
-                      <div key={attack.id} className="grid grid-cols-6 gap-4 p-3 text-sm border-b border-border hover:bg-muted/50 transition-colors">
+                      <div key={attack.id} className="grid grid-cols-6 gap-4 p-3 text-sm border-b border-gray-800 hover:bg-[#1a1a1a] transition-colors">
                         <div className="text-gray-300 font-mono">{attack.id}</div>
                         <div className="text-white">{attack.target}</div>
                         <div className="text-gray-300">{attack.port}</div>
@@ -280,7 +280,7 @@ export default function Attacks() {
               </div>
 
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-gray-500">
                   Current page 1 of {Math.max(1, Math.ceil(filteredAttacks.length / 10))}
                 </span>
                 <div className="flex gap-2">

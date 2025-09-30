@@ -82,6 +82,12 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
   useEffect(() => {
     setMounted(true);
     fetchUserPlan();
+    
+    const interval = setInterval(() => {
+      fetchUserPlan();
+    }, 10000);
+    
+    return () => clearInterval(interval);
   }, [currentUser]);
 
   const fetchUserPlan = async () => {

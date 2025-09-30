@@ -15,6 +15,9 @@ export default function Header({ isLoggedIn, currentUser, onSignIn, onLogout }: 
         Kodein Botnet
       </div>
       <div className="flex items-center gap-3">
+        {isLoggedIn && (
+          <span className="text-sm text-zinc-400">Hi, {currentUser}</span>
+        )}
         <a
           className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
           href="https://t.me/join_kodein"
@@ -23,8 +26,7 @@ export default function Header({ isLoggedIn, currentUser, onSignIn, onLogout }: 
           Telegram
         </a>
         {isLoggedIn ? (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-zinc-400">Hi, {currentUser}</span>
+          <>
             <a
               href="/dashboard"
               className="bg-white text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-white/90 transition-colors flex items-center gap-2"
@@ -39,7 +41,7 @@ export default function Header({ isLoggedIn, currentUser, onSignIn, onLogout }: 
               <Icon name="LogOut" size={14} />
               Logout
             </button>
-          </div>
+          </>
         ) : (
           <button
             onClick={onSignIn}

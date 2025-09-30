@@ -110,7 +110,7 @@ export default function Deposit() {
                 </button>
                 <button
                   onClick={handleProcess}
-                  className="flex-1 px-6 py-2 bg-white text-black rounded-md font-medium hover:bg-zinc-200 transition-colors"
+                  className="flex-1 px-6 py-2 bg-zinc-700 text-white rounded-md font-medium hover:bg-zinc-600 transition-colors"
                 >
                   Process
                 </button>

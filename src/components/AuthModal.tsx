@@ -15,8 +15,7 @@ interface AuthModalProps {
   setPassword: (password: string) => void;
   username: string;
   setUsername: (username: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onCaptchaError?: () => void;
+  onSubmit: (e: React.FormEvent, captchaValid: boolean) => void;
 }
 
 export default function AuthModal({
@@ -99,17 +98,17 @@ export default function AuthModal({
 
         <form onSubmit={(e) => {
           e.preventDefault();
+          let captchaValid = true;
+          
           if (authMode === 'register') {
             const correctAnswer = captcha.num1 + captcha.num2;
             if (parseInt(captchaAnswer) !== correctAnswer) {
-              if (onCaptchaError) {
-                onCaptchaError();
-              }
+              captchaValid = false;
               generateCaptcha();
-              return;
             }
           }
-          onSubmit(e);
+          
+          onSubmit(e, captchaValid);
         }} className="space-y-4">
           {authMode === 'register' && (
             <div className="space-y-2">

@@ -53,8 +53,17 @@ export default function Index() {
     }
   }, []);
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent, captchaValid: boolean) => {
     e.preventDefault();
+    
+    if (authMode === 'register' && !captchaValid) {
+      toast({
+        title: 'Error',
+        description: 'Incorrect captcha answer. Please try again.',
+        variant: 'destructive'
+      });
+      return;
+    }
     
     const API_URL = 'https://functions.poehali.dev/8ec3d566-fc44-442e-ad1d-fee49d4a799b';
     

@@ -75,6 +75,23 @@
   body {
     @apply bg-black text-white;
     font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+  }
+
+  [data-radix-dialog-overlay] {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99 !important;
+  }
+
+  [data-radix-dialog-content] {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100 !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
   }
 
   h1,

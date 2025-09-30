@@ -19,6 +19,7 @@ export default function DashboardSidebar({
   const menuItems = [
     { icon: 'LayoutDashboard', label: 'Dashboard', path: '/dashboard' },
     { icon: 'Zap', label: 'Attacks', path: '/dashboard/attacks' },
+    { icon: 'Key', label: 'API Keys', path: '/dashboard/api-keys' },
     { icon: 'FileText', label: 'Documentation', path: '/dashboard/docs' }
   ];
 

@@ -93,14 +93,15 @@ export default function DashboardSidebar({
       </div>
 
       <div className="border-t border-white/10 p-3">
-        <Link
-          to="https://t.me/join_kodein"
+        <a
+          href="https://t.me/mirai_network"
           target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-3 px-3 py-2 rounded-md mb-1 text-zinc-400 hover:bg-white/5 hover:text-white transition-colors"
         >
           <Icon name="Send" size={20} />
           {!collapsed && <span className="text-sm">Telegram</span>}
-        </Link>
+        </a>
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-zinc-400 hover:bg-white/5 hover:text-white transition-colors"

@@ -118,10 +118,6 @@
   }
 
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
     to {
       opacity: 1;
       transform: translateY(0);
@@ -129,6 +125,10 @@
   }
 
   .animate-in {
-    animation: fadeInUp 0.6s ease-out forwards;
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  [data-animate] {
+    animation: fadeInUp 0.8s ease-out forwards;
   }
 }

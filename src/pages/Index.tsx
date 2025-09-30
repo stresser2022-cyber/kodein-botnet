@@ -6,8 +6,8 @@ export default function Index() {
 
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
+      threshold: 0.05,
+      rootMargin: '0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -18,9 +18,8 @@ export default function Index() {
       });
     }, observerOptions);
 
-    document.querySelectorAll('[style*="opacity:0"]').forEach((el) => {
-      observer.observe(el);
-    });
+    const elements = document.querySelectorAll('[data-animate]');
+    elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
@@ -133,17 +132,17 @@ export default function Index() {
       <section className="max-w-6xl mx-auto relative py-24 sm:py-32 text-center px-6">
         <h1
           id="home"
-          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
+          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white opacity-0 translate-y-5"
+          data-animate
         >
           Kodein Botnet
         </h1>
-        <p className="text-xl sm:text-2xl mt-6 font-medium" style={{ opacity: 0, transform: 'translateY(20px)' }}>
+        <p className="text-xl sm:text-2xl mt-6 font-medium text-white opacity-0 translate-y-5" data-animate>
           Massive Power. Real Results.
         </p>
         <p
-          className="text-zinc-400 mt-6 max-w-2xl mx-auto text-sm leading-relaxed"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
+          className="text-zinc-400 mt-6 max-w-2xl mx-auto text-sm leading-relaxed opacity-0 translate-y-5"
+          data-animate
         >
           Extreme network load with 200–500 Gbps+ Layer 4 firepower and 2–3 million RPS at Layer 7. 
           Daily updates, optimized payloads, and cutting-edge bypass methods for maximum efficiency.

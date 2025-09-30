@@ -97,6 +97,48 @@ export default function Admin() {
     return new Date(dateString).toLocaleString();
   };
 
+  const handleToggleStatus = async (userId: number, currentStatus: boolean) => {
+    const action = currentStatus ? 'deactivate' : 'activate';
+    
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'X-Admin-Key': adminKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          action: action
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to update user status',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      toast({
+        title: 'Success',
+        description: data.message || 'User status updated successfully'
+      });
+
+      fetchUsers(adminKey);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Network error',
+        variant: 'destructive'
+      });
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen w-full bg-black flex items-center justify-center p-4">
@@ -198,6 +240,9 @@ export default function Admin() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
                       Status
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -228,6 +273,18 @@ export default function Admin() {
                             Inactive
                           </span>
                         )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => handleToggleStatus(user.id, user.is_active)}
+                          className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                            user.is_active
+                              ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                              : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                          }`}
+                        >
+                          {user.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
                       </td>
                     </tr>
                   ))}

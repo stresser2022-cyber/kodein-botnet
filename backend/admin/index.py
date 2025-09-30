@@ -1,8 +1,8 @@
 """
-Business: Admin panel API for viewing registered users
-Args: event - dict with httpMethod, headers, queryStringParameters
+Business: Admin panel API for viewing and managing registered users
+Args: event - dict with httpMethod, headers, queryStringParameters, body
       context - object with attributes: request_id, function_name, function_version, memory_limit_in_mb
-Returns: HTTP response dict with user list or error
+Returns: HTTP response dict with user list or status update result
 """
 
 import json
@@ -17,7 +17,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cors_headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key',
         'Access-Control-Max-Age': '86400'
     }
@@ -94,6 +94,83 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'limit': limit,
                     'offset': offset,
                     'users': users_list
+                }),
+                'isBase64Encoded': False
+            }
+        
+        if method == 'POST':
+            body_str = event.get('body', '')
+            if not body_str or body_str.strip() == '':
+                return {
+                    'statusCode': 400,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'Missing user_id or action'}),
+                    'isBase64Encoded': False
+                }
+            
+            try:
+                body_data = json.loads(body_str)
+            except json.JSONDecodeError:
+                return {
+                    'statusCode': 400,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'Invalid JSON in request body'}),
+                    'isBase64Encoded': False
+                }
+            
+            user_id = body_data.get('user_id')
+            action = body_data.get('action')
+            
+            if not user_id or not action:
+                return {
+                    'statusCode': 400,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'Missing user_id or action'}),
+                    'isBase64Encoded': False
+                }
+            
+            if action not in ['activate', 'deactivate']:
+                return {
+                    'statusCode': 400,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'Invalid action. Use activate or deactivate'}),
+                    'isBase64Encoded': False
+                }
+            
+            is_active = action == 'activate'
+            
+            cur.execute(
+                """
+                UPDATE users 
+                SET is_active = %s 
+                WHERE id = %s
+                RETURNING id, username, is_active
+                """,
+                (is_active, user_id)
+            )
+            conn.commit()
+            
+            updated_user = cur.fetchone()
+            
+            if not updated_user:
+                return {
+                    'statusCode': 404,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'User not found'}),
+                    'isBase64Encoded': False
+                }
+            
+            return {
+                'statusCode': 200,
+                'headers': cors_headers,
+                'body': json.dumps({
+                    'success': True,
+                    'message': f"User {action}d successfully",
+                    'user': {
+                        'id': updated_user['id'],
+                        'username': updated_user['username'],
+                        'is_active': updated_user['is_active']
+                    }
                 }),
                 'isBase64Encoded': False
             }

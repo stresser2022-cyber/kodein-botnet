@@ -26,6 +26,18 @@
       "path": "/",
       "expectedStatus": 403,
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "Update user status without required fields",
+      "method": "POST",
+      "path": "/",
+      "headers": {
+        "X-Admin-Key": "kodein_admin_2025",
+        "Content-Type": "application/json"
+      },
+      "body": {},
+      "expectedStatus": 400,
+      "bodyMatcher": "partial"
     }
   ]
 }

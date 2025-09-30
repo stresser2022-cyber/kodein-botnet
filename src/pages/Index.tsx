@@ -104,6 +104,7 @@ export default function Index() {
         
         localStorage.setItem('kodein_user', data.user.username);
         localStorage.setItem('kodein_user_id', data.user.id);
+        localStorage.setItem('current_user', data.user.username);
         
         setIsLoggedIn(true);
         setCurrentUser(data.user.username);
@@ -117,6 +118,8 @@ export default function Index() {
         setEmail('');
         setPassword('');
         setUsername('');
+        
+        window.location.href = '/dashboard';
       } else {
         if (!email || !password) {
           toast({
@@ -152,6 +155,7 @@ export default function Index() {
         
         localStorage.setItem('kodein_user', data.user.username);
         localStorage.setItem('kodein_user_id', data.user.id);
+        localStorage.setItem('current_user', data.user.username);
         
         setIsLoggedIn(true);
         setCurrentUser(data.user.username);
@@ -164,6 +168,8 @@ export default function Index() {
         
         setEmail('');
         setPassword('');
+        
+        window.location.href = '/dashboard';
       }
     } catch (error) {
       toast({

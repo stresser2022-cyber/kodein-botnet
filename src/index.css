@@ -78,20 +78,33 @@
     overflow-x: hidden;
   }
 
+  [data-radix-portal] {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: none !important;
+  }
+
   [data-radix-dialog-overlay] {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 99 !important;
+    z-index: 999 !important;
+    pointer-events: auto !important;
   }
 
   [data-radix-dialog-content] {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 100 !important;
+    position: relative !important;
+    transform: none !important;
+    left: auto !important;
+    top: auto !important;
+    z-index: 1000 !important;
     max-height: 90vh !important;
     overflow-y: auto !important;
+    pointer-events: auto !important;
+    margin: auto !important;
   }
 
   h1,

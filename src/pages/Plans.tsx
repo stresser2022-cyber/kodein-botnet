@@ -24,6 +24,7 @@ export default function Plans() {
   const { toast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'lifetime'>('monthly');
 
   const currentUser = localStorage.getItem('current_user');
 
@@ -134,6 +135,32 @@ export default function Plans() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Choose Your Plan</h1>
             <p className="text-gray-400">Select the plan that fits your needs</p>
+            
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle('lifetime')}
+                className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
+                  billingCycle === 'lifetime'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                Lifetime
+                <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  Save 33%
+                </span>
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -153,8 +180,17 @@ export default function Plans() {
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                   <div className="mb-2">
-                    <div className="text-lg font-bold text-purple-400">€{plan.price} Monthly</div>
-                    <div className="text-sm text-gray-400">or €{plan.price * 2} Lifetime</div>
+                    {billingCycle === 'monthly' ? (
+                      <>
+                        <div className="text-3xl font-bold text-purple-400">€{plan.price}</div>
+                        <div className="text-sm text-gray-400">per month</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-3xl font-bold text-purple-400">€{plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150}</div>
+                        <div className="text-sm text-gray-400">one-time payment</div>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -199,14 +235,19 @@ export default function Plans() {
                       : 'bg-gray-800 hover:bg-gray-700'
                   }`}
                 >
-                  Select Plan
+                  {billingCycle === 'monthly' ? 'Subscribe Monthly' : 'Buy Lifetime'}
                 </Button>
               </div>
             ))}
           </div>
 
           <div className="mt-12 bg-[#0f0f0f] border border-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Plan Comparison</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Plan Comparison</h2>
+              <div className="text-sm text-gray-400">
+                Viewing: <span className="text-purple-400 font-medium">{billingCycle === 'monthly' ? 'Monthly' : 'Lifetime'}</span> prices
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -218,6 +259,14 @@ export default function Plans() {
                   </tr>
                 </thead>
                 <tbody>
+                  <tr className="border-b border-gray-800">
+                    <td className="py-3 px-4 text-gray-400">Price</td>
+                    {plans.map(plan => (
+                      <td key={plan.id} className="text-center py-3 px-4 font-semibold text-purple-400">
+                        €{billingCycle === 'monthly' ? plan.price : (plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150)}
+                      </td>
+                    ))}
+                  </tr>
                   <tr className="border-b border-gray-800">
                     <td className="py-3 px-4 text-gray-400">Concurrent Attacks</td>
                     {plans.map(plan => (

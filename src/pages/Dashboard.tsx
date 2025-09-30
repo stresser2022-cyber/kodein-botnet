@@ -43,17 +43,14 @@ export default function Dashboard() {
         </header>
 
         <main className="p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-            <div className="lg:col-span-3">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-3 space-y-6">
               <DashboardStats />
+              <DashboardAnnouncements />
             </div>
             <div>
               <DashboardPlan currentUser={currentUser} />
             </div>
-          </div>
-
-          <div className="w-full">
-            <DashboardAnnouncements />
           </div>
         </main>
       </div>

@@ -41,44 +41,68 @@ export default function Plans() {
       features: {
         concurrents: 1,
         maxTime: 60,
-        methods: ['UDP', 'TCP'],
+        methods: ['Cooldown: 0s'],
         apiAccess: false
       }
     },
     {
-      id: 'standard',
-      name: 'Standard',
+      id: 'medium',
+      name: 'Medium',
       price: 25,
       duration: 30,
       features: {
-        concurrents: 3,
+        concurrents: 2,
         maxTime: 120,
-        methods: ['UDP', 'TCP', 'HTTP'],
-        apiAccess: true
+        methods: ['Cooldown: 0s', 'VIP Access'],
+        apiAccess: false
       },
       popular: true
     },
     {
-      id: 'premium',
-      name: 'Premium',
-      price: 50,
+      id: 'advanced',
+      name: 'Advanced',
+      price: 45,
       duration: 30,
       features: {
-        concurrents: 5,
-        maxTime: 300,
-        methods: ['UDP', 'TCP', 'HTTP', 'ICMP', 'Custom'],
+        concurrents: 3,
+        maxTime: 180,
+        methods: ['Cooldown: 0s', 'VIP Access'],
+        apiAccess: false
+      }
+    },
+    {
+      id: 'api-basic',
+      name: 'API Basic',
+      price: 15,
+      duration: 30,
+      features: {
+        concurrents: 1,
+        maxTime: 60,
+        methods: ['Full Documentation'],
         apiAccess: true
       }
     },
     {
-      id: 'ultimate',
-      name: 'Ultimate',
-      price: 100,
+      id: 'api-pro',
+      name: 'API Pro',
+      price: 35,
       duration: 30,
       features: {
-        concurrents: 10,
-        maxTime: 600,
-        methods: ['All Methods', 'Custom Scripts'],
+        concurrents: 3,
+        maxTime: 180,
+        methods: ['Priority Support'],
+        apiAccess: true
+      }
+    },
+    {
+      id: 'api-enterprise',
+      name: 'API Enterprise',
+      price: 75,
+      duration: 30,
+      features: {
+        concurrents: 5,
+        maxTime: 300,
+        methods: ['Dedicated Support'],
         apiAccess: true
       }
     }
@@ -112,7 +136,7 @@ export default function Plans() {
             <p className="text-gray-400">Select the plan that fits your needs</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((plan) => (
               <div 
                 key={plan.id}
@@ -129,49 +153,42 @@ export default function Plans() {
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                   <div className="mb-2">
-                    <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-gray-400">/{plan.duration}d</span>
+                    <div className="text-lg font-bold text-purple-400">€{plan.price} Monthly</div>
+                    <div className="text-sm text-gray-400">or €{plan.price * 2} Lifetime</div>
                   </div>
                 </div>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-2 text-sm">
                     <Icon name="Zap" size={16} className="text-purple-400" />
-                    <span>{plan.features.concurrents} Concurrent Attack{plan.features.concurrents > 1 ? 's' : ''}</span>
+                    <span>Concurrent: {plan.features.concurrents}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm">
                     <Icon name="Clock" size={16} className="text-purple-400" />
-                    <span>Max {plan.features.maxTime}s per attack</span>
+                    <span>Max Time: {plan.features.maxTime}s</span>
                   </div>
                   
-                  <div className="flex items-center gap-2 text-sm">
-                    <Icon name="Shield" size={16} className="text-purple-400" />
-                    <span>{plan.features.methods.length} Attack Methods</span>
-                  </div>
-                  
-                  <div className="flex items-start gap-2 text-sm">
-                    <Icon name="Check" size={16} className="text-purple-400 mt-0.5" />
-                    <div>
-                      {plan.features.methods.map((method, idx) => (
-                        <div key={idx} className="text-gray-300">{method}</div>
-                      ))}
+                  {plan.features.methods.map((method, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-sm">
+                      <Icon name="Check" size={16} className="text-purple-400" />
+                      <span className="text-gray-300">{method}</span>
                     </div>
-                  </div>
+                  ))}
                   
-                  <div className="flex items-center gap-2 text-sm">
-                    {plan.features.apiAccess ? (
-                      <>
-                        <Icon name="Check" size={16} className="text-green-400" />
-                        <span>API Access</span>
-                      </>
-                    ) : (
-                      <>
-                        <Icon name="X" size={16} className="text-gray-600" />
-                        <span className="text-gray-600">No API Access</span>
-                      </>
-                    )}
-                  </div>
+                  {plan.features.apiAccess && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Icon name="Key" size={16} className="text-green-400" />
+                      <span className="text-green-400">API Access</span>
+                    </div>
+                  )}
+                  
+                  {!plan.features.apiAccess && plan.name !== 'Basic' && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <Icon name="Award" size={16} className="text-yellow-400" />
+                      <span className="text-yellow-400">VIP</span>
+                    </div>
+                  )}
                 </div>
 
                 <Button
@@ -214,9 +231,21 @@ export default function Plans() {
                     ))}
                   </tr>
                   <tr className="border-b border-gray-800">
-                    <td className="py-3 px-4 text-gray-400">Attack Methods</td>
+                    <td className="py-3 px-4 text-gray-400">Cooldown</td>
                     {plans.map(plan => (
-                      <td key={plan.id} className="text-center py-3 px-4">{plan.features.methods.length}</td>
+                      <td key={plan.id} className="text-center py-3 px-4">0s</td>
+                    ))}
+                  </tr>
+                  <tr className="border-b border-gray-800">
+                    <td className="py-3 px-4 text-gray-400">VIP Access</td>
+                    {plans.map(plan => (
+                      <td key={plan.id} className="text-center py-3 px-4">
+                        {plan.name !== 'Basic' && !plan.features.apiAccess ? (
+                          <Icon name="Check" size={16} className="inline text-yellow-400" />
+                        ) : (
+                          <Icon name="X" size={16} className="inline text-gray-600" />
+                        )}
+                      </td>
                     ))}
                   </tr>
                   <tr>

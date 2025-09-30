@@ -1,29 +1,78 @@
+import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 
+interface Attack {
+  id: number;
+  target: string;
+  port: number;
+  method: string;
+  expire: string;
+  status: string;
+}
+
 export default function DashboardStats() {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalAttacks, setTotalAttacks] = useState(0);
+  const [runningAttacks, setRunningAttacks] = useState(0);
+
+  useEffect(() => {
+    const users = localStorage.getItem('registered_users');
+    if (users) {
+      try {
+        const userList = JSON.parse(users);
+        setTotalUsers(Array.isArray(userList) ? userList.length : 0);
+      } catch {
+        setTotalUsers(0);
+      }
+    }
+
+    const attacks = localStorage.getItem('attacks');
+    if (attacks) {
+      try {
+        const attackList: Attack[] = JSON.parse(attacks);
+        if (Array.isArray(attackList)) {
+          setTotalAttacks(attackList.length);
+          
+          const running = attackList.filter(attack => {
+            if (attack.status === 'running') {
+              const expireTime = new Date(attack.expire).getTime();
+              return expireTime > Date.now();
+            }
+            return false;
+          }).length;
+          
+          setRunningAttacks(running);
+        }
+      } catch {
+        setTotalAttacks(0);
+        setRunningAttacks(0);
+      }
+    }
+  }, []);
+
   const stats = [
     {
       title: 'Total Users',
-      value: '1 640',
-      trend: '+0%',
-      trendUp: true,
-      subtitle: 'More than yesterday',
+      value: totalUsers.toString(),
+      trend: null,
+      trendUp: false,
+      subtitle: 'Registered users',
       description: 'Users for the whole time'
     },
     {
       title: 'Total Attacks',
-      value: '10 389',
-      trend: '+100%',
-      trendUp: true,
-      subtitle: 'More than yesterday',
+      value: totalAttacks.toString(),
+      trend: null,
+      trendUp: false,
+      subtitle: 'All attacks launched',
       description: 'Attacks for the whole time'
     },
     {
       title: 'Running Attacks',
-      value: '707',
+      value: runningAttacks.toString(),
       trend: null,
       trendUp: false,
-      subtitle: 'Used out of 1 600 slots',
+      subtitle: 'Currently active',
       description: 'Attacks that are currently running'
     }
   ];
@@ -48,10 +97,7 @@ export default function DashboardStats() {
           </div>
           <h2 className="text-4xl font-bold text-white mb-3">{stat.value}</h2>
           <div className="space-y-1">
-            <p className="text-sm text-zinc-300 flex items-center gap-1">
-              {stat.subtitle}
-              <Icon name="TrendingUp" size={14} className="text-zinc-500" />
-            </p>
+            <p className="text-sm text-zinc-300">{stat.subtitle}</p>
             <p className="text-xs text-zinc-500">{stat.description}</p>
           </div>
         </div>

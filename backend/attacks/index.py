@@ -13,6 +13,7 @@ from psycopg2.extras import RealDictCursor
 import urllib.request
 import urllib.parse
 import urllib.error
+from plan_limits import get_plan_limits, check_plan_validity
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
@@ -142,6 +143,82 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'target, duration, and method are required'})
         }
     
+    dsn = os.environ.get('DATABASE_URL')
+    if not dsn:
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Database not configured'})
+        }
+    
+    conn = psycopg2.connect(dsn)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    cursor.execute("""
+        SELECT plan, plan_expires_at FROM users WHERE id = %s
+    """, (int(user_id),))
+    
+    user = cursor.fetchone()
+    
+    if not user:
+        cursor.close()
+        conn.close()
+        return {
+            'statusCode': 404,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'User not found'})
+        }
+    
+    current_plan = check_plan_validity(user['plan'], user.get('plan_expires_at'))
+    plan_limits = get_plan_limits(current_plan)
+    
+    if int(duration) > plan_limits['max_duration']:
+        cursor.close()
+        conn.close()
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({
+                'error': f'Duration exceeds plan limit. Max: {plan_limits["max_duration"]}s',
+                'plan': current_plan,
+                'max_duration': plan_limits['max_duration']
+            })
+        }
+    
+    if plan_limits['methods'] != 'all' and attack_method.lower() not in plan_limits['methods']:
+        cursor.close()
+        conn.close()
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({
+                'error': f'Method not allowed for {current_plan} plan',
+                'plan': current_plan,
+                'allowed_methods': plan_limits['methods']
+            })
+        }
+    
+    cursor.execute("""
+        SELECT COUNT(*) as count FROM attacks 
+        WHERE user_id = %s AND status = 'running' AND expires_at > NOW()
+    """, (int(user_id),))
+    
+    running_count = cursor.fetchone()['count']
+    
+    if running_count >= plan_limits['max_concurrents']:
+        cursor.close()
+        conn.close()
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({
+                'error': f'Max concurrent attacks limit reached. Max: {plan_limits["max_concurrents"]}',
+                'plan': current_plan,
+                'max_concurrents': plan_limits['max_concurrents'],
+                'running_attacks': running_count
+            })
+        }
+    
     port = body_data.get('port')
     rate = body_data.get('rate')
     rqmethod = body_data.get('rqmethod')
@@ -209,17 +286,6 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'error': f'Failed to call MAO API: {str(e)}'})
         }
-    
-    dsn = os.environ.get('DATABASE_URL')
-    if not dsn:
-        return {
-            'statusCode': 500,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Database not configured'})
-        }
-    
-    conn = psycopg2.connect(dsn)
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     started_at = datetime.utcnow()
     expires_at = started_at + timedelta(seconds=int(duration))

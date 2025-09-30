@@ -61,7 +61,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             cur.execute(
                 """
-                SELECT id, username, email, created_at, last_login, is_active 
+                SELECT id, username, email, created_at, last_login, is_active, 
+                       plan, plan_expires_at
                 FROM users 
                 ORDER BY created_at DESC 
                 LIMIT %s OFFSET %s
@@ -82,7 +83,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'email': user['email'],
                     'created_at': user['created_at'].isoformat() if user['created_at'] else None,
                     'last_login': user['last_login'].isoformat() if user['last_login'] else None,
-                    'is_active': user['is_active']
+                    'is_active': user['is_active'],
+                    'plan': user.get('plan', 'free'),
+                    'plan_expires_at': user['plan_expires_at'].isoformat() if user.get('plan_expires_at') else None
                 })
             
             return {
@@ -129,25 +132,55 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            if action not in ['activate', 'deactivate']:
+            if action == 'activate' or action == 'deactivate':
+                is_active = action == 'activate'
+                
+                cur.execute(
+                    """
+                    UPDATE users 
+                    SET is_active = %s 
+                    WHERE id = %s
+                    RETURNING id, username, is_active
+                    """,
+                    (is_active, user_id)
+                )
+            
+            elif action == 'update_plan':
+                plan = body_data.get('plan')
+                days = body_data.get('days', 30)
+                
+                if not plan or plan not in ['free', 'pro', 'ultimate']:
+                    return {
+                        'statusCode': 400,
+                        'headers': cors_headers,
+                        'body': json.dumps({'error': 'Invalid plan. Use free, pro, or ultimate'}),
+                        'isBase64Encoded': False
+                    }
+                
+                from datetime import datetime, timedelta
+                
+                if plan == 'free':
+                    plan_expires_at = None
+                else:
+                    plan_expires_at = datetime.utcnow() + timedelta(days=int(days))
+                
+                cur.execute(
+                    """
+                    UPDATE users 
+                    SET plan = %s, plan_expires_at = %s
+                    WHERE id = %s
+                    RETURNING id, username, plan, plan_expires_at
+                    """,
+                    (plan, plan_expires_at, user_id)
+                )
+            
+            else:
                 return {
                     'statusCode': 400,
                     'headers': cors_headers,
-                    'body': json.dumps({'error': 'Invalid action. Use activate or deactivate'}),
+                    'body': json.dumps({'error': 'Invalid action. Use activate, deactivate, or update_plan'}),
                     'isBase64Encoded': False
                 }
-            
-            is_active = action == 'activate'
-            
-            cur.execute(
-                """
-                UPDATE users 
-                SET is_active = %s 
-                WHERE id = %s
-                RETURNING id, username, is_active
-                """,
-                (is_active, user_id)
-            )
             conn.commit()
             
             updated_user = cur.fetchone()

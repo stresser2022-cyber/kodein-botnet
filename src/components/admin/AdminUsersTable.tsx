@@ -7,6 +7,8 @@ export interface User {
   created_at: string | null;
   last_login: string | null;
   is_active: boolean;
+  plan?: string;
+  plan_expires_at?: string | null;
 }
 
 interface AdminUsersTableProps {
@@ -15,6 +17,7 @@ interface AdminUsersTableProps {
   onSelectUser: (userId: number) => void;
   onSelectAll: () => void;
   onToggleStatus: (userId: number, currentStatus: boolean) => void;
+  onUpdatePlan: (userId: number, plan: string, days: number) => void;
   formatDate: (dateString: string | null) => string;
   loading: boolean;
   hasNoUsers: boolean;
@@ -28,6 +31,7 @@ export default function AdminUsersTable({
   onSelectUser,
   onSelectAll,
   onToggleStatus,
+  onUpdatePlan,
   formatDate,
   loading,
   hasNoUsers,
@@ -95,6 +99,9 @@ export default function AdminUsersTable({
                 Last Login
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                Plan
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
@@ -129,6 +136,24 @@ export default function AdminUsersTable({
                   {formatDate(user.last_login)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex flex-col gap-1">
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full w-fit ${
+                      user.plan === 'ultimate' ? 'bg-purple-500/20 text-purple-400' :
+                      user.plan === 'pro' ? 'bg-blue-500/20 text-blue-400' :
+                      'bg-gray-500/20 text-gray-400'
+                    }`}>
+                      {user.plan || 'free'}
+                    </span>
+                    {user.plan_expires_at && (
+                      <span className="text-xs text-zinc-500">
+                        {new Date(user.plan_expires_at) > new Date() 
+                          ? `Until ${new Date(user.plan_expires_at).toLocaleDateString()}` 
+                          : 'Expired'}
+                      </span>
+                    )}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
                   {user.is_active ? (
                     <span className="px-2 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">
                       Active
@@ -140,16 +165,35 @@ export default function AdminUsersTable({
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => onToggleStatus(user.id, user.is_active)}
-                    className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                      user.is_active
-                        ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-                        : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                    }`}
-                  >
-                    {user.is_active ? 'Deactivate' : 'Activate'}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => onToggleStatus(user.id, user.is_active)}
+                      className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                        user.is_active
+                          ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                          : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                      }`}
+                    >
+                      {user.is_active ? 'Deactivate' : 'Activate'}
+                    </button>
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          const [plan, days] = e.target.value.split('-');
+                          onUpdatePlan(user.id, plan, parseInt(days));
+                          e.target.value = '';
+                        }
+                      }}
+                      className="px-2 py-1 text-xs bg-zinc-700 text-white rounded-md border border-zinc-600 cursor-pointer"
+                    >
+                      <option value="">Set Plan</option>
+                      <option value="free-0">Free</option>
+                      <option value="pro-7">Pro (7d)</option>
+                      <option value="pro-30">Pro (30d)</option>
+                      <option value="ultimate-7">Ultimate (7d)</option>
+                      <option value="ultimate-30">Ultimate (30d)</option>
+                    </select>
+                  </div>
                 </td>
               </tr>
             ))}

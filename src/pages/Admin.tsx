@@ -135,6 +135,48 @@ export default function Admin() {
     }
   };
 
+  const handleUpdatePlan = async (userId: number, plan: string, days: number) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'X-Admin-Key': adminKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          action: 'update_plan',
+          plan: plan,
+          days: days
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to update plan',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      toast({
+        title: 'Success',
+        description: `Plan updated to ${plan}${days > 0 ? ` for ${days} days` : ''}`
+      });
+
+      fetchUsers(adminKey);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Network error',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleSelectUser = (userId: number) => {
     setSelectedUsers((prev) => {
       const newSet = new Set(prev);
@@ -271,6 +313,7 @@ export default function Admin() {
           onSelectUser={handleSelectUser}
           onSelectAll={handleSelectAll}
           onToggleStatus={handleToggleStatus}
+          onUpdatePlan={handleUpdatePlan}
           formatDate={formatDate}
           loading={loading}
           hasNoUsers={users.length === 0}

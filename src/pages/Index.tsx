@@ -106,10 +106,10 @@ export default function Index() {
   ];
 
   return (
-    <div className="min-h-screen w-full">
-      <header className="container flex items-center justify-between py-6">
-        <div className="text-lg sm:text-xl font-semibold tracking-tight flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-white/80 shadow-[0_0_20px_rgba(255,255,255,0.6)]" />
+    <div className="min-h-screen w-full bg-black">
+      <header className="max-w-6xl mx-auto flex items-center justify-between py-6 px-6">
+        <div className="text-base font-semibold tracking-tight flex items-center gap-2">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-white" />
           Kodein Botnet
         </div>
         <div className="flex items-center gap-3">
@@ -117,134 +117,125 @@ export default function Index() {
             className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
             href="https://t.me/join_kodein"
           >
-            <Icon name="Zap" size={16} />
+            <Icon name="Zap" size={14} />
             Telegram
           </a>
           <a
             className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
             href="https://discord.gg/Y5mNrQm6pp"
           >
-            <Icon name="Shield" size={16} />
+            <Icon name="Shield" size={14} />
             Discord
           </a>
         </div>
       </header>
 
-      <section className="container relative py-16 sm:py-24 text-center">
-        <div className="ambient-light" />
+      <section className="max-w-6xl mx-auto relative py-24 sm:py-32 text-center px-6">
         <h1
           id="home"
-          className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight"
+          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           Kodein Botnet
-          <span className="block text-white/80 text-lg sm:text-2xl mt-4 font-normal">
-            Massive Power. Real Results.
-          </span>
         </h1>
+        <p className="text-xl sm:text-2xl mt-6 font-medium" style={{ opacity: 0, transform: 'translateY(20px)' }}>
+          Massive Power. Real Results.
+        </p>
         <p
-          className="section-subtitle max-w-2xl mx-auto"
+          className="text-zinc-400 mt-6 max-w-2xl mx-auto text-sm leading-relaxed"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           Extreme network load with 200–500 Gbps+ Layer 4 firepower and 2–3 million RPS at Layer 7. 
           Daily updates, optimized payloads, and cutting-edge bypass methods for maximum efficiency.
         </p>
         <div
-          className="mt-8 flex justify-center"
+          className="mt-10 flex justify-center"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           <a
             target="_blank"
-            className="button-ghost glow px-6 py-3 rounded-lg inline-flex items-center gap-3 text-white"
+            className="button-ghost px-6 py-2.5 rounded-md inline-flex items-center gap-2 text-white text-sm"
             href="https://t.me/join_kodein"
             rel="noreferrer"
           >
-            <Icon name="Zap" size={20} />
+            <Icon name="Zap" size={14} />
             Join Telegram
           </a>
         </div>
       </section>
 
-      <section className="container relative py-16 sm:py-24">
-        <div className="ambient-light" />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+      <section className="max-w-6xl mx-auto relative py-16 px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div
-            className="soft-border rounded-xl p-6 glow/0 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
             style={{ opacity: 0, transform: 'translateY(16px)' }}
           >
-            <div className="text-2xl font-semibold tracking-tight">350+ Gbps</div>
-            <div className="text-zinc-400 mt-1">Layer 4 Throughput</div>
+            <div className="text-2xl font-bold tracking-tight">350+ Gbps</div>
+            <div className="text-zinc-400 mt-2 text-sm">Layer 4 Throughput</div>
           </div>
           <div
-            className="soft-border rounded-xl p-6 glow/0 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
             style={{ opacity: 0, transform: 'translateY(16px)' }}
           >
-            <div className="text-2xl font-semibold tracking-tight">2,000,000+ RPS</div>
-            <div className="text-zinc-400 mt-1">Requests per Second</div>
+            <div className="text-2xl font-bold tracking-tight">2,000,000+ RPS</div>
+            <div className="text-zinc-400 mt-2 text-sm">Requests per Second</div>
           </div>
           <div
-            className="soft-border rounded-xl p-6 glow/0 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
             style={{ opacity: 0, transform: 'translateY(16px)' }}
           >
-            <div className="text-2xl font-semibold tracking-tight">20+ Mpps</div>
-            <div className="text-zinc-400 mt-1">Packets per Second</div>
+            <div className="text-2xl font-bold tracking-tight">20+ Mpps</div>
+            <div className="text-zinc-400 mt-2 text-sm">Packets per Second</div>
           </div>
         </div>
       </section>
 
-      <section className="container relative py-16 sm:py-24">
-        <div className="ambient-light" />
+      <section className="max-w-6xl mx-auto relative py-16 px-6">
         <h2
-          className="section-title text-center"
+          className="text-3xl sm:text-4xl font-bold text-center"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           Born for Power, Built with Precision
         </h2>
-        <p className="section-subtitle text-center max-w-2xl mx-auto">
+        <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
           Experience large scale attack powered by real botnet infrastructure.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
           <div
-            className="soft-border rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
             style={{ opacity: 0, transform: 'translateY(16px)' }}
           >
-            <div className="flex items-center gap-3 text-lg font-semibold">
-              <span className="w-8 h-8 rounded-md bg-white/[0.06] grid place-items-center">
-                <Icon name="Shield" className="text-white/80" size={20} />
-              </span>
+            <div className="flex items-center gap-3 text-base font-semibold mb-3">
+              <Icon name="Shield" size={18} />
               Network Compatibility
             </div>
-            <p className="text-zinc-400 mt-3 leading-relaxed">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               Unmatched L4 strength with constant updates. At L7, smart bypasses over numbers, 
               real power, real impact, unbeatable for the price.
             </p>
           </div>
           <div
-            className="soft-border rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
             style={{ opacity: 0, transform: 'translateY(16px)' }}
           >
-            <div className="flex items-center gap-3 text-lg font-semibold">
-              <span className="w-8 h-8 rounded-md bg-white/[0.06] grid place-items-center">
-                <Icon name="Cloud" className="text-white/80" size={20} />
-              </span>
+            <div className="flex items-center gap-3 text-base font-semibold mb-3">
+              <Icon name="Cloud" size={18} />
               Bypass Technology
             </div>
-            <p className="text-zinc-400 mt-3 leading-relaxed">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               High-efficiency methods designed to simulate real users and bypass advanced 
               filtering and mitigation layers.
             </p>
           </div>
           <div
-            className="soft-border rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
             style={{ opacity: 0, transform: 'translateY(16px)' }}
           >
-            <div className="flex items-center gap-3 text-lg font-semibold">
-              <span className="w-8 h-8 rounded-md bg-white/[0.06] grid place-items-center">
-                <Icon name="Zap" className="text-white/80" size={20} />
-              </span>
+            <div className="flex items-center gap-3 text-base font-semibold mb-3">
+              <Icon name="Zap" size={18} />
               Scalable & Future-Ready
             </div>
-            <p className="text-zinc-400 mt-3 leading-relaxed">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               Constantly updated and instantly delivered, our system scales with demand while 
               ensuring precision and excellent service.
             </p>
@@ -252,23 +243,22 @@ export default function Index() {
         </div>
       </section>
 
-      <section className="container relative py-16 sm:py-24">
-        <div className="ambient-light" />
+      <section className="max-w-6xl mx-auto relative py-16 px-6">
         <h2
           id="pricing"
-          className="section-title text-center"
+          className="text-3xl sm:text-4xl font-bold text-center"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           Kodein Networks Pricing
         </h2>
-        <p className="section-subtitle text-center max-w-2xl mx-auto">
+        <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
           Choose the plan that suits your testing needs.
         </p>
         <div className="mt-8 flex items-center justify-center gap-3">
           <button
-            className={`px-4 py-2 rounded-md cursor-pointer transition-colors ${
+            className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm ${
               activeTab === 'plans'
-                ? 'bg-white/[0.1] border border-white/20'
+                ? 'bg-white/[0.08] border border-white/20'
                 : 'button-ghost'
             }`}
             onClick={() => setActiveTab('plans')}
@@ -276,9 +266,9 @@ export default function Index() {
             Plans
           </button>
           <button
-            className={`px-4 py-2 rounded-md cursor-pointer transition-colors ${
+            className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm ${
               activeTab === 'api'
-                ? 'bg-white/[0.1] border border-white/20'
+                ? 'bg-white/[0.08] border border-white/20'
                 : 'button-ghost'
             }`}
             onClick={() => setActiveTab('api')}
@@ -287,19 +277,19 @@ export default function Index() {
           </button>
         </div>
         <div className="mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {(activeTab === 'plans' ? plans : apiPlans).map((plan, idx) => (
               <div
                 key={idx}
-                className="soft-border rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors flex flex-col"
+                className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors flex flex-col"
               >
-                <div className="text-xl font-semibold">
+                <div className="text-lg font-bold">
                   {plan.name} Plan
                 </div>
-                <div className="text-zinc-300 mt-1">{plan.price}</div>
-                <ul className="mt-4 text-zinc-300/90 text-sm flex-1 space-y-2">
+                <div className="text-zinc-400 mt-2 text-sm">{plan.price}</div>
+                <ul className="mt-4 text-zinc-400 text-sm flex-1 space-y-1.5">
                   {plan.features.map((feature, fidx) => (
-                    <li key={fidx} className="text-zinc-300/90">
+                    <li key={fidx}>
                       {feature}
                     </li>
                   ))}
@@ -310,56 +300,54 @@ export default function Index() {
         </div>
       </section>
 
-      <section className="container relative py-16 sm:py-24">
-        <div className="ambient-light" />
+      <section className="max-w-6xl mx-auto relative py-16 px-6">
         <h2
-          className="section-title text-center"
+          className="text-3xl sm:text-4xl font-bold text-center"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           Addons & Power-Ups
         </h2>
-        <p className="section-subtitle text-center max-w-2xl mx-auto">
+        <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
           Boost your plan with extra features.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-10">
           {addons.map((addon, idx) => (
             <div
               key={idx}
-              className="soft-border rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors"
+              className="soft-border rounded-lg p-5 bg-transparent hover:bg-white/[0.02] transition-colors"
               style={{ opacity: 0, transform: 'translateY(16px)' }}
             >
-              <div className="text-lg font-semibold">{addon.name}</div>
-              <div className="text-zinc-400 mt-1">{addon.price}</div>
+              <div className="text-base font-bold">{addon.name}</div>
+              <div className="text-zinc-400 mt-2 text-sm">{addon.price}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="container relative py-16 sm:py-24">
-        <div className="ambient-light" />
+      <section className="max-w-6xl mx-auto relative py-16 px-6">
         <h2
-          className="section-title text-center"
+          className="text-3xl sm:text-4xl font-bold text-center"
           style={{ opacity: 0, transform: 'translateY(20px)' }}
         >
           Available Methods
         </h2>
-        <p className="section-subtitle text-center max-w-2xl mx-auto">
+        <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
           Comprehensive arsenal of attack vectors for maximum effectiveness.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-10">
           {methods.map((method, idx) => (
             <div
               key={idx}
-              className="soft-border rounded-lg p-3 bg-white/[0.01] hover:bg-white/[0.03] transition-colors text-center"
+              className="soft-border rounded-md p-3 bg-transparent hover:bg-white/[0.02] transition-colors text-center"
               style={{ opacity: 0, transform: 'translateY(16px)' }}
             >
-              <code className="text-sm font-mono text-zinc-300">{method}</code>
+              <code className="text-xs font-mono text-zinc-400">{method}</code>
             </div>
           ))}
         </div>
       </section>
 
-      <footer className="container py-12 text-center text-xs text-zinc-500">
+      <footer className="max-w-6xl mx-auto py-12 text-center text-xs text-zinc-600 px-6">
         © 2025 Kodein Networks. All rights reserved.
       </footer>
     </div>

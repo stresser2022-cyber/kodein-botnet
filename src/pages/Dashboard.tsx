@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import DashboardAnnouncements from '@/components/dashboard/DashboardAnnouncements';
-import DashboardInfo from '@/components/dashboard/DashboardInfo';
 import DashboardPlan from '@/components/dashboard/DashboardPlan';
 
 export default function Dashboard() {
@@ -53,13 +52,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <DashboardAnnouncements />
-            </div>
-            <div>
-              <DashboardInfo currentUser={currentUser} />
-            </div>
+          <div className="w-full">
+            <DashboardAnnouncements />
           </div>
         </main>
       </div>

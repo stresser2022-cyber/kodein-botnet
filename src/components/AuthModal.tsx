@@ -16,6 +16,7 @@ interface AuthModalProps {
   username: string;
   setUsername: (username: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  onCaptchaError?: () => void;
 }
 
 export default function AuthModal({
@@ -29,7 +30,8 @@ export default function AuthModal({
   setPassword,
   username,
   setUsername,
-  onSubmit
+  onSubmit,
+  onCaptchaError
 }: AuthModalProps) {
   const [captcha, setCaptcha] = useState({ num1: 0, num2: 0 });
   const [captchaAnswer, setCaptchaAnswer] = useState('');
@@ -100,7 +102,9 @@ export default function AuthModal({
           if (authMode === 'register') {
             const correctAnswer = captcha.num1 + captcha.num2;
             if (parseInt(captchaAnswer) !== correctAnswer) {
-              alert('Incorrect captcha answer. Please try again.');
+              if (onCaptchaError) {
+                onCaptchaError();
+              }
               generateCaptcha();
               return;
             }

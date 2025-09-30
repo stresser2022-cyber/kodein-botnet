@@ -20,6 +20,8 @@ export default function Admin() {
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -139,6 +141,83 @@ export default function Admin() {
     }
   };
 
+  const handleSelectUser = (userId: number) => {
+    setSelectedUsers((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedUsers.size === users.length) {
+      setSelectedUsers(new Set());
+    } else {
+      setSelectedUsers(new Set(users.map(u => u.id)));
+    }
+  };
+
+  const handleBulkAction = async (action: 'activate' | 'deactivate') => {
+    if (selectedUsers.size === 0) {
+      toast({
+        title: 'Warning',
+        description: 'Please select at least one user',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const userId of selectedUsers) {
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'X-Admin-Key': adminKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            action: action
+          })
+        });
+
+        if (response.ok) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch (error) {
+        failCount++;
+      }
+    }
+
+    setIsProcessing(false);
+    setSelectedUsers(new Set());
+
+    if (failCount === 0) {
+      toast({
+        title: 'Success',
+        description: `${successCount} user(s) ${action}d successfully`
+      });
+    } else {
+      toast({
+        title: 'Partial Success',
+        description: `${successCount} succeeded, ${failCount} failed`,
+        variant: 'destructive'
+      });
+    }
+
+    fetchUsers(adminKey);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen w-full bg-black flex items-center justify-center p-4">
@@ -203,9 +282,34 @@ export default function Admin() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2">Registered Users</h2>
-          <p className="text-zinc-400">Total users: {total}</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2">Registered Users</h2>
+            <p className="text-zinc-400">Total users: {total}</p>
+          </div>
+          {selectedUsers.size > 0 && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-zinc-400">
+                {selectedUsers.size} selected
+              </span>
+              <button
+                onClick={() => handleBulkAction('activate')}
+                disabled={isProcessing}
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                <Icon name="CheckCircle" size={16} />
+                Activate Selected
+              </button>
+              <button
+                onClick={() => handleBulkAction('deactivate')}
+                disabled={isProcessing}
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                <Icon name="XCircle" size={16} />
+                Deactivate Selected
+              </button>
+            </div>
+          )}
         </div>
 
         {loading ? (
@@ -222,6 +326,14 @@ export default function Admin() {
               <table className="w-full">
                 <thead className="bg-white/5">
                   <tr>
+                    <th className="px-4 py-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.size === users.length && users.length > 0}
+                        onChange={handleSelectAll}
+                        className="w-4 h-4 rounded border-white/20 bg-white/5 text-white cursor-pointer"
+                      />
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
                       ID
                     </th>
@@ -248,6 +360,14 @@ export default function Admin() {
                 <tbody className="divide-y divide-white/10">
                   {users.map((user) => (
                     <tr key={user.id} className="hover:bg-white/5 transition-colors">
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.has(user.id)}
+                          onChange={() => handleSelectUser(user.id)}
+                          className="w-4 h-4 rounded border-white/20 bg-white/5 text-white cursor-pointer"
+                        />
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                         {user.id}
                       </td>

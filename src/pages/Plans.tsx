@@ -119,7 +119,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+    <div className="dark flex min-h-screen bg-[#0a0a0a] text-white">
       <DashboardSidebar 
         currentUser={currentUser}
         collapsed={sidebarCollapsed} 
@@ -141,8 +141,8 @@ export default function Plans() {
                 onClick={() => setBillingCycle('monthly')}
                 className={`px-6 py-2 rounded-lg font-medium transition-all ${
                   billingCycle === 'monthly'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    ? 'bg-white text-black'
+                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
                 }`}
               >
                 Monthly
@@ -151,8 +151,8 @@ export default function Plans() {
                 onClick={() => setBillingCycle('lifetime')}
                 className={`px-6 py-2 rounded-lg font-medium transition-all relative ${
                   billingCycle === 'lifetime'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    ? 'bg-white text-black'
+                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
                 }`}
               >
                 Lifetime
@@ -167,12 +167,12 @@ export default function Plans() {
             {plans.map((plan) => (
               <div 
                 key={plan.id}
-                className={`bg-[#0f0f0f] border rounded-lg p-6 transition-all hover:border-purple-500 ${
-                  plan.popular ? 'border-purple-500 relative' : 'border-gray-800'
-                } ${selectedPlan === plan.id ? 'ring-2 ring-purple-500' : ''}`}
+                className={`bg-card border rounded-lg p-6 transition-all hover:border-white ${
+                  plan.popular ? 'border-white relative' : 'border-zinc-800'
+                } ${selectedPlan === plan.id ? 'ring-2 ring-white' : ''}`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-black text-xs font-bold px-3 py-1 rounded-full">
                     POPULAR
                   </div>
                 )}
@@ -182,13 +182,13 @@ export default function Plans() {
                   <div className="mb-2">
                     {billingCycle === 'monthly' ? (
                       <>
-                        <div className="text-3xl font-bold text-purple-400">€{plan.price}</div>
-                        <div className="text-sm text-gray-400">per month</div>
+                        <div className="text-3xl font-bold text-white">€{plan.price}</div>
+                        <div className="text-sm text-zinc-400">per month</div>
                       </>
                     ) : (
                       <>
-                        <div className="text-3xl font-bold text-purple-400">€{plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150}</div>
-                        <div className="text-sm text-gray-400">one-time payment</div>
+                        <div className="text-3xl font-bold text-white">€{plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150}</div>
+                        <div className="text-sm text-zinc-400">one-time payment</div>
                       </>
                     )}
                   </div>
@@ -196,19 +196,19 @@ export default function Plans() {
 
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-2 text-sm">
-                    <Icon name="Zap" size={16} className="text-purple-400" />
+                    <Icon name="Zap" size={16} className="text-white" />
                     <span>Concurrent: {plan.features.concurrents}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm">
-                    <Icon name="Clock" size={16} className="text-purple-400" />
+                    <Icon name="Clock" size={16} className="text-white" />
                     <span>Max Time: {plan.features.maxTime}s</span>
                   </div>
                   
                   {plan.features.methods.map((method, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-sm">
-                      <Icon name="Check" size={16} className="text-purple-400" />
-                      <span className="text-gray-300">{method}</span>
+                      <Icon name="Check" size={16} className="text-white" />
+                      <span className="text-zinc-300">{method}</span>
                     </div>
                   ))}
                   
@@ -231,8 +231,8 @@ export default function Plans() {
                   onClick={() => handleSelectPlan(plan.id)}
                   className={`w-full ${
                     plan.popular 
-                      ? 'bg-purple-600 hover:bg-purple-700' 
-                      : 'bg-gray-800 hover:bg-gray-700'
+                      ? 'bg-white text-black hover:bg-zinc-200' 
+                      : 'bg-zinc-800 hover:bg-zinc-700 text-white'
                   }`}
                 >
                   {billingCycle === 'monthly' ? 'Subscribe Monthly' : 'Buy Lifetime'}
@@ -241,52 +241,52 @@ export default function Plans() {
             ))}
           </div>
 
-          <div className="mt-12 bg-[#0f0f0f] border border-gray-800 rounded-lg p-6">
+          <div className="mt-12 bg-card border border-zinc-800 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">Plan Comparison</h2>
-              <div className="text-sm text-gray-400">
-                Viewing: <span className="text-purple-400 font-medium">{billingCycle === 'monthly' ? 'Monthly' : 'Lifetime'}</span> prices
+              <div className="text-sm text-zinc-400">
+                Viewing: <span className="text-white font-medium">{billingCycle === 'monthly' ? 'Monthly' : 'Lifetime'}</span> prices
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-800">
-                    <th className="text-left py-3 px-4 text-gray-400 font-medium">Feature</th>
+                  <tr className="border-b border-zinc-800">
+                    <th className="text-left py-3 px-4 text-zinc-400 font-medium">Feature</th>
                     {plans.map(plan => (
                       <th key={plan.id} className="text-center py-3 px-4 font-medium">{plan.name}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-gray-800">
-                    <td className="py-3 px-4 text-gray-400">Price</td>
+                  <tr className="border-b border-zinc-800">
+                    <td className="py-3 px-4 text-zinc-400">Price</td>
                     {plans.map(plan => (
-                      <td key={plan.id} className="text-center py-3 px-4 font-semibold text-purple-400">
+                      <td key={plan.id} className="text-center py-3 px-4 font-semibold text-white">
                         €{billingCycle === 'monthly' ? plan.price : (plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150)}
                       </td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="py-3 px-4 text-gray-400">Concurrent Attacks</td>
+                  <tr className="border-b border-zinc-800">
+                    <td className="py-3 px-4 text-zinc-400">Concurrent Attacks</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4">{plan.features.concurrents}</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="py-3 px-4 text-gray-400">Max Duration</td>
+                  <tr className="border-b border-zinc-800">
+                    <td className="py-3 px-4 text-zinc-400">Max Duration</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4">{plan.features.maxTime}s</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="py-3 px-4 text-gray-400">Cooldown</td>
+                  <tr className="border-b border-zinc-800">
+                    <td className="py-3 px-4 text-zinc-400">Cooldown</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4">0s</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="py-3 px-4 text-gray-400">VIP Access</td>
+                  <tr className="border-b border-zinc-800">
+                    <td className="py-3 px-4 text-zinc-400">VIP Access</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4">
                         {plan.name !== 'Basic' && !plan.features.apiAccess ? (
@@ -298,7 +298,7 @@ export default function Plans() {
                     ))}
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 text-gray-400">API Access</td>
+                    <td className="py-3 px-4 text-zinc-400">API Access</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4">
                         {plan.features.apiAccess ? (

@@ -56,78 +56,112 @@ export default function Index() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (authMode === 'register') {
-      if (!username || !email || !password) {
-        toast({
-          title: 'Error',
-          description: 'Please fill in all fields',
-          variant: 'destructive'
+    const API_URL = 'https://functions.poehali.dev/8ec3d566-fc44-442e-ad1d-fee49d4a799b';
+    
+    try {
+      if (authMode === 'register') {
+        if (!username || !email || !password) {
+          toast({
+            title: 'Error',
+            description: 'Please fill in all fields',
+            variant: 'destructive'
+          });
+          return;
+        }
+        
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'register',
+            username,
+            email,
+            password
+          })
         });
-        return;
-      }
-      
-      const users = JSON.parse(localStorage.getItem('kodein_users') || '[]');
-      const userExists = users.find((u: any) => u.email === email);
-      
-      if (userExists) {
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          toast({
+            title: 'Error',
+            description: data.error || 'Registration failed',
+            variant: 'destructive'
+          });
+          return;
+        }
+        
+        localStorage.setItem('kodein_user', data.user.username);
+        localStorage.setItem('kodein_user_id', data.user.id);
+        
+        setIsLoggedIn(true);
+        setCurrentUser(data.user.username);
+        setAuthOpen(false);
+        
         toast({
-          title: 'Error',
-          description: 'User with this email already exists',
-          variant: 'destructive'
+          title: 'Success',
+          description: 'Account created successfully!'
         });
-        return;
+        
+        setEmail('');
+        setPassword('');
+        setUsername('');
+      } else {
+        if (!email || !password) {
+          toast({
+            title: 'Error',
+            description: 'Please fill in all fields',
+            variant: 'destructive'
+          });
+          return;
+        }
+        
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'login',
+            email,
+            password
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          toast({
+            title: 'Error',
+            description: data.error || 'Login failed',
+            variant: 'destructive'
+          });
+          return;
+        }
+        
+        localStorage.setItem('kodein_user', data.user.username);
+        localStorage.setItem('kodein_user_id', data.user.id);
+        
+        setIsLoggedIn(true);
+        setCurrentUser(data.user.username);
+        setAuthOpen(false);
+        
+        toast({
+          title: 'Success',
+          description: 'Logged in successfully!'
+        });
+        
+        setEmail('');
+        setPassword('');
       }
-      
-      users.push({ username, email, password });
-      localStorage.setItem('kodein_users', JSON.stringify(users));
-      localStorage.setItem('kodein_user', username);
-      
-      setIsLoggedIn(true);
-      setCurrentUser(username);
-      setAuthOpen(false);
-      
+    } catch (error) {
       toast({
-        title: 'Success',
-        description: 'Account created successfully!'
+        title: 'Error',
+        description: 'Network error. Please try again.',
+        variant: 'destructive'
       });
-      
-      setEmail('');
-      setPassword('');
-      setUsername('');
-    } else {
-      if (!email || !password) {
-        toast({
-          title: 'Error',
-          description: 'Please fill in all fields',
-          variant: 'destructive'
-        });
-        return;
-      }
-      
-      const users = JSON.parse(localStorage.getItem('kodein_users') || '[]');
-      const user = users.find((u: any) => u.email === email && u.password === password);
-      
-      if (!user) {
-        toast({
-          title: 'Error',
-          description: 'Invalid email or password',
-          variant: 'destructive'
-        });
-        return;
-      }
-      
-      localStorage.setItem('kodein_user', user.username);
-      setIsLoggedIn(true);
-      setCurrentUser(user.username);
-      setAuthOpen(false);
-      
-      toast({
-        title: 'Success',
-        description: 'Logged in successfully!'
-      });
-      
-      setEmail('');
-      setPassword('');
     }
   };
 

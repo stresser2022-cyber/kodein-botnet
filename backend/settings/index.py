@@ -59,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'GET':
             # Get user settings (user_id can be username or numeric id)
             cursor.execute(
-                "SELECT email, notifications, plan, plan_expires_at FROM users WHERE username = %s OR id::text = %s",
+                "SELECT email, plan, plan_expires_at, max_concurrents, max_duration FROM users WHERE username = %s OR id::text = %s",
                 (user_id, user_id)
             )
             user = cursor.fetchone()
@@ -82,15 +82,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 },
                 'body': json.dumps({
                     'email': user['email'],
-                    'notifications': user['notifications'] or {
-                        'email': True,
-                        'telegram': False,
-                        'attackComplete': True,
-                        'planExpiry': True,
-                        'newsletter': False
-                    },
                     'plan': user.get('plan', 'free'),
-                    'plan_expires_at': user['plan_expires_at'].isoformat() if user.get('plan_expires_at') else None
+                    'plan_expires_at': user['plan_expires_at'].isoformat() if user.get('plan_expires_at') else None,
+                    'max_concurrents': user.get('max_concurrents', 1),
+                    'max_duration': user.get('max_duration', 60)
                 })
             }
         
@@ -129,82 +124,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     })
                 }
             
-            elif action == 'change_password':
-                current_password = body_data.get('currentPassword')
-                new_password = body_data.get('newPassword')
-                
-                if not current_password or not new_password:
-                    return {
-                        'statusCode': 400,
-                        'headers': {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        },
-                        'body': json.dumps({'error': 'Current and new passwords required'})
-                    }
-                
-                # Verify current password
-                cursor.execute(
-                    "SELECT password FROM users WHERE username = %s OR id::text = %s",
-                    (user_id, user_id)
-                )
-                user = cursor.fetchone()
-                
-                if not user or user['password'] != current_password:
-                    return {
-                        'statusCode': 401,
-                        'headers': {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        },
-                        'body': json.dumps({'error': 'Current password is incorrect'})
-                    }
-                
-                # Update password
-                cursor.execute(
-                    "UPDATE users SET password = %s WHERE username = %s OR id::text = %s",
-                    (new_password, user_id, user_id)
-                )
-                conn.commit()
-                
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': json.dumps({'message': 'Password changed successfully'})
-                }
-            
-            elif action == 'update_notifications':
-                notifications = body_data.get('notifications')
-                if not notifications:
-                    return {
-                        'statusCode': 400,
-                        'headers': {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        },
-                        'body': json.dumps({'error': 'Notifications data required'})
-                    }
-                
-                cursor.execute(
-                    "UPDATE users SET notifications = %s WHERE username = %s OR id::text = %s",
-                    (json.dumps(notifications), user_id, user_id)
-                )
-                conn.commit()
-                
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'body': json.dumps({
-                        'message': 'Notifications updated successfully',
-                        'notifications': notifications
-                    })
-                }
+
             
             else:
                 return {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,6 +31,22 @@ export default function AuthModal({
   setUsername,
   onSubmit
 }: AuthModalProps) {
+  const [captcha, setCaptcha] = useState({ num1: 0, num2: 0 });
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
+
+  const generateCaptcha = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    setCaptcha({ num1, num2 });
+    setCaptchaAnswer('');
+  };
+
+  useEffect(() => {
+    if (open && authMode === 'register') {
+      generateCaptcha();
+    }
+  }, [open, authMode]);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -79,7 +95,18 @@ export default function AuthModal({
           </h2>
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (authMode === 'register') {
+            const correctAnswer = captcha.num1 + captcha.num2;
+            if (parseInt(captchaAnswer) !== correctAnswer) {
+              alert('Incorrect captcha answer. Please try again.');
+              generateCaptcha();
+              return;
+            }
+          }
+          onSubmit(e);
+        }} className="space-y-4">
           {authMode === 'register' && (
             <div className="space-y-2">
               <Label htmlFor="username" className="text-sm text-zinc-300">
@@ -123,6 +150,39 @@ export default function AuthModal({
               placeholder="Enter your password"
             />
           </div>
+          
+          {authMode === 'register' && (
+            <div className="space-y-2">
+              <Label className="text-sm text-zinc-300">
+                Security Check
+              </Label>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 bg-white/5 border border-white/20 rounded-md px-4 py-2.5 flex items-center justify-center gap-2 select-none">
+                  <span className="text-2xl font-bold text-white">{captcha.num1}</span>
+                  <span className="text-xl text-zinc-400">+</span>
+                  <span className="text-2xl font-bold text-white">{captcha.num2}</span>
+                  <span className="text-xl text-zinc-400">=</span>
+                  <span className="text-2xl text-zinc-400">?</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={generateCaptcha}
+                  className="p-2.5 bg-white/5 border border-white/20 rounded-md hover:bg-white/10 transition-colors"
+                  title="Refresh captcha"
+                >
+                  <Icon name="RefreshCw" size={18} />
+                </button>
+              </div>
+              <Input
+                type="number"
+                value={captchaAnswer}
+                onChange={(e) => setCaptchaAnswer(e.target.value)}
+                className="bg-white/5 border-white/20 text-white placeholder:text-zinc-500"
+                placeholder="Enter the answer"
+                required
+              />
+            </div>
+          )}
           
           <Button
             type="submit"

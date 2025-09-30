@@ -1,59 +1,44 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 
-interface Attack {
-  id: number;
-  target: string;
-  port: number;
-  method: string;
-  expire: string;
-  status: string;
+interface Stats {
+  total_users: number;
+  total_attacks: number;
+  running_attacks: number;
 }
 
 export default function DashboardStats() {
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [totalAttacks, setTotalAttacks] = useState(0);
-  const [runningAttacks, setRunningAttacks] = useState(0);
+  const [stats, setStats] = useState<Stats>({
+    total_users: 0,
+    total_attacks: 0,
+    running_attacks: 0
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const users = localStorage.getItem('registered_users');
-    if (users) {
+    const fetchStats = async () => {
       try {
-        const userList = JSON.parse(users);
-        setTotalUsers(Array.isArray(userList) ? userList.length : 0);
-      } catch {
-        setTotalUsers(0);
-      }
-    }
-
-    const attacks = localStorage.getItem('attacks');
-    if (attacks) {
-      try {
-        const attackList: Attack[] = JSON.parse(attacks);
-        if (Array.isArray(attackList)) {
-          setTotalAttacks(attackList.length);
-          
-          const running = attackList.filter(attack => {
-            if (attack.status === 'running') {
-              const expireTime = new Date(attack.expire).getTime();
-              return expireTime > Date.now();
-            }
-            return false;
-          }).length;
-          
-          setRunningAttacks(running);
+        const response = await fetch('https://functions.poehali.dev/7b4a6500-26cb-418d-8a2d-d5f5d4601582');
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data);
         }
-      } catch {
-        setTotalAttacks(0);
-        setRunningAttacks(0);
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
   }, []);
 
-  const stats = [
+  const statsDisplay = [
     {
       title: 'Total Users',
-      value: totalUsers.toString(),
+      value: loading ? '...' : stats.total_users.toString(),
       trend: null,
       trendUp: false,
       subtitle: 'Registered users',
@@ -61,7 +46,7 @@ export default function DashboardStats() {
     },
     {
       title: 'Total Attacks',
-      value: totalAttacks.toString(),
+      value: loading ? '...' : stats.total_attacks.toString(),
       trend: null,
       trendUp: false,
       subtitle: 'All attacks launched',
@@ -69,7 +54,7 @@ export default function DashboardStats() {
     },
     {
       title: 'Running Attacks',
-      value: runningAttacks.toString(),
+      value: loading ? '...' : stats.running_attacks.toString(),
       trend: null,
       trendUp: false,
       subtitle: 'Currently active',
@@ -79,7 +64,7 @@ export default function DashboardStats() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {stats.map((stat, index) => (
+      {statsDisplay.map((stat, index) => (
         <div 
           key={index}
           className="bg-[#0f0f0f] border border-white/10 rounded-lg p-6"

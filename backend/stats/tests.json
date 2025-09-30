@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "Get dashboard statistics",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "total_users": "number",
+        "total_attacks": "number",
+        "running_attacks": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

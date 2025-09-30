@@ -43,7 +43,7 @@ export default function AttackForm({
   planLimits
 }: AttackFormProps) {
   return (
-    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm w-full min-w-0 justify-self-stretch self-start">
+    <div data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm w-full min-w-0 justify-self-stretch self-start opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]">
       <div data-slot="card-header" className="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
         <div data-slot="card-title" className="leading-none font-semibold">Panel</div>
         <div data-slot="card-description" className="text-muted-foreground text-sm">Launch new attack in one click.</div>

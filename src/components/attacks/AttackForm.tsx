@@ -60,7 +60,7 @@ export default function AttackForm({
         <div data-slot="card-description" className="text-muted-foreground text-sm">Launch new attack in one click.</div>
       </div>
 
-      {(userPlan === 'free' || userPlan === 'pro') && (
+      {userPlan !== 'ultimate' && (
         <div className="mx-6 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
           <div className="flex items-start gap-2">
             <Icon name="AlertTriangle" size={16} className="text-yellow-500 mt-0.5" />

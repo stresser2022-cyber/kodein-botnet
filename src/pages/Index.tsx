@@ -147,10 +147,7 @@ export default function Index() {
           Extreme network load with 200–500 Gbps+ Layer 4 firepower and 2–3 million RPS at Layer 7. 
           Daily updates, optimized payloads, and cutting-edge bypass methods for maximum efficiency.
         </p>
-        <div
-          className="mt-10 flex justify-center"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
-        >
+        <div className="mt-10 flex justify-center opacity-0 translate-y-5" data-animate>
           <a
             target="_blank"
             className="button-ghost px-6 py-2.5 rounded-md inline-flex items-center gap-2 text-white text-sm"
@@ -165,46 +162,31 @@ export default function Index() {
 
       <section className="max-w-6xl mx-auto relative py-16 px-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div
-            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
-          >
-            <div className="text-2xl font-bold tracking-tight">350+ Gbps</div>
+          <div className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4" data-animate>
+            <div className="text-2xl font-bold tracking-tight text-white">350+ Gbps</div>
             <div className="text-zinc-400 mt-2 text-sm">Layer 4 Throughput</div>
           </div>
-          <div
-            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
-          >
-            <div className="text-2xl font-bold tracking-tight">2,000,000+ RPS</div>
+          <div className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4" data-animate>
+            <div className="text-2xl font-bold tracking-tight text-white">2,000,000+ RPS</div>
             <div className="text-zinc-400 mt-2 text-sm">Requests per Second</div>
           </div>
-          <div
-            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
-          >
-            <div className="text-2xl font-bold tracking-tight">20+ Mpps</div>
+          <div className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4" data-animate>
+            <div className="text-2xl font-bold tracking-tight text-white">20+ Mpps</div>
             <div className="text-zinc-400 mt-2 text-sm">Packets per Second</div>
           </div>
         </div>
       </section>
 
       <section className="max-w-6xl mx-auto relative py-16 px-6">
-        <h2
-          className="text-3xl sm:text-4xl font-bold text-center"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
-        >
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white opacity-0 translate-y-5" data-animate>
           Born for Power, Built with Precision
         </h2>
         <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
           Experience large scale attack powered by real botnet infrastructure.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
-          <div
-            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
-          >
-            <div className="flex items-center gap-3 text-base font-semibold mb-3">
+          <div className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4" data-animate>
+            <div className="flex items-center gap-3 text-base font-semibold mb-3 text-white">
               <Icon name="Shield" size={18} />
               Network Compatibility
             </div>
@@ -213,11 +195,8 @@ export default function Index() {
               real power, real impact, unbeatable for the price.
             </p>
           </div>
-          <div
-            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
-          >
-            <div className="flex items-center gap-3 text-base font-semibold mb-3">
+          <div className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4" data-animate>
+            <div className="flex items-center gap-3 text-base font-semibold mb-3 text-white">
               <Icon name="Cloud" size={18} />
               Bypass Technology
             </div>
@@ -226,11 +205,8 @@ export default function Index() {
               filtering and mitigation layers.
             </p>
           </div>
-          <div
-            className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
-          >
-            <div className="flex items-center gap-3 text-base font-semibold mb-3">
+          <div className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4" data-animate>
+            <div className="flex items-center gap-3 text-base font-semibold mb-3 text-white">
               <Icon name="Zap" size={18} />
               Scalable & Future-Ready
             </div>
@@ -243,11 +219,7 @@ export default function Index() {
       </section>
 
       <section className="max-w-6xl mx-auto relative py-16 px-6">
-        <h2
-          id="pricing"
-          className="text-3xl sm:text-4xl font-bold text-center"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
-        >
+        <h2 id="pricing" className="text-3xl sm:text-4xl font-bold text-center text-white opacity-0 translate-y-5" data-animate>
           Kodein Networks Pricing
         </h2>
         <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
@@ -255,7 +227,7 @@ export default function Index() {
         </p>
         <div className="mt-8 flex items-center justify-center gap-3">
           <button
-            className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm ${
+            className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm text-white ${
               activeTab === 'plans'
                 ? 'bg-white/[0.08] border border-white/20'
                 : 'button-ghost'
@@ -265,7 +237,7 @@ export default function Index() {
             Plans
           </button>
           <button
-            className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm ${
+            className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm text-white ${
               activeTab === 'api'
                 ? 'bg-white/[0.08] border border-white/20'
                 : 'button-ghost'
@@ -282,7 +254,7 @@ export default function Index() {
                 key={idx}
                 className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors flex flex-col"
               >
-                <div className="text-lg font-bold">
+                <div className="text-lg font-bold text-white">
                   {plan.name} Plan
                 </div>
                 <div className="text-zinc-400 mt-2 text-sm">{plan.price}</div>
@@ -300,10 +272,7 @@ export default function Index() {
       </section>
 
       <section className="max-w-6xl mx-auto relative py-16 px-6">
-        <h2
-          className="text-3xl sm:text-4xl font-bold text-center"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
-        >
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white opacity-0 translate-y-5" data-animate>
           Addons & Power-Ups
         </h2>
         <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
@@ -313,10 +282,10 @@ export default function Index() {
           {addons.map((addon, idx) => (
             <div
               key={idx}
-              className="soft-border rounded-lg p-5 bg-transparent hover:bg-white/[0.02] transition-colors"
-              style={{ opacity: 0, transform: 'translateY(16px)' }}
+              className="soft-border rounded-lg p-5 bg-transparent hover:bg-white/[0.02] transition-colors opacity-0 translate-y-4"
+              data-animate
             >
-              <div className="text-base font-bold">{addon.name}</div>
+              <div className="text-base font-bold text-white">{addon.name}</div>
               <div className="text-zinc-400 mt-2 text-sm">{addon.price}</div>
             </div>
           ))}
@@ -324,10 +293,7 @@ export default function Index() {
       </section>
 
       <section className="max-w-6xl mx-auto relative py-16 px-6">
-        <h2
-          className="text-3xl sm:text-4xl font-bold text-center"
-          style={{ opacity: 0, transform: 'translateY(20px)' }}
-        >
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-white opacity-0 translate-y-5" data-animate>
           Available Methods
         </h2>
         <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
@@ -337,10 +303,10 @@ export default function Index() {
           {methods.map((method, idx) => (
             <div
               key={idx}
-              className="soft-border rounded-md p-3 bg-transparent hover:bg-white/[0.02] transition-colors text-center"
-              style={{ opacity: 0, transform: 'translateY(16px)' }}
+              className="soft-border rounded-md p-3 bg-transparent hover:bg-white/[0.02] transition-colors text-center opacity-0 translate-y-4"
+              data-animate
             >
-              <code className="text-xs font-mono text-zinc-400">{method}</code>
+              <code className="text-xs font-mono text-zinc-300">{method}</code>
             </div>
           ))}
         </div>

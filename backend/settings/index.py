@@ -59,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'GET':
             # Get user settings
             cursor.execute(
-                "SELECT email, notifications FROM users WHERE id = %s",
+                "SELECT email, notifications, plan, plan_expires_at FROM users WHERE id = %s",
                 (user_id,)
             )
             user = cursor.fetchone()
@@ -88,7 +88,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'attackComplete': True,
                         'planExpiry': True,
                         'newsletter': False
-                    }
+                    },
+                    'plan': user.get('plan', 'free'),
+                    'plan_expires_at': user['plan_expires_at'].isoformat() if user.get('plan_expires_at') else None
                 })
             }
         

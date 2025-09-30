@@ -193,17 +193,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            response_user = {
+                'id': updated_user['id'],
+                'username': updated_user['username'],
+                'is_active': updated_user.get('is_active')
+            }
+            
+            if action == 'update_plan':
+                response_user['plan'] = updated_user.get('plan')
+                response_user['plan_expires_at'] = updated_user['plan_expires_at'].isoformat() if updated_user.get('plan_expires_at') else None
+            
             return {
                 'statusCode': 200,
                 'headers': cors_headers,
                 'body': json.dumps({
                     'success': True,
                     'message': f"User {action}d successfully",
-                    'user': {
-                        'id': updated_user['id'],
-                        'username': updated_user['username'],
-                        'is_active': updated_user['is_active']
-                    }
+                    'user': response_user
                 }),
                 'isBase64Encoded': False
             }

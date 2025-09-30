@@ -201,7 +201,7 @@ export default function Attacks() {
               <div data-slot="card-footer" className="items-center px-6 grid">
                 <button 
                   onClick={handleLaunchAttack}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 w-full"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-zinc-700 text-white hover:bg-zinc-600 h-9 px-4 py-2 w-full"
                 >
                   Start
                 </button>

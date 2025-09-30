@@ -149,11 +149,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 plan = body_data.get('plan')
                 days = body_data.get('days', 30)
                 
-                if not plan or plan not in ['free', 'pro', 'ultimate']:
+                valid_plans = ['free', 'basic', 'medium', 'advanced', 'api-basic', 'api-pro', 'api-enterprise', 'pro', 'ultimate']
+                if not plan or plan not in valid_plans:
                     return {
                         'statusCode': 400,
                         'headers': cors_headers,
-                        'body': json.dumps({'error': 'Invalid plan. Use free, pro, or ultimate'}),
+                        'body': json.dumps({'error': f'Invalid plan. Valid plans: {", ".join(valid_plans)}'}),
                         'isBase64Encoded': False
                     }
                 

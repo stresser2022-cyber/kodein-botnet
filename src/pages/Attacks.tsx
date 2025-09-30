@@ -83,7 +83,7 @@ export default function Attacks() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+    <div className="dark flex min-h-screen bg-[#0a0a0a] text-white">
       <DashboardSidebar 
         currentUser={currentUser}
         collapsed={sidebarCollapsed} 

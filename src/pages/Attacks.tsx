@@ -20,6 +20,30 @@ interface Attack {
   created_at?: string;
 }
 
+interface PlanLimits {
+  max_concurrents: number;
+  max_duration: number;
+  methods: string[] | string;
+}
+
+const PLAN_LIMITS: Record<string, PlanLimits> = {
+  free: {
+    max_concurrents: 1,
+    max_duration: 60,
+    methods: ['dns', 'udp', 'tcp']
+  },
+  pro: {
+    max_concurrents: 3,
+    max_duration: 300,
+    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http']
+  },
+  ultimate: {
+    max_concurrents: 10,
+    max_duration: 1800,
+    methods: 'all'
+  }
+};
+
 export default function Attacks() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -32,14 +56,44 @@ export default function Attacks() {
   const [filterTarget, setFilterTarget] = useState('');
   const [attacks, setAttacks] = useState<Attack[]>([]);
   const [loading, setLoading] = useState(false);
+  const [userPlan, setUserPlan] = useState('free');
+  const [planLimits, setPlanLimits] = useState<PlanLimits>(PLAN_LIMITS.free);
 
   const ATTACKS_API = 'https://functions.poehali.dev/2cec0d22-6495-4fc9-83d1-0b97c37fac2b';
+  const SETTINGS_API = 'https://functions.poehali.dev/b3667882-e8de-45d6-8bb7-8c54646552a1';
 
   useEffect(() => {
+    fetchUserPlan();
     fetchAttacks();
     const interval = setInterval(fetchAttacks, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchUserPlan = async () => {
+    try {
+      const response = await fetch(SETTINGS_API, {
+        headers: {
+          'X-User-Id': currentUser || ''
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const plan = data.plan || 'free';
+        const planExpires = data.plan_expires_at;
+        
+        let activePlan = plan;
+        if (planExpires && new Date(planExpires) < new Date()) {
+          activePlan = 'free';
+        }
+
+        const limits = PLAN_LIMITS[activePlan] || PLAN_LIMITS.free;
+        setUserPlan(activePlan);
+        setPlanLimits(limits);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user plan:', error);
+    }
+  };
 
   const fetchAttacks = async () => {
     try {
@@ -71,6 +125,37 @@ export default function Attacks() {
       toast({
         title: 'Error',
         description: 'Please fill in all fields',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const runningAttacks = attacks.filter(a => 
+      a.status === 'running' && new Date(a.expires_at) > new Date()
+    ).length;
+
+    if (runningAttacks >= planLimits.max_concurrents) {
+      toast({
+        title: 'Limit Reached',
+        description: `Your ${userPlan.toUpperCase()} plan allows only ${planLimits.max_concurrents} concurrent attacks. Stop a running attack or upgrade your plan.`,
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (parseInt(duration) > planLimits.max_duration) {
+      toast({
+        title: 'Duration Exceeded',
+        description: `Your ${userPlan.toUpperCase()} plan allows max ${planLimits.max_duration}s duration. Current: ${duration}s`,
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (planLimits.methods !== 'all' && !planLimits.methods.includes(method.toLowerCase())) {
+      toast({
+        title: 'Method Not Allowed',
+        description: `Method "${method}" is not available in your ${userPlan.toUpperCase()} plan. Upgrade to access more methods.`,
         variant: 'destructive'
       });
       return;
@@ -198,6 +283,28 @@ export default function Attacks() {
                 <div data-slot="card-title" className="leading-none font-semibold">Panel</div>
                 <div data-slot="card-description" className="text-muted-foreground text-sm">Launch new attack in one click.</div>
               </div>
+
+              {(userPlan === 'free' || userPlan === 'pro') && (
+                <div className="mx-6 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Icon name="AlertTriangle" size={16} className="text-yellow-500 mt-0.5" />
+                    <div className="text-xs text-yellow-400">
+                      <p className="font-semibold mb-1">{userPlan.toUpperCase()} Plan Limits:</p>
+                      <ul className="space-y-0.5">
+                        <li>• Max {planLimits.max_concurrents} concurrent attack{planLimits.max_concurrents > 1 ? 's' : ''}</li>
+                        <li>• Max {planLimits.max_duration}s duration per attack</li>
+                        <li>• Limited methods: {Array.isArray(planLimits.methods) ? planLimits.methods.join(', ').toUpperCase() : 'ALL'}</li>
+                      </ul>
+                      {userPlan === 'free' && (
+                        <p className="mt-2 text-blue-400">💡 Upgrade to Pro for 3 concurrents & 300s duration</p>
+                      )}
+                      {userPlan === 'pro' && (
+                        <p className="mt-2 text-purple-400">💡 Upgrade to Ultimate for 10 concurrents & 1800s duration</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div data-slot="card-content" className="px-6">
                 <form onSubmit={handleLaunchAttack}>

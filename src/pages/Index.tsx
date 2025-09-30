@@ -1,8 +1,21 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState<'plans' | 'api'>('plans');
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const observerOptions = {
@@ -27,6 +40,102 @@ export default function Index() {
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const user = localStorage.getItem('kodein_user');
+    if (user) {
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+    }
+  }, []);
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (authMode === 'register') {
+      if (!username || !email || !password) {
+        toast({
+          title: 'Error',
+          description: 'Please fill in all fields',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem('kodein_users') || '[]');
+      const userExists = users.find((u: any) => u.email === email);
+      
+      if (userExists) {
+        toast({
+          title: 'Error',
+          description: 'User with this email already exists',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      users.push({ username, email, password });
+      localStorage.setItem('kodein_users', JSON.stringify(users));
+      localStorage.setItem('kodein_user', username);
+      
+      setIsLoggedIn(true);
+      setCurrentUser(username);
+      setAuthOpen(false);
+      
+      toast({
+        title: 'Success',
+        description: 'Account created successfully!'
+      });
+      
+      setEmail('');
+      setPassword('');
+      setUsername('');
+    } else {
+      if (!email || !password) {
+        toast({
+          title: 'Error',
+          description: 'Please fill in all fields',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem('kodein_users') || '[]');
+      const user = users.find((u: any) => u.email === email && u.password === password);
+      
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'Invalid email or password',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      localStorage.setItem('kodein_user', user.username);
+      setIsLoggedIn(true);
+      setCurrentUser(user.username);
+      setAuthOpen(false);
+      
+      toast({
+        title: 'Success',
+        description: 'Logged in successfully!'
+      });
+      
+      setEmail('');
+      setPassword('');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('kodein_user');
+    setIsLoggedIn(false);
+    setCurrentUser(null);
+    toast({
+      title: 'Success',
+      description: 'Logged out successfully'
+    });
+  };
 
   const plans = [
     {
@@ -130,8 +239,105 @@ export default function Index() {
             <Icon name="Shield" size={14} />
             Discord
           </a>
+          {isLoggedIn ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-zinc-400">Hi, {currentUser}</span>
+              <button
+                onClick={handleLogout}
+                className="button-ghost px-4 py-2 rounded-md flex items-center gap-2 text-sm"
+              >
+                <Icon name="LogOut" size={14} />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="bg-white text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-white/90 transition-colors"
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </header>
+
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="bg-black border-white/20 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">
+              {authMode === 'login' ? 'Sign In' : 'Create Account'}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAuth} className="space-y-4 mt-4">
+            {authMode === 'register' && (
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-sm text-zinc-300">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="bg-white/5 border-white/20 text-white"
+                  placeholder="Enter your username"
+                />
+              </div>
+            )}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm text-zinc-300">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white/5 border-white/20 text-white"
+                placeholder="Enter your email"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm text-zinc-300">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white/5 border-white/20 text-white"
+                placeholder="Enter your password"
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-white text-black hover:bg-white/90 font-medium"
+            >
+              {authMode === 'login' ? 'Sign In' : 'Create Account'}
+            </Button>
+            <div className="text-center text-sm text-zinc-400">
+              {authMode === 'login' ? (
+                <span>
+                  Don't have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode('register')}
+                    className="text-white hover:underline"
+                  >
+                    Sign up
+                  </button>
+                </span>
+              ) : (
+                <span>
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode('login')}
+                    className="text-white hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </span>
+              )}
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <section className="max-w-6xl mx-auto relative py-24 sm:py-32 text-center px-6">
         <h1

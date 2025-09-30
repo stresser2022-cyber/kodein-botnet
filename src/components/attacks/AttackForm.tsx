@@ -60,28 +60,7 @@ export default function AttackForm({
         <div data-slot="card-description" className="text-muted-foreground text-sm">Launch new attack in one click.</div>
       </div>
 
-      {userPlan !== 'ultimate' && (
-        <div className="mx-6 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-          <div className="flex items-start gap-2">
-            <Icon name="AlertTriangle" size={16} className="text-yellow-500 mt-0.5" />
-            <div className="text-xs text-yellow-400">
-              <p className="font-semibold mb-1">{userPlan.toUpperCase()} Plan Limits:</p>
-              <ul className="space-y-0.5">
-                <li>• Max {planLimits.max_concurrents} concurrent attack{planLimits.max_concurrents > 1 ? 's' : ''}</li>
-                <li>• Max {planLimits.max_duration}s duration per attack</li>
-                <li>• Limited methods: {Array.isArray(planLimits.methods) ? planLimits.methods.join(', ').toUpperCase() : 'ALL'}</li>
-              </ul>
-              {userPlan === 'free' && (
-                <p className="mt-2 text-blue-400">💡 Upgrade to Pro for 3 concurrents & 300s duration</p>
-              )}
-              {userPlan === 'pro' && (
-                <p className="mt-2 text-purple-400">💡 Upgrade to Ultimate for 10 concurrents & 1800s duration</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-      
+
       <div data-slot="card-content" className="px-6">
         <form onSubmit={onSubmit}>
           <div className="grid w-full items-center gap-4">

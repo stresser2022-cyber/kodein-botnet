@@ -31,32 +31,6 @@ export default function History() {
     return null;
   }
 
-  useEffect(() => {
-    loadHistory();
-  }, []);
-
-  useKeyboardShortcuts([
-    {
-      key: 'r',
-      ctrl: true,
-      action: loadHistory,
-      description: 'Refresh History'
-    },
-    {
-      key: 'e',
-      ctrl: true,
-      action: () => exportData('json'),
-      description: 'Export as JSON'
-    },
-    {
-      key: 'e',
-      ctrl: true,
-      shift: true,
-      action: () => exportData('csv'),
-      description: 'Export as CSV'
-    }
-  ]);
-
   const loadHistory = async () => {
     setLoading(true);
     try {
@@ -141,6 +115,32 @@ export default function History() {
       URL.revokeObjectURL(url);
     }
   };
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  useKeyboardShortcuts([
+    {
+      key: 'r',
+      ctrl: true,
+      action: loadHistory,
+      description: 'Refresh History'
+    },
+    {
+      key: 'e',
+      ctrl: true,
+      action: () => exportData('json'),
+      description: 'Export as JSON'
+    },
+    {
+      key: 'e',
+      ctrl: true,
+      shift: true,
+      action: () => exportData('csv'),
+      description: 'Export as CSV'
+    }
+  ]);
 
   return (
     <div className="dark flex min-h-screen bg-[#0a0a0a] text-white">

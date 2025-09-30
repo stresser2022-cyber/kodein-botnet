@@ -180,14 +180,14 @@ export default function Attacks() {
                       <div className="flex-1">
                         <label className="flex items-center gap-2 text-sm leading-none font-medium mb-2" htmlFor="concurrents">Concurrents</label>
                         <div className="flex items-center gap-2">
-                          <div className="relative flex-1 h-1.5 bg-muted rounded-full">
+                          <div className="relative flex-1 h-1.5 bg-zinc-800 rounded-full">
                             <input
                               type="range"
                               min="1"
                               max="1"
                               value={concurrents}
                               onChange={(e) => setConcurrents(parseInt(e.target.value))}
-                              className="absolute w-full h-1.5 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-background [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:shadow-sm [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-background [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:shadow-sm"
+                              className="absolute w-full h-1.5 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-sm [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-sm"
                             />
                           </div>
                           <span className="w-12 text-xs text-center">{concurrents} / 1</span>

@@ -11,6 +11,8 @@ export default function Deposit() {
   const [amount, setAmount] = useState('');
   const [cryptocurrency, setCryptocurrency] = useState('');
 
+  const MIN_DEPOSIT = 10;
+
   const currentUser = localStorage.getItem('current_user');
 
   if (!currentUser) {
@@ -28,9 +30,19 @@ export default function Deposit() {
       return;
     }
 
+    const amountNum = parseFloat(amount);
+    if (isNaN(amountNum) || amountNum < MIN_DEPOSIT) {
+      toast({
+        title: 'Error',
+        description: `Minimum deposit amount is $${MIN_DEPOSIT}`,
+        variant: 'destructive'
+      });
+      return;
+    }
+
     toast({
       title: 'Processing',
-      description: 'Your deposit is being processed...'
+      description: `Depositing $${amountNum} via ${cryptocurrency}...`
     });
   };
 
@@ -52,7 +64,7 @@ export default function Deposit() {
       />
       
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-        <div className="flex items-center justify-center min-h-screen p-8">
+        <div className="flex justify-center pt-12 p-8">
           <div className="w-full max-w-xl bg-card border border-zinc-800 rounded-xl p-8">
             <div className="mb-6">
               <h1 className="text-2xl font-semibold mb-2">Deposit</h1>
@@ -70,6 +82,7 @@ export default function Deposit() {
                   placeholder="Top-up amount"
                   className="w-full h-10 px-3 bg-zinc-900/50 border border-zinc-800 rounded-md text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700"
                 />
+                <p className="text-xs text-zinc-500 mt-1">Minimum deposit: ${MIN_DEPOSIT}</p>
               </div>
 
               <div>

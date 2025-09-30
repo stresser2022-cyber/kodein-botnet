@@ -57,10 +57,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         if method == 'GET':
-            # Get user settings
+            # Get user settings (user_id can be username or numeric id)
             cursor.execute(
-                "SELECT email, notifications, plan, plan_expires_at FROM users WHERE id = %s",
-                (user_id,)
+                "SELECT email, notifications, plan, plan_expires_at FROM users WHERE username = %s OR id::text = %s",
+                (user_id, user_id)
             )
             user = cursor.fetchone()
             
@@ -112,8 +112,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 cursor.execute(
-                    "UPDATE users SET email = %s WHERE id = %s",
-                    (new_email, user_id)
+                    "UPDATE users SET email = %s WHERE username = %s OR id::text = %s",
+                    (new_email, user_id, user_id)
                 )
                 conn.commit()
                 
@@ -145,8 +145,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 # Verify current password
                 cursor.execute(
-                    "SELECT password FROM users WHERE id = %s",
-                    (user_id,)
+                    "SELECT password FROM users WHERE username = %s OR id::text = %s",
+                    (user_id, user_id)
                 )
                 user = cursor.fetchone()
                 
@@ -162,8 +162,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 # Update password
                 cursor.execute(
-                    "UPDATE users SET password = %s WHERE id = %s",
-                    (new_password, user_id)
+                    "UPDATE users SET password = %s WHERE username = %s OR id::text = %s",
+                    (new_password, user_id, user_id)
                 )
                 conn.commit()
                 
@@ -189,8 +189,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 cursor.execute(
-                    "UPDATE users SET notifications = %s WHERE id = %s",
-                    (json.dumps(notifications), user_id)
+                    "UPDATE users SET notifications = %s WHERE username = %s OR id::text = %s",
+                    (json.dumps(notifications), user_id, user_id)
                 )
                 conn.commit()
                 
@@ -218,7 +218,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif method == 'DELETE':
             # Delete user account
-            cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+            cursor.execute("DELETE FROM users WHERE username = %s OR id::text = %s", (user_id, user_id))
             conn.commit()
             
             return {

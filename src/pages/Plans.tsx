@@ -167,7 +167,7 @@ export default function Plans() {
             {plans.map((plan) => (
               <div 
                 key={plan.id}
-                className={`bg-card border rounded-lg p-6 transition-all hover:border-white ${
+                className={`bg-card border rounded-lg p-6 transition-all duration-300 hover:border-white hover:shadow-xl hover:shadow-white/10 hover:scale-105 cursor-pointer ${
                   plan.popular ? 'border-white relative' : 'border-zinc-800'
                 } ${selectedPlan === plan.id ? 'ring-2 ring-white' : ''}`}
               >

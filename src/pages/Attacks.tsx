@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { Button } from '@/components/ui/button';
@@ -13,8 +13,11 @@ interface Attack {
   target: string;
   port: number;
   method: string;
-  expire: string;
+  duration: number;
+  expires_at: string;
   status: string;
+  started_at?: string;
+  created_at?: string;
 }
 
 export default function Attacks() {
@@ -28,6 +31,31 @@ export default function Attacks() {
   const [concurrents, setConcurrents] = useState(1);
   const [filterTarget, setFilterTarget] = useState('');
   const [attacks, setAttacks] = useState<Attack[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const ATTACKS_API = 'https://functions.poehali.dev/2cec0d22-6495-4fc9-83d1-0b97c37fac2b';
+
+  useEffect(() => {
+    fetchAttacks();
+    const interval = setInterval(fetchAttacks, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchAttacks = async () => {
+    try {
+      const response = await fetch(ATTACKS_API, {
+        headers: {
+          'X-User-Id': currentUser || ''
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAttacks(data.attacks || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch attacks:', error);
+    }
+  };
 
   const currentUser = localStorage.getItem('current_user');
 
@@ -36,7 +64,7 @@ export default function Attacks() {
     return null;
   }
 
-  const handleLaunchAttack = (e: React.FormEvent) => {
+  const handleLaunchAttack = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!target || !port || !duration || !method) {
@@ -48,34 +76,101 @@ export default function Attacks() {
       return;
     }
 
-    const newAttack: Attack = {
-      id: Date.now(),
-      target,
-      port: parseInt(port),
-      method,
-      expire: new Date(Date.now() + parseInt(duration) * 1000).toLocaleString(),
-      status: 'running'
-    };
+    setLoading(true);
 
-    setAttacks([newAttack, ...attacks]);
-    
-    toast({
-      title: 'Success',
-      description: `Attack launched on ${target}:${port}`
-    });
+    try {
+      const response = await fetch(ATTACKS_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': currentUser || ''
+        },
+        body: JSON.stringify({
+          action: 'start',
+          target,
+          port: parseInt(port),
+          duration: parseInt(duration),
+          method: method.toUpperCase()
+        })
+      });
 
-    setTarget('');
-    setPort('');
-    setDuration('');
-    setMethod('');
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Success',
+          description: `Attack launched on ${target}:${port}`
+        });
+
+        setTarget('');
+        setPort('');
+        setDuration('');
+        setMethod('');
+        
+        await fetchAttacks();
+      } else {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to launch attack',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to connect to server',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleStopAll = () => {
-    setAttacks(attacks.map(a => ({ ...a, status: 'stopped' })));
-    toast({
-      title: 'Stopped',
-      description: 'All attacks have been stopped'
-    });
+  const handleStopAll = async () => {
+    const runningAttacks = attacks.filter(a => a.status === 'running');
+    
+    if (runningAttacks.length === 0) {
+      toast({
+        title: 'Info',
+        description: 'No running attacks to stop'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await Promise.all(
+        runningAttacks.map(attack =>
+          fetch(ATTACKS_API, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-User-Id': currentUser || ''
+            },
+            body: JSON.stringify({
+              action: 'stop',
+              attack_id: attack.id
+            })
+          })
+        )
+      );
+
+      toast({
+        title: 'Stopped',
+        description: 'All attacks have been stopped'
+      });
+      
+      await fetchAttacks();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to stop some attacks',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filteredAttacks = attacks.filter(a => 
@@ -201,9 +296,10 @@ export default function Attacks() {
               <div data-slot="card-footer" className="items-center px-6 grid">
                 <button 
                   onClick={handleLaunchAttack}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-zinc-700 text-white hover:bg-zinc-600 h-9 px-4 py-2 w-full"
+                  disabled={loading}
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-zinc-700 text-white hover:bg-zinc-600 h-9 px-4 py-2 w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Start
+                  {loading ? 'Launching...' : 'Start'}
                 </button>
               </div>
             </div>
@@ -225,11 +321,11 @@ export default function Attacks() {
                     />
                     <button 
                       onClick={handleStopAll}
-                      disabled={attacks.length === 0}
-                      className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 ml-auto disabled:opacity-50"
+                      disabled={attacks.length === 0 || loading}
+                      className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Icon name="X" size={16} />
-                      Stop All
+                      {loading ? 'Stopping...' : 'Stop All'}
                     </button>
                   </div>
 
@@ -290,7 +386,7 @@ export default function Attacks() {
                                 <td className="p-2 align-middle whitespace-nowrap">{attack.target}</td>
                                 <td className="p-2 align-middle whitespace-nowrap">{attack.port}</td>
                                 <td className="p-2 align-middle whitespace-nowrap">{attack.method}</td>
-                                <td className="p-2 align-middle whitespace-nowrap text-xs">{attack.expire}</td>
+                                <td className="p-2 align-middle whitespace-nowrap text-xs">{new Date(attack.expires_at).toLocaleString()}</td>
                                 <td className="p-2 align-middle whitespace-nowrap">
                                   <span className={`px-2 py-1 rounded text-xs ${
                                     attack.status === 'running' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'

@@ -83,7 +83,7 @@ export default function Attacks() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+    <div className="flex min-h-screen bg-black text-white">
       <DashboardSidebar 
         currentUser={currentUser}
         collapsed={sidebarCollapsed} 
@@ -95,209 +95,234 @@ export default function Attacks() {
       />
       
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-        <div className="p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-card rounded-xl border border-border py-6 shadow-sm">
-              <div className="px-6 pb-6">
-                <h2 className="text-xl font-semibold mb-1">Panel</h2>
-                <p className="text-sm text-gray-400 mb-6">Launch new attack in one click.</p>
+        <div className="p-4 md:p-6">
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.999fr)_minmax(0,2fr)] gap-4 md:gap-6">
+            {/* Panel Card */}
+            <div className="bg-[#1a1a1a] rounded-xl border border-gray-800 flex flex-col">
+              <div className="p-6 border-b border-gray-800">
+                <h2 className="text-lg font-semibold leading-none mb-1.5">Panel</h2>
+                <p className="text-sm text-gray-400">Launch new attack in one click.</p>
               </div>
-              <div className="px-6">
-              <form onSubmit={handleLaunchAttack} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="target" className="text-sm text-white mb-2 block">Target</Label>
-                    <Input
-                      id="target"
-                      value={target}
-                      onChange={(e) => setTarget(e.target.value)}
-                      placeholder="1.1.1.1"
-                      className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-ring/50"
-                    />
+              
+              <div className="p-6 flex-1">
+                <form onSubmit={handleLaunchAttack} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="target" className="text-sm font-medium mb-2 block">Target</Label>
+                      <Input
+                        id="target"
+                        value={target}
+                        onChange={(e) => setTarget(e.target.value)}
+                        placeholder="1.1.1.1"
+                        className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 h-9"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="port" className="text-sm font-medium mb-2 block">Port</Label>
+                      <Input
+                        id="port"
+                        type="number"
+                        value={port}
+                        onChange={(e) => setPort(e.target.value)}
+                        placeholder="443"
+                        className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 h-9"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="port" className="text-sm text-white mb-2 block">Port</Label>
+                    <Label htmlFor="duration" className="text-sm font-medium mb-2 block">Duration</Label>
                     <Input
-                      id="port"
+                      id="duration"
                       type="number"
-                      value={port}
-                      onChange={(e) => setPort(e.target.value)}
-                      placeholder="443"
-                      className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-ring/50"
+                      value={duration}
+                      onChange={(e) => setDuration(e.target.value)}
+                      placeholder="1200"
+                      className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 h-9"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="duration" className="text-sm text-white mb-2 block">Duration</Label>
-                  <Input
-                    id="duration"
-                    type="number"
-                    value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
-                    placeholder="1200"
-                    className="bg-transparent border-input text-white placeholder:text-muted-foreground focus-visible:ring-ring/50"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="method" className="text-sm text-white mb-2 block">Method</Label>
-                  <Select value={method} onValueChange={setMethod}>
-                    <SelectTrigger className="bg-transparent border-gray-700 text-white">
-                      <SelectValue placeholder="Select a method" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white max-h-60">
-                      <SelectItem value="dns">dns</SelectItem>
-                      <SelectItem value="udp">udp</SelectItem>
-                      <SelectItem value="pps">pps</SelectItem>
-                      <SelectItem value="tcp">tcp</SelectItem>
-                      <SelectItem value="tcpdrop">tcpdrop</SelectItem>
-                      <SelectItem value="fivem">fivem</SelectItem>
-                      <SelectItem value="discord">discord</SelectItem>
-                      <SelectItem value="rand">rand</SelectItem>
-                      <SelectItem value="ack">ack</SelectItem>
-                      <SelectItem value="socket">socket</SelectItem>
-                      <SelectItem value="syn">syn</SelectItem>
-                      <SelectItem value="gudp">gudp</SelectItem>
-                      <SelectItem value="udpbypass">udpbypass</SelectItem>
-                      <SelectItem value="tcp-spoof">tcp-spoof</SelectItem>
-                      <SelectItem value="ovh">ovh</SelectItem>
-                      <SelectItem value="udpdrop">udpdrop</SelectItem>
-                      <SelectItem value="tls">tls</SelectItem>
-                      <SelectItem value="http">http</SelectItem>
-                      <SelectItem value="flood">flood</SelectItem>
-                      <SelectItem value="browser">browser</SelectItem>
-                      <SelectItem value="priv-flood">priv-flood</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="concurrents" className="text-sm text-white mb-2 block">Concurrents</Label>
-                  <div className="flex items-center gap-4">
-                    <Input
-                      id="concurrents"
-                      type="range"
-                      min="1"
-                      max="10"
-                      value={concurrents}
-                      onChange={(e) => setConcurrents(parseInt(e.target.value))}
-                      className="flex-1"
-                    />
-                    <span className="text-sm text-gray-400 min-w-[3rem]">{concurrents}/1</span>
+                  <div>
+                    <Label htmlFor="method" className="text-sm font-medium mb-2 block">Method</Label>
+                    <Select value={method} onValueChange={setMethod}>
+                      <SelectTrigger className="bg-transparent border-gray-700 text-white h-9">
+                        <SelectValue placeholder="Select a method" className="text-gray-500" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white max-h-60">
+                        <SelectItem value="dns">dns</SelectItem>
+                        <SelectItem value="udp">udp</SelectItem>
+                        <SelectItem value="pps">pps</SelectItem>
+                        <SelectItem value="tcp">tcp</SelectItem>
+                        <SelectItem value="tcpdrop">tcpdrop</SelectItem>
+                        <SelectItem value="fivem">fivem</SelectItem>
+                        <SelectItem value="discord">discord</SelectItem>
+                        <SelectItem value="rand">rand</SelectItem>
+                        <SelectItem value="ack">ack</SelectItem>
+                        <SelectItem value="socket">socket</SelectItem>
+                        <SelectItem value="syn">syn</SelectItem>
+                        <SelectItem value="gudp">gudp</SelectItem>
+                        <SelectItem value="udpbypass">udpbypass</SelectItem>
+                        <SelectItem value="tcp-spoof">tcp-spoof</SelectItem>
+                        <SelectItem value="ovh">ovh</SelectItem>
+                        <SelectItem value="udpdrop">udpdrop</SelectItem>
+                        <SelectItem value="tls">tls</SelectItem>
+                        <SelectItem value="http">http</SelectItem>
+                        <SelectItem value="flood">flood</SelectItem>
+                        <SelectItem value="browser">browser</SelectItem>
+                        <SelectItem value="priv-flood">priv-flood</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </div>
 
-              </form>
+                  <div>
+                    <Label htmlFor="concurrents" className="text-sm font-medium mb-2 block">Concurrents</Label>
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1 h-1.5 bg-gray-800 rounded-full">
+                        <input
+                          id="concurrents"
+                          type="range"
+                          min="1"
+                          max="1"
+                          value={concurrents}
+                          onChange={(e) => setConcurrents(parseInt(e.target.value))}
+                          className="absolute w-full h-1.5 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-sm [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-sm"
+                        />
+                      </div>
+                      <span className="text-xs text-gray-400 w-12 text-center">{concurrents} / 1</span>
+                    </div>
+                  </div>
+                </form>
               </div>
-              <div className="px-6 pt-6">
-                <Button type="submit" onClick={handleLaunchAttack} className="w-full bg-white hover:bg-gray-200 text-black font-medium shadow-xs">
+
+              <div className="p-6 border-t border-gray-800">
+                <Button 
+                  type="submit" 
+                  onClick={handleLaunchAttack}
+                  className="w-full bg-white hover:bg-gray-100 text-black font-medium h-9"
+                >
                   Start
                 </Button>
               </div>
             </div>
 
-            <div className="bg-[#141414] rounded-xl border border-gray-800 py-6 shadow-sm">
-              <div className="flex items-start justify-between mb-6 px-6">
-                <div>
-                  <h2 className="text-xl font-semibold mb-1">Your Attacks</h2>
-                  <p className="text-sm text-gray-400">Manage your attacks in one click.</p>
-                </div>
-                <Button 
-                  onClick={handleStopAll}
-                  className="bg-white hover:bg-gray-200 text-black shadow-xs"
-                  size="sm"
-                  disabled={attacks.length === 0}
-                >
-                  <Icon name="X" size={14} className="mr-1" />
-                  Stop All
-                </Button>
+            {/* Your Attacks Card */}
+            <div className="bg-[#1a1a1a] rounded-xl border border-gray-800 flex flex-col">
+              <div className="p-6 border-b border-gray-800">
+                <h2 className="text-lg font-semibold leading-none mb-1.5">Your Attacks</h2>
+                <p className="text-sm text-gray-400">Manage your attacks in one click.</p>
               </div>
-
-              <div className="px-6">
-              <div className="mb-4">
-                <Input
-                  value={filterTarget}
-                  onChange={(e) => setFilterTarget(e.target.value)}
-                  placeholder="Filter target..."
-                  className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-ring/50"
-                />
-              </div>
-
-              <div className="rounded-lg border border-gray-800 overflow-hidden">
-                <div className="grid grid-cols-6 gap-4 p-3 text-xs font-medium text-gray-400 border-b border-gray-800 bg-[#0a0a0a]">
-                  <div className="flex items-center gap-1">
-                    ID
-                    <Icon name="ArrowUpDown" size={12} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    Target
-                    <Icon name="ArrowUpDown" size={12} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    Port
-                    <Icon name="ArrowUpDown" size={12} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    Method
-                    <Icon name="ArrowUpDown" size={12} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    Expire
-                    <Icon name="ArrowUpDown" size={12} />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    Status
-                    <Icon name="ArrowUpDown" size={12} />
-                  </div>
-                </div>
-
-                {filteredAttacks.length === 0 ? (
-                  <div className="p-8 text-center text-gray-400 text-sm">
-                    No results.
-                  </div>
-                ) : (
-                  <div>
-                    {filteredAttacks.map((attack) => (
-                      <div key={attack.id} className="grid grid-cols-6 gap-4 p-3 text-sm border-b border-gray-800 hover:bg-[#1a1a1a] transition-colors">
-                        <div className="text-gray-300 font-mono">{attack.id}</div>
-                        <div className="text-white">{attack.target}</div>
-                        <div className="text-gray-300">{attack.port}</div>
-                        <div className="text-gray-300">{attack.method}</div>
-                        <div className="text-gray-400 text-xs">{attack.expire}</div>
-                        <div>
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            attack.status === 'running' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
-                          }`}>
-                            {attack.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs text-gray-500">
-                  Current page 1 of {Math.max(1, Math.ceil(filteredAttacks.length / 10))}
-                </span>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="w-8 h-8 p-0" disabled>
-                    <Icon name="ChevronsLeft" size={14} />
-                  </Button>
-                  <Button variant="outline" size="sm" className="w-8 h-8 p-0" disabled>
-                    <Icon name="ChevronLeft" size={14} />
-                  </Button>
-                  <Button variant="outline" size="sm" className="w-8 h-8 p-0" disabled>
-                    <Icon name="ChevronRight" size={14} />
-                  </Button>
-                  <Button variant="outline" size="sm" className="w-8 h-8 p-0" disabled>
-                    <Icon name="ChevronsRight" size={14} />
+              
+              <div className="p-6 flex-1">
+                <div className="flex items-center gap-4 mb-4">
+                  <Input
+                    value={filterTarget}
+                    onChange={(e) => setFilterTarget(e.target.value)}
+                    placeholder="Filter target..."
+                    className="bg-transparent border-gray-700 text-white placeholder:text-gray-500 h-9 max-w-sm flex-1"
+                  />
+                  <Button 
+                    onClick={handleStopAll}
+                    className="bg-white hover:bg-gray-100 text-black h-9 px-4 ml-auto"
+                    disabled={attacks.length === 0}
+                  >
+                    <Icon name="X" size={14} className="mr-1" />
+                    Stop All
                   </Button>
                 </div>
-              </div>
+
+                <div className="rounded-md border border-gray-800 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="border-b border-gray-800 bg-[#0f0f0f]">
+                        <tr>
+                          <th className="h-10 px-2 text-left align-middle font-medium text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2 ml-2">
+                              ID
+                              <Icon name="ArrowDown" size={14} className="text-gray-500" />
+                            </div>
+                          </th>
+                          <th className="h-10 px-2 text-left align-middle font-medium text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              Target
+                              <Icon name="ArrowUpDown" size={14} className="text-gray-500" />
+                            </div>
+                          </th>
+                          <th className="h-10 px-2 text-left align-middle font-medium text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              Port
+                              <Icon name="ArrowUpDown" size={14} className="text-gray-500" />
+                            </div>
+                          </th>
+                          <th className="h-10 px-2 text-left align-middle font-medium text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              Method
+                              <Icon name="ArrowUpDown" size={14} className="text-gray-500" />
+                            </div>
+                          </th>
+                          <th className="h-10 px-2 text-left align-middle font-medium text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              Expire
+                              <Icon name="ArrowUpDown" size={14} className="text-gray-500" />
+                            </div>
+                          </th>
+                          <th className="h-10 px-2 text-left align-middle font-medium text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              Status
+                              <Icon name="ArrowUpDown" size={14} className="text-gray-500" />
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredAttacks.length === 0 ? (
+                          <tr className="border-b border-gray-800">
+                            <td colSpan={6} className="h-24 text-center text-sm text-gray-400">
+                              No results.
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredAttacks.map((attack) => (
+                            <tr key={attack.id} className="border-b border-gray-800 hover:bg-[#252525] transition-colors">
+                              <td className="p-2 align-middle whitespace-nowrap text-sm text-gray-300 font-mono">{attack.id}</td>
+                              <td className="p-2 align-middle whitespace-nowrap text-sm text-white">{attack.target}</td>
+                              <td className="p-2 align-middle whitespace-nowrap text-sm text-gray-300">{attack.port}</td>
+                              <td className="p-2 align-middle whitespace-nowrap text-sm text-gray-300">{attack.method}</td>
+                              <td className="p-2 align-middle whitespace-nowrap text-xs text-gray-400">{attack.expire}</td>
+                              <td className="p-2 align-middle whitespace-nowrap text-sm">
+                                <span className={`px-2 py-1 rounded text-xs ${
+                                  attack.status === 'running' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+                                }`}>
+                                  {attack.status}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mt-4">
+                  <span className="text-xs text-gray-500">
+                    Current page 1 of {Math.max(1, Math.ceil(filteredAttacks.length / 10))}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-800" disabled>
+                      <Icon name="ChevronsLeft" size={14} />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-800" disabled>
+                      <Icon name="ChevronLeft" size={14} />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-800" disabled>
+                      <Icon name="ChevronRight" size={14} />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-800" disabled>
+                      <Icon name="ChevronsRight" size={14} />
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

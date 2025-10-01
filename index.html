@@ -25,6 +25,18 @@
 
     <meta name="pp-name" value="kodein-botnet">
       <script src="https://cdn.poehali.dev/intertnal/js/inspector-min.js"></script>
+      
+      <!-- Prevent theme flash on load -->
+      <script>
+        (function() {
+          const theme = localStorage.getItem('theme') || 'dark';
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.add('light');
+          }
+        })();
+      </script>
   </head>
 
 <body>

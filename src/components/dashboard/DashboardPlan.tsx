@@ -103,34 +103,53 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   const fetchUserPlan = async () => {
     try {
-      const [settingsRes, attacksRes] = await Promise.all([
-        fetch(SETTINGS_API, {
-          headers: { 'X-User-Id': currentUser }
-        }),
-        fetch(ATTACKS_API, {
-          headers: { 'X-User-Id': currentUser }
-        })
-      ]);
+      console.log('Fetching plan for user:', currentUser);
+      
+      const settingsRes = await fetch(SETTINGS_API, {
+        headers: { 'X-User-Id': currentUser }
+      });
+
+      console.log('Settings API status:', settingsRes.status);
 
       if (settingsRes.ok) {
         const data = await settingsRes.json();
+        console.log('Settings API response:', data);
+        
         const plan = data.plan || 'free';
         const planExpires = data.plan_expires_at;
         
+        console.log('Plan from API:', plan);
+        console.log('Plan expires at:', planExpires);
+        
         let activePlan = plan;
         if (planExpires && new Date(planExpires) < new Date()) {
+          console.log('Plan expired, reverting to free');
           activePlan = 'free';
         }
 
         const limits = PLAN_LIMITS[activePlan] || PLAN_LIMITS.free;
 
         let runningCount = 0;
-        if (attacksRes.ok) {
-          const attacksData = await attacksRes.json();
-          runningCount = attacksData.attacks?.filter((a: any) => 
-            a.status === 'running' && new Date(a.expires_at) > new Date()
-          ).length || 0;
+        try {
+          const attacksRes = await fetch(ATTACKS_API, {
+            headers: { 'X-User-Id': currentUser }
+          });
+          
+          if (attacksRes.ok) {
+            const attacksData = await attacksRes.json();
+            runningCount = attacksData.attacks?.filter((a: any) => 
+              a.status === 'running' && new Date(a.expires_at) > new Date()
+            ).length || 0;
+          }
+        } catch (attackError) {
+          console.warn('Failed to fetch attacks, continuing with count 0:', attackError);
         }
+
+        console.log('Setting plan state:', {
+          plan: activePlan,
+          plan_expires_at: planExpires,
+          running_attacks: runningCount
+        });
 
         setUserPlan({
           plan: activePlan,
@@ -138,6 +157,8 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
           limits,
           running_attacks: runningCount
         });
+      } else {
+        console.error('Settings API returned non-OK status:', settingsRes.status);
       }
     } catch (error) {
       console.error('Failed to fetch user plan:', error);

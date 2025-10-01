@@ -103,8 +103,9 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   const fetchUserPlan = async () => {
     try {
+      const authToken = localStorage.getItem('auth_token');
       const settingsRes = await fetch(SETTINGS_API, {
-        headers: { 'X-User-Id': currentUser }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
 
       if (settingsRes.ok) {
@@ -123,7 +124,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
         let runningCount = 0;
         try {
           const attacksRes = await fetch(ATTACKS_API, {
-            headers: { 'X-User-Id': currentUser }
+            headers: { 'Authorization': `Bearer ${authToken}` }
           });
           
           if (attacksRes.ok) {

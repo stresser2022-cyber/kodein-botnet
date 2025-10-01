@@ -1,8 +1,36 @@
 import json
 import os
+import jwt
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from typing import Dict, Any
+from typing import Dict, Any, Optional
+
+JWT_ALGORITHM = 'HS256'
+
+def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
+    jwt_secret = os.environ.get('JWT_SECRET')
+    if not jwt_secret:
+        return None
+    try:
+        payload = jwt.decode(token, jwt_secret, algorithms=[JWT_ALGORITHM])
+        return payload
+    except:
+        return None
+
+def extract_user_from_token(event: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    headers = event.get('headers', {})
+    auth_header = headers.get('authorization') or headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header[7:]
+        payload = verify_jwt_token(token)
+        if payload:
+            return {'user_id': payload.get('user_id'), 'username': payload.get('username')}
+    token = headers.get('x-auth-token') or headers.get('X-Auth-Token')
+    if token:
+        payload = verify_jwt_token(token)
+        if payload:
+            return {'user_id': payload.get('user_id'), 'username': payload.get('username')}
+    return None
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -20,25 +48,26 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'headers': {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Auth-Token',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
         }
     
-    # Get user ID from header
-    headers = event.get('headers', {})
-    user_id = headers.get('X-User-Id') or headers.get('x-user-id')
+    # Get user from JWT token
+    user_info = extract_user_from_token(event)
     
-    if not user_id:
+    if not user_info:
         return {
             'statusCode': 401,
             'headers': {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': json.dumps({'error': 'User ID required'})
+            'body': json.dumps({'error': 'Authentication required. Please provide valid JWT token.'})
         }
+    
+    user_id = user_info['username']
     
     # Connect to database
     dsn = os.environ.get('DATABASE_URL')

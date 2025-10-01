@@ -34,11 +34,12 @@ export default function History() {
   const loadHistory = async () => {
     setLoading(true);
     try {
+      const authToken = localStorage.getItem('auth_token');
       const response = await fetch('https://functions.poehali.dev/2cec0d22-6495-4fc9-83d1-0b97c37fac2b', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': currentUser
+          'Authorization': `Bearer ${authToken}`
         }
       });
 

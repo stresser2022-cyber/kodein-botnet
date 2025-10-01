@@ -56,9 +56,10 @@ export function useAttacks(currentUser: string | null) {
 
   const fetchUserPlan = async () => {
     try {
+      const authToken = localStorage.getItem('auth_token');
       const response = await fetch(SETTINGS_API, {
         headers: {
-          'X-User-Id': currentUser || ''
+          'Authorization': `Bearer ${authToken}`
         }
       });
       if (response.ok) {
@@ -82,9 +83,10 @@ export function useAttacks(currentUser: string | null) {
 
   const fetchAttacks = async () => {
     try {
+      const authToken = localStorage.getItem('auth_token');
       const response = await fetch(ATTACKS_API, {
         headers: {
-          'X-User-Id': currentUser || ''
+          'Authorization': `Bearer ${authToken}`
         }
       });
       if (response.ok) {
@@ -145,11 +147,12 @@ export function useAttacks(currentUser: string | null) {
     setLoading(true);
 
     try {
+      const authToken = localStorage.getItem('auth_token');
       const response = await fetch(ATTACKS_API, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': currentUser || ''
+          'Authorization': `Bearer ${authToken}`
         },
         body: JSON.stringify({
           action: 'start',
@@ -204,13 +207,14 @@ export function useAttacks(currentUser: string | null) {
     setLoading(true);
 
     try {
+      const authToken = localStorage.getItem('auth_token');
       await Promise.all(
         runningAttacks.map(attack =>
           fetch(ATTACKS_API, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-User-Id': currentUser || ''
+              'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({
               action: 'stop',

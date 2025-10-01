@@ -157,15 +157,15 @@ export default function History() {
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
         <div className="p-6">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">История атак</h1>
-            <p className="text-zinc-400">Полная история всех ваших атак</p>
+            <h1 className="text-3xl font-bold mb-2">Attack History</h1>
+            <p className="text-zinc-400">Complete history of all your attacks</p>
           </div>
 
           <div className="bg-card rounded-xl border p-6">
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <input 
                 type="text"
-                placeholder="Поиск по цели или методу..."
+                placeholder="Search by target or method..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 h-10 px-4 rounded-md border border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-700"
@@ -180,7 +180,7 @@ export default function History() {
                       : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
                   }`}
                 >
-                  Все
+                  All
                 </button>
                 <button
                   onClick={() => setFilter('active')}
@@ -190,7 +190,7 @@ export default function History() {
                       : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
                   }`}
                 >
-                  Активные
+                  Active
                 </button>
                 <button
                   onClick={() => setFilter('completed')}
@@ -200,7 +200,7 @@ export default function History() {
                       : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
                   }`}
                 >
-                  Завершённые
+                  Completed
                 </button>
               </div>
 
@@ -227,19 +227,19 @@ export default function History() {
                   className="px-4 py-2 rounded-md bg-zinc-800 hover:bg-zinc-700 text-white flex items-center gap-2 disabled:opacity-50"
                 >
                   <Icon name="RefreshCw" size={16} className={loading ? 'animate-spin' : ''} />
-                  <span className="hidden sm:inline">Обновить</span>
+                  <span className="hidden sm:inline">Refresh</span>
                 </button>
               </div>
             </div>
 
             {loading ? (
               <div className="text-center py-12 text-zinc-400">
-                Загрузка...
+                Loading...
               </div>
             ) : filteredAttacks.length === 0 ? (
               <div className="text-center py-12 text-zinc-400">
                 <Icon name="Inbox" size={48} className="mx-auto mb-4 opacity-50" />
-                <p>Атаки не найдены</p>
+                <p>No attacks found</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -247,12 +247,12 @@ export default function History() {
                   <thead>
                     <tr className="border-b border-zinc-800 text-left">
                       <th className="pb-3 pl-4 font-medium text-zinc-400">ID</th>
-                      <th className="pb-3 font-medium text-zinc-400">Цель</th>
-                      <th className="pb-3 font-medium text-zinc-400">Порт</th>
-                      <th className="pb-3 font-medium text-zinc-400">Метод</th>
-                      <th className="pb-3 font-medium text-zinc-400">Длительность</th>
-                      <th className="pb-3 font-medium text-zinc-400">Статус</th>
-                      <th className="pb-3 font-medium text-zinc-400">Запущена</th>
+                      <th className="pb-3 font-medium text-zinc-400">Target</th>
+                      <th className="pb-3 font-medium text-zinc-400">Port</th>
+                      <th className="pb-3 font-medium text-zinc-400">Method</th>
+                      <th className="pb-3 font-medium text-zinc-400">Duration</th>
+                      <th className="pb-3 font-medium text-zinc-400">Status</th>
+                      <th className="pb-3 font-medium text-zinc-400">Started</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -273,7 +273,7 @@ export default function History() {
                               ? 'bg-green-500/20 text-green-400' 
                               : 'bg-blue-500/20 text-blue-400'
                           }`}>
-                            {attack.status === 'running' ? 'Активна' : 'Завершена'}
+                            {attack.status === 'running' ? 'Running' : 'Completed'}
                           </span>
                         </td>
                         <td className="py-3 text-zinc-400 text-sm">
@@ -287,8 +287,8 @@ export default function History() {
             )}
 
             <div className="mt-6 flex justify-between items-center text-sm text-zinc-400">
-              <div>Всего атак: {filteredAttacks.length}</div>
-              <div>Активных: {attacks.filter(a => a.status === 'running').length}</div>
+              <div>Total attacks: {filteredAttacks.length}</div>
+              <div>Active: {attacks.filter(a => a.status === 'running').length}</div>
             </div>
           </div>
         </div>

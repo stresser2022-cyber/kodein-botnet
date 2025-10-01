@@ -58,9 +58,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         if method == 'GET':
             # Get user settings (user_id can be username or numeric id)
+            safe_user_id = user_id.replace("'", "''")
             cursor.execute(
-                "SELECT email, plan, plan_expires_at, max_concurrents, max_duration FROM users WHERE username = %s OR id::text = %s",
-                (user_id, user_id)
+                f"SELECT email, plan, plan_expires_at, max_concurrents, max_duration FROM users WHERE username = '{safe_user_id}' OR id::text = '{safe_user_id}'"
             )
             user = cursor.fetchone()
             
@@ -106,9 +106,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'body': json.dumps({'error': 'Email is required'})
                     }
                 
+                safe_user_id = user_id.replace("'", "''")
+                safe_email = new_email.replace("'", "''")
                 cursor.execute(
-                    "UPDATE users SET email = %s WHERE username = %s OR id::text = %s",
-                    (new_email, user_id, user_id)
+                    f"UPDATE users SET email = '{safe_email}' WHERE username = '{safe_user_id}' OR id::text = '{safe_user_id}'"
                 )
                 conn.commit()
                 
@@ -138,7 +139,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif method == 'DELETE':
             # Delete user account
-            cursor.execute("DELETE FROM users WHERE username = %s OR id::text = %s", (user_id, user_id))
+            safe_user_id = user_id.replace("'", "''")
+            cursor.execute(f"DELETE FROM users WHERE username = '{safe_user_id}' OR id::text = '{safe_user_id}'")
             conn.commit()
             
             return {

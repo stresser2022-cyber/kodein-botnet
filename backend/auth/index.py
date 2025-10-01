@@ -19,6 +19,8 @@ JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24
 
 rate_limit_store: Dict[str, list] = {}
+RATE_LIMIT_MAX_ATTEMPTS = 10
+RATE_LIMIT_WINDOW_MINUTES = 5
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

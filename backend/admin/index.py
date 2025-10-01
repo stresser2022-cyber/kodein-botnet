@@ -10,6 +10,7 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
+from datetime import datetime
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')

@@ -73,7 +73,7 @@ export default function PricingSection({ activeTab, setActiveTab }: PricingSecti
   return (
     <section className="max-w-6xl mx-auto relative py-16 px-6">
       <h2 id="pricing" className="text-3xl sm:text-4xl font-bold text-center text-white opacity-0 translate-y-5" data-animate>
-        Kodein Networks Pricing
+        Lunacy Networks Pricing
       </h2>
       <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
         Choose the plan that suits your testing needs.

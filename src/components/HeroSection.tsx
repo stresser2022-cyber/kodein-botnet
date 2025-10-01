@@ -8,7 +8,7 @@ export default function HeroSection() {
         className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white opacity-0 translate-y-5"
         data-animate
       >
-        Kodein Botnet
+        Lunacy Botnet
       </h1>
       <p className="text-xl sm:text-2xl mt-6 font-medium text-white opacity-0 translate-y-5" data-animate>
         Massive Power. Real Results.

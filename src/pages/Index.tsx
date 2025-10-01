@@ -46,7 +46,7 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    const user = localStorage.getItem('kodein_user');
+    const user = localStorage.getItem('lunacy_user');
     if (user) {
       setIsLoggedIn(true);
       setCurrentUser(user);
@@ -101,8 +101,8 @@ export default function Index() {
           return;
         }
         
-        localStorage.setItem('kodein_user', data.user.username);
-        localStorage.setItem('kodein_user_id', data.user.id);
+        localStorage.setItem('lunacy_user', data.user.username);
+        localStorage.setItem('lunacy_user_id', data.user.id);
         localStorage.setItem('current_user', data.user.username);
         
         setIsLoggedIn(true);
@@ -151,8 +151,8 @@ export default function Index() {
           return;
         }
         
-        localStorage.setItem('kodein_user', data.user.username);
-        localStorage.setItem('kodein_user_id', data.user.id);
+        localStorage.setItem('lunacy_user', data.user.username);
+        localStorage.setItem('lunacy_user_id', data.user.id);
         localStorage.setItem('current_user', data.user.username);
         
         setIsLoggedIn(true);
@@ -179,7 +179,7 @@ export default function Index() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('kodein_user');
+    localStorage.removeItem('lunacy_user');
     setIsLoggedIn(false);
     setCurrentUser(null);
     toast({

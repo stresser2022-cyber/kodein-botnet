@@ -12,7 +12,7 @@ export default function Header({ isLoggedIn, currentUser, onSignIn, onLogout }: 
     <header className="max-w-6xl mx-auto flex items-center justify-between py-6 px-6">
       <div className="text-base font-semibold tracking-tight flex items-center gap-2">
         <span className="inline-block w-1.5 h-1.5 rounded-full bg-white" />
-        Kodein Botnet
+        Lunacy Botnet
       </div>
       <div className="flex items-center gap-3">
         {isLoggedIn && (

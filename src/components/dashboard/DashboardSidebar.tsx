@@ -42,7 +42,7 @@ export default function DashboardSidebar({
         {!collapsed && (
           <div className="flex items-center gap-2">
             <Icon name="Shield" size={20} className="text-sidebar-foreground" />
-            <span className="text-sidebar-foreground font-semibold">Kodein Services</span>
+            <span className="text-sidebar-foreground font-semibold">Lunacy Services</span>
           </div>
         )}
         <button

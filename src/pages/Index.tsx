@@ -117,33 +117,13 @@ export default function Index() {
         setPassword('');
         setUsername('');
         
-        setTimeout(async () => {
-          try {
-            const verifyResponse = await fetch(API_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'login',
-                username: data.user.username,
-                password
-              })
-            });
-            
-            if (verifyResponse.ok) {
-              window.location.href = '/dashboard';
-            } else {
-              toast({
-                title: 'Warning',
-                description: 'Please log in again',
-                variant: 'destructive'
-              });
-              localStorage.clear();
-              setIsLoggedIn(false);
-            }
-          } catch {
-            window.location.href = '/dashboard';
-          }
-        }, 5000);
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
+        
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
       } else {
         if (!username || !password) {
           toast({
@@ -190,37 +170,16 @@ export default function Index() {
           description: 'Logged in successfully!'
         });
         
-        const savedPassword = password;
         setPassword('');
         setUsername('');
         
-        setTimeout(async () => {
-          try {
-            const verifyResponse = await fetch(API_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'login',
-                username: data.user.username,
-                password: savedPassword
-              })
-            });
-            
-            if (verifyResponse.ok) {
-              window.location.href = '/dashboard';
-            } else {
-              toast({
-                title: 'Warning',
-                description: 'Please log in again',
-                variant: 'destructive'
-              });
-              localStorage.clear();
-              setIsLoggedIn(false);
-            }
-          } catch {
-            window.location.href = '/dashboard';
-          }
-        }, 5000);
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
+        
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
       }
     } catch (error) {
       toast({

@@ -32,8 +32,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     headers = event.get('headers', {})
     admin_key = headers.get('x-admin-key') or headers.get('X-Admin-Key')
+    expected_admin_key = os.environ.get('ADMIN_KEY')
     
-    if admin_key != 'kodein_admin_2025':
+    if not expected_admin_key:
+        return {
+            'statusCode': 500,
+            'headers': cors_headers,
+            'body': json.dumps({'error': 'Admin key not configured'}),
+            'isBase64Encoded': False
+        }
+    
+    if admin_key != expected_admin_key:
         return {
             'statusCode': 403,
             'headers': cors_headers,

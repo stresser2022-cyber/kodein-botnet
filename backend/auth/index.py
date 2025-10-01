@@ -13,10 +13,12 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
 from datetime import datetime, timedelta
+import hashlib
 
-JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production')
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24
+
+rate_limit_store: Dict[str, list] = {}
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -38,21 +40,51 @@ def verify_password(password: str, password_hash: str) -> bool:
             return False
     return False
 
+def is_rate_limited(ip: str, username: str) -> bool:
+    key = hashlib.sha256(f"{ip}:{username}".encode()).hexdigest()
+    cutoff = datetime.utcnow() - timedelta(minutes=5)
+    
+    if key in rate_limit_store:
+        rate_limit_store[key] = [t for t in rate_limit_store[key] if t > cutoff]
+        if not rate_limit_store[key]:
+            del rate_limit_store[key]
+        return len(rate_limit_store.get(key, [])) >= 10
+    return False
+
+def record_attempt(ip: str, username: str):
+    key = hashlib.sha256(f"{ip}:{username}".encode()).hexdigest()
+    if key not in rate_limit_store:
+        rate_limit_store[key] = []
+    rate_limit_store[key].append(datetime.utcnow())
+
 def create_jwt_token(user_id: int, username: str) -> str:
+    jwt_secret = os.environ.get('JWT_SECRET')
+    if not jwt_secret:
+        raise ValueError('JWT_SECRET not configured')
+    
     payload = {
         'user_id': user_id,
         'username': username,
         'exp': datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS),
         'iat': datetime.utcnow()
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return jwt.encode(payload, jwt_secret, algorithm=JWT_ALGORITHM)
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
     
+    allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*')
+    origin = event.get('headers', {}).get('origin', '')
+    
+    if allowed_origins == '*':
+        allow_origin = '*'
+    else:
+        allowed_list = [o.strip() for o in allowed_origins.split(',')]
+        allow_origin = origin if origin in allowed_list else allowed_list[0] if allowed_list else '*'
+    
     cors_headers = {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': allow_origin,
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Auth-Token',
         'Access-Control-Max-Age': '86400'
@@ -95,11 +127,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False
                     }
                 
-                if len(username) < 3 or len(username) > 50:
+                import re
+                if not re.match(r'^[a-zA-Z0-9_-]{3,50}$', username):
                     return {
                         'statusCode': 400,
                         'headers': cors_headers,
-                        'body': json.dumps({'error': 'Username must be 3-50 characters'}),
+                        'body': json.dumps({'error': 'Username must be 3-50 characters and contain only letters, numbers, underscore, or dash'}),
                         'isBase64Encoded': False
                     }
                 
@@ -157,6 +190,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'body': json.dumps({'error': 'Username and password are required'}),
                         'isBase64Encoded': False
                     }
+                
+                client_ip = event.get('requestContext', {}).get('identity', {}).get('sourceIp', 'unknown')
+                
+                if is_rate_limited(client_ip, username):
+                    return {
+                        'statusCode': 429,
+                        'headers': cors_headers,
+                        'body': json.dumps({'error': 'Too many login attempts. Please try again in 5 minutes.'}),
+                        'isBase64Encoded': False
+                    }
+                
+                record_attempt(client_ip, username)
                 
                 cur.execute(
                     "SELECT id, username, password_hash, is_active FROM users WHERE username = %s",

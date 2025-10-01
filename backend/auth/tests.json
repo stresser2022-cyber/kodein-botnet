@@ -13,8 +13,7 @@
       "path": "/",
       "body": {
         "action": "register",
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": "newuser999",
         "password": "password123"
       },
       "expectedStatus": 201,
@@ -29,8 +28,8 @@
       "path": "/",
       "body": {
         "action": "login",
-        "email": "test@example.com",
-        "password": "password123"
+        "username": "testuser",
+        "password": "test123"
       },
       "expectedStatus": 200,
       "expectedBody": {
@@ -44,7 +43,7 @@
       "path": "/",
       "body": {
         "action": "login",
-        "email": "test@example.com",
+        "username": "testuser",
         "password": "wrongpassword"
       },
       "expectedStatus": 401,

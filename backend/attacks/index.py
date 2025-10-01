@@ -351,44 +351,25 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     started_at = datetime.utcnow()
     expires_at = started_at + timedelta(seconds=int(duration))
     
-    safe_target = target.replace("'", "''")
-    safe_attack_method = attack_method.replace("'", "''")
-    safe_rate = rate.replace("'", "''") if rate else None
-    safe_rqmethod = rqmethod.replace("'", "''") if rqmethod else None
-    safe_proxylist = proxylist.replace("'", "''") if proxylist else None
-    safe_headers_custom = headers_custom.replace("'", "''") if headers_custom else None
-    safe_protocol = protocol.replace("'", "''") if protocol else None
-    safe_postdata = postdata.replace("'", "''") if postdata else None
-    safe_payload = payload.replace("'", "''") if payload else None
-    safe_range_subnet = range_subnet.replace("'", "''") if range_subnet else None
-    
-    cursor.execute(f"""
+    cursor.execute("""
         INSERT INTO attacks (
             user_id, target, port, duration, method, status,
             rate, rqmethod, proxylist, headers, http_version, protocol, 
             postdata, payload, range_subnet,
             started_at, expires_at
         ) VALUES (
-            {int(user_id)}, 
-            '{safe_target}', 
-            {port if port is not None else 'NULL'}, 
-            {int(duration)}, 
-            '{safe_attack_method}', 
-            'running',
-            {f"'{safe_rate}'" if safe_rate else 'NULL'}, 
-            {f"'{safe_rqmethod}'" if safe_rqmethod else 'NULL'}, 
-            {f"'{safe_proxylist}'" if safe_proxylist else 'NULL'}, 
-            {f"'{safe_headers_custom}'" if safe_headers_custom else 'NULL'}, 
-            {http_version if http_version is not None else 'NULL'}, 
-            {f"'{safe_protocol}'" if safe_protocol else 'NULL'},
-            {f"'{safe_postdata}'" if safe_postdata else 'NULL'}, 
-            {f"'{safe_payload}'" if safe_payload else 'NULL'}, 
-            {f"'{safe_range_subnet}'" if safe_range_subnet else 'NULL'},
-            '{started_at.isoformat()}', 
-            '{expires_at.isoformat()}'
+            %s, %s, %s, %s, %s, 'running',
+            %s, %s, %s, %s, %s, %s,
+            %s, %s, %s,
+            %s, %s
         )
         RETURNING id
-    """)
+    """, (
+        int(user_id), target, port, int(duration), attack_method,
+        rate, rqmethod, proxylist, headers_custom, http_version, protocol,
+        postdata, payload, range_subnet,
+        started_at, expires_at
+    ))
     
     result = cursor.fetchone()
     attack_id = result['id']
@@ -434,11 +415,10 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
-    cursor.execute(f"""
-        SELECT id, external_attack_id, status, user_id
-        FROM attacks
-        WHERE id = {int(attack_id)}
-    """)
+    cursor.execute(
+        "SELECT id, external_attack_id, status, user_id FROM attacks WHERE id = %s",
+        (int(attack_id),)
+    )
     
     attack = cursor.fetchone()
     
@@ -501,12 +481,10 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         api_response = "No external_attack_id found"
     
     completed_at = datetime.utcnow()
-    updated_at = datetime.utcnow()
-    cursor.execute(f"""
-        UPDATE attacks
-        SET status = 'stopped', completed_at = '{completed_at.isoformat()}', updated_at = '{updated_at.isoformat()}'
-        WHERE id = {int(attack_id)}
-    """)
+    cursor.execute(
+        "UPDATE attacks SET status = 'stopped', completed_at = %s WHERE id = %s",
+        (completed_at, int(attack_id))
+    )
     
     conn.commit()
     cursor.close()

@@ -115,6 +115,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Auth-Token',
                 'Access-Control-Max-Age': '86400'
             },
+            'isBase64Encoded': False,
             'body': ''
         }
     
@@ -124,6 +125,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         return {
             'statusCode': 401,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Authentication required. Please provide valid JWT token.'})
         }
     
@@ -144,12 +146,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             return {
                 'statusCode': 400,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
                 'body': json.dumps({'error': 'Invalid action. Use "start" or "stop"'})
             }
     else:
         return {
             'statusCode': 405,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Method not allowed'})
         }
 
@@ -230,6 +234,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'target, duration, and method are required'})
         }
     
@@ -238,6 +243,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Database not configured'})
         }
     
@@ -257,6 +263,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 404,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'User not found'})
         }
     
@@ -269,6 +276,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 403,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({
                 'error': f'Duration exceeds plan limit. Max: {plan_limits["max_duration"]}s',
                 'plan': current_plan,
@@ -282,6 +290,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 403,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({
                 'error': f'Method not allowed for {current_plan} plan',
                 'plan': current_plan,
@@ -302,6 +311,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 403,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({
                 'error': f'Max concurrent attacks limit reached. Max: {plan_limits["max_concurrents"]}',
                 'plan': current_plan,
@@ -328,6 +338,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'MAO API credentials not configured'})
         }
     
@@ -369,12 +380,14 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 502,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': f'MAO API error: {e.code}'})
         }
     except Exception as e:
         return {
             'statusCode': 502,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': f'Failed to call MAO API: {str(e)}'})
         }
     
@@ -431,6 +444,7 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'attack_id is required'})
         }
     
@@ -439,6 +453,7 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Database not configured'})
         }
     
@@ -458,6 +473,7 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 404,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Attack not found'})
         }
     
@@ -467,6 +483,7 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 403,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Not authorized to stop this attack'})
         }
     
@@ -488,6 +505,7 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'MAO API credentials not configured'})
         }
     

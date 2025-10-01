@@ -51,6 +51,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Auth-Token',
                 'Access-Control-Max-Age': '86400'
             },
+            'isBase64Encoded': False,
             'body': ''
         }
     
@@ -64,6 +65,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Authentication required. Please provide valid JWT token.'})
         }
     
@@ -78,6 +80,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
+            'isBase64Encoded': False,
             'body': json.dumps({'error': 'Database connection not configured'})
         }
     
@@ -100,6 +103,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
+                    'isBase64Encoded': False,
                     'body': json.dumps({'error': 'User not found'})
                 }
             
@@ -109,6 +113,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
+                'isBase64Encoded': False,
                 'body': json.dumps({
                     'email': user['email'],
                     'plan': user.get('plan', 'free'),
@@ -132,6 +137,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Content-Type': 'application/json',
                             'Access-Control-Allow-Origin': '*'
                         },
+                        'isBase64Encoded': False,
                         'body': json.dumps({'error': 'Email is required'})
                     }
                 
@@ -147,6 +153,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
+                    'isBase64Encoded': False,
                     'body': json.dumps({
                         'message': 'Email updated successfully',
                         'email': new_email
@@ -162,6 +169,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     },
+                    'isBase64Encoded': False,
                     'body': json.dumps({'error': 'Invalid action'})
                 }
         
@@ -179,6 +187,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
+                'isBase64Encoded': False,
                 'body': json.dumps({'message': 'Account deleted successfully'})
             }
         
@@ -189,6 +198,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
+                'isBase64Encoded': False,
                 'body': json.dumps({'error': 'Method not allowed'})
             }
     

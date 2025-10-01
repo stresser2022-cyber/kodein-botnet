@@ -14,7 +14,7 @@ export default function Index() {
   const [activeTab, setActiveTab] = useState<'plans' | 'api'>('plans');
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
+  const [email] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,7 +69,7 @@ export default function Index() {
     
     try {
       if (authMode === 'register') {
-        if (!username || !email || !password) {
+        if (!username || !password) {
           toast({
             title: 'Error',
             description: 'Please fill in all fields',
@@ -86,7 +86,6 @@ export default function Index() {
           body: JSON.stringify({
             action: 'register',
             username,
-            email,
             password
           })
         });
@@ -115,13 +114,12 @@ export default function Index() {
           description: 'Account created successfully!'
         });
         
-        setEmail('');
         setPassword('');
         setUsername('');
         
         window.location.href = '/dashboard';
       } else {
-        if (!email || !password) {
+        if (!username || !password) {
           toast({
             title: 'Error',
             description: 'Please fill in all fields',
@@ -137,7 +135,7 @@ export default function Index() {
           },
           body: JSON.stringify({
             action: 'login',
-            email,
+            username,
             password
           })
         });
@@ -166,8 +164,8 @@ export default function Index() {
           description: 'Logged in successfully!'
         });
         
-        setEmail('');
         setPassword('');
+        setUsername('');
         
         window.location.href = '/dashboard';
       }
@@ -204,8 +202,6 @@ export default function Index() {
         onOpenChange={setAuthOpen}
         authMode={authMode}
         setAuthMode={setAuthMode}
-        email={email}
-        setEmail={setEmail}
         password={password}
         setPassword={setPassword}
         username={username}

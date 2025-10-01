@@ -9,8 +9,6 @@ interface AuthModalProps {
   onOpenChange: (open: boolean) => void;
   authMode: 'login' | 'register';
   setAuthMode: (mode: 'login' | 'register') => void;
-  email: string;
-  setEmail: (email: string) => void;
   password: string;
   setPassword: (password: string) => void;
   username: string;
@@ -23,14 +21,11 @@ export default function AuthModal({
   onOpenChange,
   authMode,
   setAuthMode,
-  email,
-  setEmail,
   password,
   setPassword,
   username,
   setUsername,
-  onSubmit,
-  onCaptchaError
+  onSubmit
 }: AuthModalProps) {
   const [captcha, setCaptcha] = useState({ num1: 0, num2: 0 });
   const [captchaAnswer, setCaptchaAnswer] = useState('');
@@ -110,33 +105,17 @@ export default function AuthModal({
           
           onSubmit(e, captchaValid);
         }} className="space-y-4">
-          {authMode === 'register' && (
-            <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm text-zinc-300">
-                Username
-              </Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="bg-white/5 border-white/20 text-white placeholder:text-zinc-500"
-                placeholder="Enter your username"
-              />
-            </div>
-          )}
-          
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm text-zinc-300">
-              Email
+            <Label htmlFor="username" className="text-sm text-zinc-300">
+              Username
             </Label>
             <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="bg-white/5 border-white/20 text-white placeholder:text-zinc-500"
-              placeholder="Enter your email"
+              placeholder="Enter your username"
             />
           </div>
           

@@ -69,13 +69,13 @@ export default function DashboardStats() {
       {statsDisplay.map((stat, index) => (
         <div 
           key={index}
-          className={`bg-[#0f0f0f] border border-white/10 rounded-lg p-6 transition-opacity duration-500 ${
+          className={`bg-card border border-border rounded-lg p-6 transition-opacity duration-500 ${
             mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
           }`}
           style={mounted ? { animationDelay: `${index * 0.1}s` } : {}}
         >
           <div className="flex items-start justify-between mb-4">
-            <p className="text-sm text-zinc-400">{stat.title}</p>
+            <p className="text-sm text-muted-foreground">{stat.title}</p>
             {stat.trend && (
               <div className={`flex items-center gap-1 text-xs ${
                 stat.trendUp ? 'text-green-400' : 'text-red-400'
@@ -85,10 +85,10 @@ export default function DashboardStats() {
               </div>
             )}
           </div>
-          <h2 className="text-4xl font-bold text-white mb-3">{stat.value}</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-3">{stat.value}</h2>
           <div className="space-y-1">
-            <p className="text-sm text-zinc-300">{stat.subtitle}</p>
-            <p className="text-xs text-zinc-500">{stat.description}</p>
+            <p className="text-sm text-card-foreground">{stat.subtitle}</p>
+            <p className="text-xs text-muted-foreground">{stat.description}</p>
           </div>
         </div>
       ))}

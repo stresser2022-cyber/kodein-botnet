@@ -191,11 +191,11 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   if (loading) {
     return (
-      <div className={`bg-[#0f0f0f] border border-white/10 rounded-lg p-6 transition-opacity ${
+      <div className={`bg-card border border-border rounded-lg p-6 transition-opacity ${
         mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
       }`}>
         <div className="flex items-center justify-center h-32">
-          <Icon name="Loader2" size={24} className="animate-spin text-white/50" />
+          <Icon name="Loader2" size={24} className="animate-spin text-muted-foreground" />
         </div>
       </div>
     );
@@ -203,25 +203,25 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   return (
     <div 
-      className={`bg-[#0f0f0f] border border-white/10 rounded-lg p-6 transition-opacity ${
+      className={`bg-card border border-border rounded-lg p-6 transition-opacity ${
         mounted ? 'opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]' : 'opacity-0'
       }`}
       style={mounted ? { animationDelay: '0.2s' } : {}}
     >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-white">Your Plan</h2>
+        <h2 className="text-lg font-semibold text-foreground">Your Plan</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
               setLoading(true);
               fetchUserPlan();
             }}
-            className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
+            className="p-1.5 hover:bg-accent rounded-md transition-colors"
             title="Refresh plan data"
           >
-            <Icon name="RefreshCw" size={18} className="text-white/70 hover:text-white" />
+            <Icon name="RefreshCw" size={18} className="text-muted-foreground hover:text-foreground" />
           </button>
-          <Icon name={getPlanIcon(userPlan.plan)} size={24} className="text-white/70" />
+          <Icon name={getPlanIcon(userPlan.plan)} size={24} className="text-muted-foreground" />
         </div>
       </div>
 
@@ -241,30 +241,30 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <Icon name="Layers" size={18} className="text-zinc-400" />
-            <span className="text-sm text-zinc-300">Concurrent Attacks</span>
+            <Icon name="Layers" size={18} className="text-muted-foreground" />
+            <span className="text-sm text-card-foreground">Concurrent Attacks</span>
           </div>
-          <span className="text-sm font-medium text-white">
+          <span className="text-sm font-medium text-foreground">
             {userPlan.running_attacks} / {userPlan.limits.max_concurrents}
           </span>
         </div>
 
-        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <Icon name="Clock" size={18} className="text-zinc-400" />
-            <span className="text-sm text-zinc-300">Max Duration</span>
+            <Icon name="Clock" size={18} className="text-muted-foreground" />
+            <span className="text-sm text-card-foreground">Max Duration</span>
           </div>
-          <span className="text-sm font-medium text-white">
+          <span className="text-sm font-medium text-foreground">
             {formatDuration(userPlan.limits.max_duration)}
           </span>
         </div>
 
-        <div className="p-3 bg-white/5 rounded-lg">
+        <div className="p-3 bg-accent/50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <Icon name="Shield" size={18} className="text-zinc-400" />
-            <span className="text-sm text-zinc-300">Available Methods</span>
+            <Icon name="Shield" size={18} className="text-muted-foreground" />
+            <span className="text-sm text-card-foreground">Available Methods</span>
           </div>
           <div className="flex flex-wrap gap-1">
             {userPlan.limits.methods === 'all' ? (
@@ -275,7 +275,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
               (userPlan.limits.methods as string[]).map((method) => (
                 <span
                   key={method}
-                  className="px-2 py-1 text-xs bg-zinc-700 text-zinc-300 rounded uppercase"
+                  className="px-2 py-1 text-xs bg-secondary text-secondary-foreground rounded uppercase"
                 >
                   {method}
                 </span>

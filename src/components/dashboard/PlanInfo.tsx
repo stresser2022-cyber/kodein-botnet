@@ -21,59 +21,59 @@ export default function PlanInfo({
   onGoProfile
 }: PlanInfoProps) {
   return (
-    <div className="bg-zinc-950 border border-white/10 rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-white mb-2">Information</h3>
-      <p className="text-sm text-zinc-400 mb-6">Summary of your current plan.</p>
+    <div className="bg-card border border-border rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-foreground mb-2">Information</h3>
+      <p className="text-sm text-muted-foreground mb-6">Summary of your current plan.</p>
 
       <div className="space-y-4 mb-6">
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-zinc-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Icon name="Award" size={16} />
             <span>Plan</span>
           </div>
-          <span className="text-white font-medium">{plan}</span>
+          <span className="text-foreground font-medium">{plan}</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-zinc-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Icon name="Users" size={16} />
             <span>Concurrents</span>
           </div>
-          <span className="text-white font-medium">{concurrents} attacks</span>
+          <span className="text-foreground font-medium">{concurrents} attacks</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-zinc-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Icon name="Clock" size={16} />
             <span>Attack time</span>
           </div>
-          <span className="text-white font-medium">{attackTime} sec.</span>
+          <span className="text-foreground font-medium">{attackTime} sec.</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-zinc-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Icon name="Crown" size={16} />
             <span>VIP Access</span>
           </div>
-          <span className="text-white font-medium">{vipAccess ? 'Yes' : 'No'}</span>
+          <span className="text-foreground font-medium">{vipAccess ? 'Yes' : 'No'}</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-zinc-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Icon name="Code" size={16} />
             <span>API Access</span>
           </div>
-          <span className="text-white font-medium">{apiAccess ? 'Yes' : 'No'}</span>
+          <span className="text-foreground font-medium">{apiAccess ? 'Yes' : 'No'}</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-zinc-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Icon name="Calendar" size={16} />
             <span>Expire</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-white font-medium">{expireDate}</span>
-            <button className="text-zinc-400 hover:text-white transition-colors">
+            <span className="text-foreground font-medium">{expireDate}</span>
+            <button className="text-muted-foreground hover:text-foreground transition-colors">
               <Icon name="X" size={14} />
             </button>
           </div>
@@ -82,7 +82,7 @@ export default function PlanInfo({
 
       <Button 
         onClick={onGoProfile}
-        className="w-full bg-white text-black hover:bg-white/90"
+        className="w-full"
       >
         Go Profile
       </Button>

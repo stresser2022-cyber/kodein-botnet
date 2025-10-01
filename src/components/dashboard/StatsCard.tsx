@@ -10,9 +10,9 @@ interface StatsCardProps {
 
 export default function StatsCard({ title, value, trend, subtitle, icon }: StatsCardProps) {
   return (
-    <div className="bg-zinc-950 border border-white/10 rounded-lg p-6">
+    <div className="bg-card border border-border rounded-lg p-6">
       <div className="flex items-start justify-between mb-4">
-        <span className="text-sm text-zinc-400">{title}</span>
+        <span className="text-sm text-muted-foreground">{title}</span>
         {trend && (
           <div className="flex items-center gap-1 text-xs text-green-400">
             <Icon name="TrendingUp" size={14} />
@@ -20,8 +20,8 @@ export default function StatsCard({ title, value, trend, subtitle, icon }: Stats
           </div>
         )}
       </div>
-      <div className="text-4xl font-bold text-white mb-2">{value}</div>
-      <div className="text-sm text-zinc-500">{subtitle}</div>
+      <div className="text-4xl font-bold text-foreground mb-2">{value}</div>
+      <div className="text-sm text-muted-foreground">{subtitle}</div>
     </div>
   );
 }

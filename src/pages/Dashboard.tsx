@@ -29,8 +29,8 @@ export default function Dashboard() {
       />
       
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-        <header className="border-b border-white/10 px-8 py-6">
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <header className="border-b border-border px-8 py-6">
+          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         </header>
 
         <main className="p-8">

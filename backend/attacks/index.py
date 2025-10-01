@@ -140,26 +140,25 @@ def handle_list(user_id: str, event: Dict[str, Any]) -> Dict[str, Any]:
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     if status_filter:
-        safe_status_filter = status_filter.replace("'", "''")
-        cursor.execute(f"""
+        cursor.execute("""
             SELECT id, target, port, duration, method, status,
                    rate, rqmethod, proxylist, headers, http_version, protocol,
                    postdata, payload, range_subnet, external_attack_id,
                    started_at, expires_at, completed_at, error_message, created_at
             FROM attacks
-            WHERE user_id = {int(user_id)} AND status = '{safe_status_filter}'
+            WHERE user_id = %s AND status = %s
             ORDER BY created_at DESC
-        """)
+        """, (int(user_id), status_filter))
     else:
-        cursor.execute(f"""
+        cursor.execute("""
             SELECT id, target, port, duration, method, status,
                    rate, rqmethod, proxylist, headers, http_version, protocol,
                    postdata, payload, range_subnet, external_attack_id,
                    started_at, expires_at, completed_at, error_message, created_at
             FROM attacks
-            WHERE user_id = {int(user_id)}
+            WHERE user_id = %s
             ORDER BY created_at DESC
-        """)
+        """, (int(user_id),))
     
     attacks = cursor.fetchall()
     cursor.close()
@@ -215,9 +214,10 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
-    cursor.execute(f"""
-        SELECT plan, plan_expires_at FROM users WHERE id = {int(user_id)}
-    """)
+    cursor.execute(
+        "SELECT plan, plan_expires_at FROM users WHERE id = %s",
+        (int(user_id),)
+    )
     
     user = cursor.fetchone()
     
@@ -259,10 +259,10 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
             })
         }
     
-    cursor.execute(f"""
-        SELECT COUNT(*) as count FROM attacks 
-        WHERE user_id = {int(user_id)} AND status = 'running' AND expires_at > NOW()
-    """)
+    cursor.execute(
+        "SELECT COUNT(*) as count FROM attacks WHERE user_id = %s AND status = 'running' AND expires_at > NOW()",
+        (int(user_id),)
+    )
     
     running_count = cursor.fetchone()['count']
     

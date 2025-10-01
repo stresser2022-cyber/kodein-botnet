@@ -85,9 +85,20 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     
     const interval = setInterval(() => {
       fetchUserPlan();
-    }, 10000);
+    }, 5000);
     
-    return () => clearInterval(interval);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchUserPlan();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [currentUser]);
 
   const fetchUserPlan = async () => {

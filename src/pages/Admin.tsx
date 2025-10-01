@@ -25,9 +25,47 @@ export default function Admin() {
     const savedKey = localStorage.getItem('admin_key');
     if (savedKey) {
       setAdminKey(savedKey);
-      fetchUsers(savedKey);
+      verifyAndFetchUsers(savedKey);
     }
   }, []);
+
+  const verifyAndFetchUsers = async (key: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: {
+          'X-Admin-Key': key
+        }
+      });
+
+      if (!response.ok) {
+        setIsAuthenticated(false);
+        localStorage.removeItem('admin_key');
+        toast({
+          title: 'Session Expired',
+          description: 'Please log in again',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      const data = await response.json();
+      setUsers(data.users);
+      setTotal(data.total);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setIsAuthenticated(false);
+      localStorage.removeItem('admin_key');
+      toast({
+        title: 'Error',
+        description: 'Authentication failed',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchUsers = async (key: string) => {
     setLoading(true);

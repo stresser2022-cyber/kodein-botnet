@@ -85,10 +85,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             if action == 'register':
                 username = body_data.get('username', '').strip()
-                email = body_data.get('email', '').strip()
                 password = body_data.get('password', '').strip()
                 
-                if not username or not email or not password:
+                if not username or not password:
                     return {
                         'statusCode': 400,
                         'headers': cors_headers,
@@ -112,22 +111,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False
                     }
                 
-                cur.execute("SELECT id FROM users WHERE email = %s OR username = %s", (email, username))
+                cur.execute("SELECT id FROM users WHERE username = %s", (username,))
                 existing = cur.fetchone()
                 
                 if existing:
                     return {
                         'statusCode': 409,
                         'headers': cors_headers,
-                        'body': json.dumps({'error': 'User with this email or username already exists'}),
+                        'body': json.dumps({'error': 'User with this username already exists'}),
                         'isBase64Encoded': False
                     }
                 
                 password_hash = hash_password(password)
                 
                 cur.execute(
-                    "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id, username, email, created_at",
-                    (username, email, password_hash)
+                    "INSERT INTO users (username, password_hash) VALUES (%s, %s) RETURNING id, username, created_at",
+                    (username, password_hash)
                 )
                 user = cur.fetchone()
                 conn.commit()
@@ -141,7 +140,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'user': {
                             'id': user['id'],
                             'username': user['username'],
-                            'email': user['email'],
                             'created_at': user['created_at'].isoformat() if user['created_at'] else None
                         }
                     }),
@@ -149,20 +147,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             elif action == 'login':
-                email = body_data.get('email', '').strip()
+                username = body_data.get('username', '').strip()
                 password = body_data.get('password', '').strip()
                 
-                if not email or not password:
+                if not username or not password:
                     return {
                         'statusCode': 400,
                         'headers': cors_headers,
-                        'body': json.dumps({'error': 'Email and password are required'}),
+                        'body': json.dumps({'error': 'Username and password are required'}),
                         'isBase64Encoded': False
                     }
                 
                 cur.execute(
-                    "SELECT id, username, email, password_hash, is_active FROM users WHERE email = %s",
-                    (email,)
+                    "SELECT id, username, password_hash, is_active FROM users WHERE username = %s",
+                    (username,)
                 )
                 user = cur.fetchone()
                 
@@ -170,7 +168,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     return {
                         'statusCode': 401,
                         'headers': cors_headers,
-                        'body': json.dumps({'error': 'Invalid email or password'}),
+                        'body': json.dumps({'error': 'Invalid username or password'}),
                         'isBase64Encoded': False
                     }
                 
@@ -199,8 +197,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'token': token,
                         'user': {
                             'id': user['id'],
-                            'username': user['username'],
-                            'email': user['email']
+                            'username': user['username']
                         }
                     }),
                     'isBase64Encoded': False

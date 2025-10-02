@@ -187,9 +187,16 @@ export default function Index() {
       console.error('Auth error:', error);
       console.error('Error type:', error.name);
       console.error('Error message:', error.message);
+      
+      let errorMessage = 'Не удалось подключиться к серверу.';
+      
+      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+        errorMessage = 'Проверьте:\n1. Отключите блокировщик рекламы\n2. Попробуйте другой браузер\n3. Проверьте антивирус/файрвол';
+      }
+      
       toast({
         title: 'Ошибка подключения',
-        description: error.message || 'Не удалось подключиться к серверу.',
+        description: errorMessage,
         variant: 'destructive'
       });
     }

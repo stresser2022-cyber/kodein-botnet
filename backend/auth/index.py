@@ -93,13 +93,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     }
     
     if method == 'OPTIONS':
+        # CORS preflight response
         return {
-            'statusCode': 204,
-            'headers': {
-                **cors_headers,
-                'Vary': 'Origin'
-            },
-            'body': '',
+            'statusCode': 200,
+            'headers': cors_headers,
+            'body': json.dumps({}),
             'isBase64Encoded': False
         }
     

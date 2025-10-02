@@ -183,11 +183,13 @@ export default function Index() {
           window.location.href = '/dashboard';
         }, 100);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Auth error:', error);
+      console.error('Error type:', error.name);
+      console.error('Error message:', error.message);
       toast({
         title: 'Ошибка подключения',
-        description: 'Не удалось подключиться к серверу. Проверьте интернет.',
+        description: error.message || 'Не удалось подключиться к серверу.',
         variant: 'destructive'
       });
     }

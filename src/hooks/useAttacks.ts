@@ -59,7 +59,7 @@ export function useAttacks(currentUser: string | null) {
       const authToken = localStorage.getItem('auth_token');
       const response = await fetch(SETTINGS_API, {
         headers: {
-          'Authorization': `Bearer ${authToken}`
+          'X-Auth-Token': authToken || ''
         }
       });
       if (response.ok) {
@@ -86,7 +86,7 @@ export function useAttacks(currentUser: string | null) {
       const authToken = localStorage.getItem('auth_token');
       const response = await fetch(ATTACKS_API, {
         headers: {
-          'Authorization': `Bearer ${authToken}`
+          'X-Auth-Token': authToken || ''
         }
       });
       if (response.ok) {
@@ -152,7 +152,7 @@ export function useAttacks(currentUser: string | null) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          'X-Auth-Token': authToken || ''
         },
         body: JSON.stringify({
           action: 'start',
@@ -214,7 +214,7 @@ export function useAttacks(currentUser: string | null) {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${authToken}`
+              'X-Auth-Token': authToken || ''
             },
             body: JSON.stringify({
               action: 'stop',

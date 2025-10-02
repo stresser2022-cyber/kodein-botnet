@@ -129,7 +129,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Authentication required. Please provide valid JWT token.'})
         }
     
-    user_id = str(user_info['user_id'])
+    user_id = user_info['user_id']  # Keep as-is from JWT (integer)
     username = user_info['username']
     
     if method == 'GET':
@@ -158,7 +158,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
 
 
-def handle_list(user_id: str, event: Dict[str, Any]) -> Dict[str, Any]:
+def handle_list(user_id: int, event: Dict[str, Any]) -> Dict[str, Any]:
     query_params = event.get('queryStringParameters') or {}
     status_filter = query_params.get('status')
     
@@ -182,7 +182,7 @@ def handle_list(user_id: str, event: Dict[str, Any]) -> Dict[str, Any]:
             FROM attacks
             WHERE user_id = %s AND status = %s
             ORDER BY created_at DESC
-        """, (int(user_id), status_filter))
+        """, (user_id, status_filter))
     else:
         cursor.execute("""
             SELECT id, target, port, duration, method, status,
@@ -192,7 +192,7 @@ def handle_list(user_id: str, event: Dict[str, Any]) -> Dict[str, Any]:
             FROM attacks
             WHERE user_id = %s
             ORDER BY created_at DESC
-        """, (int(user_id),))
+        """, (user_id,))
     
     attacks = cursor.fetchall()
     cursor.close()
@@ -225,7 +225,7 @@ def handle_list(user_id: str, event: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
+def handle_start(user_id: int, body_data: Dict[str, Any]) -> Dict[str, Any]:
     target = body_data.get('target')
     duration = body_data.get('duration')
     attack_method = body_data.get('method')
@@ -252,7 +252,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     
     cursor.execute(
         "SELECT plan, plan_expires_at FROM users WHERE id = %s",
-        (int(user_id),)
+        (user_id,)
     )
     
     user = cursor.fetchone()
@@ -300,7 +300,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     
     cursor.execute(
         "SELECT COUNT(*) as count FROM attacks WHERE user_id = %s AND status = 'running' AND expires_at > NOW()",
-        (int(user_id),)
+        (user_id,)
     )
     
     running_count = cursor.fetchone()['count']
@@ -408,7 +408,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
         )
         RETURNING id
     """, (
-        int(user_id), target, port, int(duration), attack_method,
+        user_id, target, port, int(duration), attack_method,
         rate, rqmethod, proxylist, headers_custom, http_version, protocol,
         postdata, payload, range_subnet,
         started_at, expires_at
@@ -437,7 +437,7 @@ def handle_start(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
+def handle_stop(user_id: int, body_data: Dict[str, Any]) -> Dict[str, Any]:
     attack_id = body_data.get('attack_id')
     
     if not attack_id:
@@ -477,7 +477,7 @@ def handle_stop(user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Attack not found'})
         }
     
-    if attack['user_id'] != int(user_id):
+    if attack['user_id'] != user_id:
         cursor.close()
         conn.close()
         return {

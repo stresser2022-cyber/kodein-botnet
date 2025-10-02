@@ -94,8 +94,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     if method == 'OPTIONS':
         return {
-            'statusCode': 200,
-            'headers': cors_headers,
+            'statusCode': 204,
+            'headers': {
+                **cors_headers,
+                'Vary': 'Origin'
+            },
             'body': '',
             'isBase64Encoded': False
         }

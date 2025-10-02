@@ -184,9 +184,10 @@ export default function Index() {
         }, 100);
       }
     } catch (error) {
+      console.error('Auth error:', error);
       toast({
-        title: 'Error',
-        description: 'Network error. Please try again.',
+        title: 'Ошибка подключения',
+        description: 'Не удалось подключиться к серверу. Проверьте интернет.',
         variant: 'destructive'
       });
     }

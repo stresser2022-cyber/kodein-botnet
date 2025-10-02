@@ -80,6 +80,7 @@ export default function Index() {
         
         const response = await fetch(API_URL, {
           method: 'POST',
+          mode: 'cors',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -136,6 +137,7 @@ export default function Index() {
         
         const response = await fetch(API_URL, {
           method: 'POST',
+          mode: 'cors',
           headers: {
             'Content-Type': 'application/json'
           },

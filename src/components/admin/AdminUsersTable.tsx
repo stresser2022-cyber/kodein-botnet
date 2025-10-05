@@ -140,8 +140,6 @@ export default function AdminUsersTable({
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex flex-col gap-1">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full w-fit ${
-                      user.plan === 'ultimate' ? 'bg-purple-500/20 text-purple-400' :
-                      user.plan === 'pro' ? 'bg-blue-500/20 text-blue-400' :
                       user.plan === 'advanced' ? 'bg-green-500/20 text-green-400' :
                       user.plan === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
                       user.plan === 'basic' ? 'bg-orange-500/20 text-orange-400' :
@@ -193,13 +191,12 @@ export default function AdminUsersTable({
                     >
                       <option value="">Set Plan</option>
                       <option value="free-0">Free</option>
+                      <option value="basic-7">Basic (7d)</option>
                       <option value="basic-30">Basic (30d)</option>
+                      <option value="medium-7">Medium (7d)</option>
                       <option value="medium-30">Medium (30d)</option>
+                      <option value="advanced-7">Advanced (7d)</option>
                       <option value="advanced-30">Advanced (30d)</option>
-                      <option value="pro-7">Pro (7d)</option>
-                      <option value="pro-30">Pro (30d)</option>
-                      <option value="ultimate-7">Ultimate (7d)</option>
-                      <option value="ultimate-30">Ultimate (30d)</option>
                     </select>
                     <button
                       onClick={() => {

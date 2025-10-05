@@ -41,7 +41,7 @@ export default function Plans() {
       duration: 30,
       features: {
         concurrents: 1,
-        maxTime: 180,
+        maxTime: 60,
         methods: ['Cooldown: 0s'],
         apiAccess: false
       }
@@ -49,11 +49,11 @@ export default function Plans() {
     {
       id: 'medium',
       name: 'Medium',
-      price: 25,
+      price: 30,
       duration: 30,
       features: {
         concurrents: 2,
-        maxTime: 180,
+        maxTime: 120,
         methods: ['Cooldown: 0s', 'VIP Access'],
         apiAccess: false
       },
@@ -62,36 +62,12 @@ export default function Plans() {
     {
       id: 'advanced',
       name: 'Advanced',
-      price: 45,
+      price: 50,
       duration: 30,
       features: {
         concurrents: 3,
         maxTime: 180,
         methods: ['Cooldown: 0s', 'VIP Access'],
-        apiAccess: false
-      }
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: 65,
-      duration: 30,
-      features: {
-        concurrents: 3,
-        maxTime: 180,
-        methods: ['Priority Support', 'VIP Access'],
-        apiAccess: false
-      }
-    },
-    {
-      id: 'ultimate',
-      name: 'Ultimate',
-      price: 100,
-      duration: 30,
-      features: {
-        concurrents: 10,
-        maxTime: 180,
-        methods: ['Dedicated Support', 'VIP Access'],
         apiAccess: false
       }
     }
@@ -175,7 +151,7 @@ export default function Plans() {
                       </>
                     ) : (
                       <>
-                        <div className="text-3xl font-bold text-foreground">€{plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 65 ? 130 : 200}</div>
+                        <div className="text-3xl font-bold text-foreground">€{plan.price === 10 ? 50 : plan.price === 30 ? 70 : 100}</div>
                         <div className="text-sm text-muted-foreground">one-time payment</div>
                       </>
                     )}
@@ -244,7 +220,7 @@ export default function Plans() {
                     <td className="py-3 px-4 text-muted-foreground">Price</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4 font-semibold text-foreground">
-                        €{billingCycle === 'monthly' ? plan.price : (plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 65 ? 130 : 200)}
+                        €{billingCycle === 'monthly' ? plan.price : (plan.price === 10 ? 50 : plan.price === 30 ? 70 : 100)}
                       </td>
                     ))}
                   </tr>

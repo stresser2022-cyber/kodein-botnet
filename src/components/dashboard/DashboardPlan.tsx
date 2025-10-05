@@ -17,33 +17,23 @@ interface UserPlan {
 const PLAN_LIMITS: Record<string, PlanLimits> = {
   free: {
     max_concurrents: 1,
-    max_duration: 180,
+    max_duration: 60,
     methods: ['dns', 'udp', 'tcp']
   },
   basic: {
     max_concurrents: 1,
-    max_duration: 180,
+    max_duration: 60,
     methods: ['dns', 'udp', 'tcp', 'syn']
   },
   medium: {
     max_concurrents: 2,
-    max_duration: 180,
+    max_duration: 120,
     methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood']
   },
   advanced: {
     max_concurrents: 3,
     max_duration: 180,
     methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood', 'http']
-  },
-  pro: {
-    max_concurrents: 3,
-    max_duration: 180,
-    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http']
-  },
-  ultimate: {
-    max_concurrents: 10,
-    max_duration: 180,
-    methods: 'all'
   }
 };
 
@@ -138,10 +128,6 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   const getPlanColor = (plan: string) => {
     switch (plan) {
-      case 'ultimate':
-        return 'from-purple-500 to-purple-700';
-      case 'pro':
-        return 'from-blue-500 to-blue-700';
       case 'advanced':
         return 'from-green-500 to-green-700';
       case 'medium':
@@ -155,10 +141,6 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
 
   const getPlanIcon = (plan: string) => {
     switch (plan) {
-      case 'ultimate':
-        return 'Crown';
-      case 'pro':
-        return 'Zap';
       case 'advanced':
         return 'Award';
       case 'medium':

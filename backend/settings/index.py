@@ -10,26 +10,37 @@ JWT_ALGORITHM = 'HS256'
 def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
     jwt_secret = os.environ.get('JWT_SECRET')
     if not jwt_secret:
+        print("ERROR: JWT_SECRET not configured")
         return None
     try:
         payload = jwt.decode(token, jwt_secret, algorithms=[JWT_ALGORITHM])
+        print(f"JWT verified successfully: user_id={payload.get('user_id')}, username={payload.get('username')}")
         return payload
-    except:
+    except Exception as e:
+        print(f"JWT verification failed: {e}")
         return None
 
 def extract_user_from_token(event: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     headers = event.get('headers', {})
+    print(f"Headers received: {list(headers.keys())}")
+    
     auth_header = headers.get('authorization') or headers.get('Authorization')
-    if auth_header and auth_header.startswith('Bearer '):
-        token = auth_header[7:]
-        payload = verify_jwt_token(token)
-        if payload:
-            return {'user_id': payload.get('user_id'), 'username': payload.get('username')}
+    if auth_header:
+        print(f"Authorization header found: {auth_header[:20]}...")
+        if auth_header.startswith('Bearer '):
+            token = auth_header[7:]
+            payload = verify_jwt_token(token)
+            if payload:
+                return {'user_id': payload.get('user_id'), 'username': payload.get('username')}
+    
     token = headers.get('x-auth-token') or headers.get('X-Auth-Token')
     if token:
+        print(f"X-Auth-Token header found: {token[:20]}...")
         payload = verify_jwt_token(token)
         if payload:
             return {'user_id': payload.get('user_id'), 'username': payload.get('username')}
+    
+    print("No valid auth token found in headers")
     return None
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:

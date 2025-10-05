@@ -18,22 +18,22 @@ const PLAN_LIMITS: Record<string, PlanLimits> = {
   free: {
     max_concurrents: 1,
     max_duration: 60,
-    methods: ['dns', 'udp', 'tcp']
+    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http', 'tls', 'browser', 'tcpdrop', 'tcp-spoof', 'udpdrop', 'rand', 'socket', 'fivem', 'discord']
   },
   basic: {
     max_concurrents: 1,
     max_duration: 60,
-    methods: ['dns', 'udp', 'tcp', 'syn']
+    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http', 'tls', 'browser', 'tcpdrop', 'tcp-spoof', 'udpdrop', 'rand', 'socket', 'fivem', 'discord']
   },
   medium: {
     max_concurrents: 2,
     max_duration: 120,
-    methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood']
+    methods: 'all'
   },
   advanced: {
     max_concurrents: 3,
     max_duration: 180,
-    methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood', 'http']
+    methods: 'all'
   }
 };
 
@@ -256,10 +256,10 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
         </div>
       </div>
 
-      {userPlan.plan === 'free' && (
+      {(userPlan.plan === 'free' || userPlan.plan === 'basic') && (
         <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
           <p className="text-xs text-blue-400">
-            💡 Upgrade to Pro or Ultimate for more concurrents and longer attacks
+            💡 Upgrade to Medium or Advanced for VIP methods and longer attacks
           </p>
         </div>
       )}

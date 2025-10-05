@@ -93,11 +93,13 @@ export default function AttackForm({
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm leading-none font-medium mb-2" htmlFor="duration">Duration (max 180s)</label>
+              <label className="flex items-center gap-2 text-sm leading-none font-medium mb-2" htmlFor="duration">
+                Duration (max {planLimits.max_duration}s)
+              </label>
               <input 
                 className="placeholder:text-muted-foreground dark:bg-input/30 border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]" 
                 id="duration" 
-                placeholder="180" 
+                placeholder={`${planLimits.max_duration}`}
                 type="text"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}

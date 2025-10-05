@@ -232,27 +232,18 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
           </span>
         </div>
 
-        <div className="p-3 bg-accent/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
+          <div className="flex items-center gap-2">
             <Icon name="Shield" size={18} className="text-muted-foreground" />
             <span className="text-sm text-card-foreground">Available Methods</span>
           </div>
-          <div className="flex flex-wrap gap-1">
+          <span className="text-sm font-medium text-foreground">
             {userPlan.limits.methods === 'all' ? (
-              <span className="px-2 py-1 text-xs bg-green-500/20 text-green-400 rounded">
-                All Methods
-              </span>
+              <span className="text-green-400">All Methods</span>
             ) : (
-              (userPlan.limits.methods as string[]).map((method) => (
-                <span
-                  key={method}
-                  className="px-2 py-1 text-xs bg-secondary text-secondary-foreground rounded uppercase"
-                >
-                  {method}
-                </span>
-              ))
+              `${(userPlan.limits.methods as string[]).length} methods`
             )}
-          </div>
+          </span>
         </div>
       </div>
 

@@ -16,9 +16,10 @@ interface AdminAnnouncementsProps {
   adminKey: string;
   onSuccess: () => void;
   onError: (message: string) => void;
+  onPublished?: () => void;
 }
 
-export default function AdminAnnouncements({ adminKey, onSuccess, onError }: AdminAnnouncementsProps) {
+export default function AdminAnnouncements({ adminKey, onSuccess, onError, onPublished }: AdminAnnouncementsProps) {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [type, setType] = useState('info');
@@ -61,6 +62,7 @@ export default function AdminAnnouncements({ adminKey, onSuccess, onError }: Adm
       setTitle('');
       setMessage('');
       setType('info');
+      if (onPublished) onPublished();
     } catch (error) {
       onError('Network error');
     } finally {

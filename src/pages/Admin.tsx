@@ -6,6 +6,7 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import AdminFilters from '@/components/admin/AdminFilters';
 import AdminUsersTable, { User } from '@/components/admin/AdminUsersTable';
 import AdminAnnouncements from '@/components/admin/AdminAnnouncements';
+import AdminAnnouncementsList from '@/components/admin/AdminAnnouncementsList';
 
 export default function Admin() {
   const [adminKey, setAdminKey] = useState('');
@@ -17,6 +18,7 @@ export default function Admin() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [announcementsRefresh, setAnnouncementsRefresh] = useState(0);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -339,6 +341,25 @@ export default function Admin() {
             toast({
               title: 'Success',
               description: 'Announcement published successfully'
+            });
+          }}
+          onError={(message) => {
+            toast({
+              title: 'Error',
+              description: message,
+              variant: 'destructive'
+            });
+          }}
+          onPublished={() => setAnnouncementsRefresh(prev => prev + 1)}
+        />
+
+        <AdminAnnouncementsList
+          adminKey={adminKey}
+          refreshTrigger={announcementsRefresh}
+          onSuccess={() => {
+            toast({
+              title: 'Success',
+              description: 'Announcement deleted successfully'
             });
           }}
           onError={(message) => {

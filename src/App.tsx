@@ -35,12 +35,12 @@ const App = () => {
         <Sonner />
         
         {loading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm transition-opacity duration-500">
+          <div className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500">
             <Icon name="Sparkles" size={64} className="text-purple-400/60 animate-pulse" />
           </div>
         )}
 
-        <div className={`transition-opacity duration-500 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`transition-opacity duration-500 ${loading ? 'opacity-20' : 'opacity-100'}`}>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

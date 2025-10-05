@@ -17,17 +17,17 @@ interface UserPlan {
 const PLAN_LIMITS: Record<string, PlanLimits> = {
   free: {
     max_concurrents: 1,
-    max_duration: 60,
+    max_duration: 180,
     methods: ['dns', 'udp', 'tcp']
   },
   basic: {
     max_concurrents: 1,
-    max_duration: 60,
+    max_duration: 180,
     methods: ['dns', 'udp', 'tcp', 'syn']
   },
   medium: {
     max_concurrents: 2,
-    max_duration: 120,
+    max_duration: 180,
     methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood']
   },
   advanced: {
@@ -37,7 +37,7 @@ const PLAN_LIMITS: Record<string, PlanLimits> = {
   },
   'api-basic': {
     max_concurrents: 1,
-    max_duration: 60,
+    max_duration: 180,
     methods: ['dns', 'udp', 'tcp', 'syn', 'api']
   },
   'api-pro': {
@@ -47,17 +47,17 @@ const PLAN_LIMITS: Record<string, PlanLimits> = {
   },
   'api-enterprise': {
     max_concurrents: 5,
-    max_duration: 300,
+    max_duration: 180,
     methods: 'all'
   },
   pro: {
     max_concurrents: 3,
-    max_duration: 300,
+    max_duration: 180,
     methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http']
   },
   ultimate: {
     max_concurrents: 10,
-    max_duration: 1800,
+    max_duration: 180,
     methods: 'all'
   }
 };

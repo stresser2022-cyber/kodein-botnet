@@ -19,10 +19,12 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [loading, setLoading] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(false);
+      setFadeOut(true);
+      setTimeout(() => setLoading(false), 800);
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -50,7 +52,7 @@ const App = () => {
         <Sonner />
         
         {loading && (
-          <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-background/80 backdrop-blur-sm transition-opacity duration-500 pointer-events-none">
+          <div className={`fixed inset-0 z-[9998] flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-1000 pointer-events-none ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <Icon name="Sparkles" size={64} className="text-purple-400/60 animate-pulse" />
           </div>
         )}

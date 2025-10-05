@@ -95,6 +95,13 @@ export default function DashboardSidebar({
       </div>
 
       <div className="border-t border-sidebar-border p-3">
+        <Link
+          to="/"
+          className="flex items-center gap-3 px-3 py-2 rounded-md mb-1 text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
+        >
+          <Icon name="Home" size={20} />
+          {!collapsed && <span className="text-sm">Main Page</span>}
+        </Link>
         <a
           href="https://t.me/mirai_network"
           target="_blank"

@@ -35,7 +35,7 @@ const App = () => {
         <Sonner />
         
         {loading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background transition-opacity duration-500">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm transition-opacity duration-500">
             <Icon name="Moon" size={64} className="text-foreground/30 animate-pulse" />
           </div>
         )}

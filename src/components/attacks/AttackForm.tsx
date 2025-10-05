@@ -121,11 +121,7 @@ export default function AttackForm({
                   <SelectItem value="tcpdrop" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">tcpdrop</SelectItem>
                   <SelectItem value="ack" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">ack</SelectItem>
                   <SelectItem value="syn" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">syn</SelectItem>
-                  <SelectItem value="gudp" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>gudp {!hasVIP && '🔒'}</SelectItem>
-                  <SelectItem value="udpbypass" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>udpbypass {!hasVIP && '🔒'}</SelectItem>
-                  <SelectItem value="tcpbypass" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>tcpbypass {!hasVIP && '🔒'}</SelectItem>
                   <SelectItem value="tcp-spoof" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">tcp-spoof</SelectItem>
-                  <SelectItem value="ovh" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>ovh {!hasVIP && '🔒'}</SelectItem>
                   <SelectItem value="udpdrop" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">udpdrop</SelectItem>
                   <SelectItem value="rand" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">rand</SelectItem>
                   <SelectItem value="socket" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">socket</SelectItem>
@@ -134,12 +130,23 @@ export default function AttackForm({
                   
                   <div className="h-px bg-zinc-700 my-1"></div>
                   <div className="px-2 py-1.5 text-xs font-semibold text-zinc-400">L7 Methods</div>
-                  <SelectItem value="cloudflare" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>cloudflare {!hasVIP && '🔒'}</SelectItem>
                   <SelectItem value="http" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">http</SelectItem>
                   <SelectItem value="tls" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">tls</SelectItem>
                   <SelectItem value="flood" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">flood</SelectItem>
                   <SelectItem value="browser" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">browser</SelectItem>
+                  
+                  {!hasVIP && (
+                    <>
+                      <div className="h-px bg-zinc-700 my-1"></div>
+                      <div className="px-2 py-1.5 text-xs font-semibold text-zinc-600">VIP Only Methods 🔒</div>
+                    </>
+                  )}
+                  <SelectItem value="cloudflare" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>cloudflare {!hasVIP && '🔒'}</SelectItem>
                   <SelectItem value="priv-flood" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>priv-flood {!hasVIP && '🔒'}</SelectItem>
+                  <SelectItem value="gudp" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>gudp {!hasVIP && '🔒'}</SelectItem>
+                  <SelectItem value="udpbypass" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>udpbypass {!hasVIP && '🔒'}</SelectItem>
+                  <SelectItem value="tcpbypass" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>tcpbypass {!hasVIP && '🔒'}</SelectItem>
+                  <SelectItem value="ovh" disabled={!hasVIP} className={`${hasVIP ? 'text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer' : 'text-zinc-600 cursor-not-allowed'}`}>ovh {!hasVIP && '🔒'}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -105,7 +105,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     try {
       const authToken = localStorage.getItem('auth_token');
       const settingsRes = await fetch(SETTINGS_API, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
+        headers: { 'X-Auth-Token': authToken || '' }
       });
 
       if (settingsRes.ok) {
@@ -124,7 +124,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
         let runningCount = 0;
         try {
           const attacksRes = await fetch(ATTACKS_API, {
-            headers: { 'Authorization': `Bearer ${authToken}` }
+            headers: { 'X-Auth-Token': authToken || '' }
           });
           
           if (attacksRes.ok) {

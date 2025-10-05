@@ -19,20 +19,27 @@ interface PlanLimits {
   methods: string[] | string;
 }
 
+const VIP_ONLY_METHODS = ['cloudflare', 'priv-flood', 'gudp', 'udpbypass', 'tcpbypass', 'ovh'];
+
 const PLAN_LIMITS: Record<string, PlanLimits> = {
   free: {
     max_concurrents: 1,
     max_duration: 60,
-    methods: ['dns', 'udp', 'tcp']
+    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http', 'tls', 'browser', 'tcpdrop', 'tcp-spoof', 'udpdrop', 'rand', 'socket', 'fivem', 'discord']
   },
-  pro: {
+  basic: {
+    max_concurrents: 1,
+    max_duration: 60,
+    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http', 'tls', 'browser', 'tcpdrop', 'tcp-spoof', 'udpdrop', 'rand', 'socket', 'fivem', 'discord']
+  },
+  medium: {
+    max_concurrents: 2,
+    max_duration: 120,
+    methods: 'all'
+  },
+  advanced: {
     max_concurrents: 3,
-    max_duration: 300,
-    methods: ['dns', 'udp', 'tcp', 'pps', 'syn', 'ack', 'flood', 'http']
-  },
-  ultimate: {
-    max_concurrents: 10,
-    max_duration: 1800,
+    max_duration: 180,
     methods: 'all'
   }
 };
@@ -135,7 +142,18 @@ export function useAttacks(currentUser: string | null) {
       return false;
     }
 
-    if (planLimits.methods !== 'all' && !planLimits.methods.includes(method.toLowerCase())) {
+    const methodLower = method.toLowerCase();
+    
+    if (VIP_ONLY_METHODS.includes(methodLower) && userPlan !== 'medium' && userPlan !== 'advanced') {
+      toast({
+        title: 'VIP Method',
+        description: `Method "${method}" requires VIP access (Medium or Advanced plan). Upgrade to unlock.`,
+        variant: 'destructive'
+      });
+      return false;
+    }
+
+    if (planLimits.methods !== 'all' && !planLimits.methods.includes(methodLower)) {
       toast({
         title: 'Method Not Allowed',
         description: `Method "${method}" is not available in your ${userPlan.toUpperCase()} plan. Upgrade to access more methods.`,

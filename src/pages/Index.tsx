@@ -56,10 +56,10 @@ export default function Index() {
   const handleAuth = async (e: React.FormEvent, captchaValid: boolean) => {
     e.preventDefault();
     
-    if (authMode === 'register' && !captchaValid) {
+    if (!captchaValid) {
       toast({
         title: 'Ошибка',
-        description: 'Неверный ответ на капчу. Попробуйте снова.',
+        description: 'Пожалуйста, подтвердите что вы не робот',
         variant: 'destructive'
       });
       return;

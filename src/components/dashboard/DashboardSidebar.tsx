@@ -21,8 +21,7 @@ export default function DashboardSidebar({
   const menuItems = [
     { icon: 'LayoutDashboard', label: 'Dashboard', path: '/dashboard' },
     { icon: 'Zap', label: 'Attacks', path: '/dashboard/attacks' },
-    { icon: 'History', label: 'History', path: '/dashboard/history' },
-    { icon: 'FileText', label: 'Documentation', path: '/dashboard/docs' }
+    { icon: 'History', label: 'History', path: '/dashboard/history' }
   ];
 
   const billingItems = [

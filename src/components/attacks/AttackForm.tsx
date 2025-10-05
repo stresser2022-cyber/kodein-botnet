@@ -159,13 +159,13 @@ export default function AttackForm({
                     <input
                       type="range"
                       min="1"
-                      max="3"
+                      max={planLimits.max_concurrents}
                       value={concurrents}
                       onChange={(e) => setConcurrents(parseInt(e.target.value))}
                       className="absolute w-full h-1.5 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-foreground [&::-webkit-slider-thumb]:shadow-sm [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-foreground [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-foreground [&::-moz-range-thumb]:shadow-sm"
                     />
                   </div>
-                  <span className="w-12 text-xs text-center text-foreground">{concurrents} / 3</span>
+                  <span className="w-12 text-xs text-center text-foreground">{concurrents} / {planLimits.max_concurrents}</span>
                 </div>
               </div>
             </div>

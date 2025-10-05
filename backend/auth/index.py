@@ -10,14 +10,17 @@ import os
 import hashlib
 import hmac
 import base64
+import re
 from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
 
 try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
+    import bcrypt
 except ImportError:
     psycopg2 = None
+    bcrypt = None
 
 
 def create_jwt(user_id: int, username: str, secret: str) -> str:
@@ -53,7 +56,30 @@ def create_jwt(user_id: int, username: str, secret: str) -> str:
 
 
 def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
+def verify_password(password: str, hashed: str) -> bool:
+    try:
+        if hashed.startswith('$2b$') or hashed.startswith('$2a$'):
+            return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+    except Exception:
+        pass
+    
+    sha256_hash = hashlib.sha256(password.encode()).hexdigest()
+    return sha256_hash == hashed
+
+def validate_username(username: str) -> bool:
+    if len(username) < 3 or len(username) > 20:
+        return False
+    if not re.match(r'^[a-zA-Z0-9_]+$', username):
+        return False
+    return True
+
+def validate_password(password: str) -> bool:
+    if len(password) < 8:
+        return False
+    return True
 
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -83,7 +109,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
-    body_data = json.loads(event.get('body', '{}'))
+    try:
+        body_data = json.loads(event.get('body', '{}'))
+    except json.JSONDecodeError:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Invalid JSON'}),
+            'isBase64Encoded': False
+        }
+    
     action = body_data.get('action')
     username = body_data.get('username', '').strip()
     password = body_data.get('password', '').strip()
@@ -96,6 +134,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'body': json.dumps({'error': 'Username and password required'}),
+            'isBase64Encoded': False
+        }
+    
+    if not validate_username(username):
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Invalid username format. Use 3-20 alphanumeric characters'}),
+            'isBase64Encoded': False
+        }
+    
+    if not validate_password(password):
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Password must be at least 8 characters'}),
             'isBase64Encoded': False
         }
     
@@ -170,18 +230,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     elif action == 'login':
-        password_hash = hash_password(password)
-        
         cursor.execute(
-            "SELECT id, username, created_at FROM users WHERE username = %s AND password_hash = %s",
-            (username, password_hash)
+            "SELECT id, username, password_hash, created_at FROM users WHERE username = %s",
+            (username,)
         )
         user = cursor.fetchone()
         
-        cursor.close()
-        conn.close()
+        if not user or not verify_password(password, user['password_hash']):
         
-        if not user:
+            cursor.close()
+            conn.close()
             return {
                 'statusCode': 401,
                 'headers': {
@@ -191,6 +249,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Invalid username or password'}),
                 'isBase64Encoded': False
             }
+        
+        cursor.close()
+        conn.close()
         
         token = create_jwt(user['id'], user['username'], jwt_secret)
         

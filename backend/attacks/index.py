@@ -7,6 +7,8 @@ Returns: HTTP response with attack data or confirmation
 import json
 import os
 import jwt
+import re
+import ipaddress
 from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 import psycopg2
@@ -16,6 +18,40 @@ import urllib.parse
 import urllib.error
 
 JWT_ALGORITHM = 'HS256'
+
+def validate_target(target: str) -> bool:
+    target = target.strip()
+    if not target or len(target) > 253:
+        return False
+    
+    try:
+        ipaddress.ip_address(target)
+        return True
+    except ValueError:
+        pass
+    
+    domain_pattern = r'^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
+    return bool(re.match(domain_pattern, target))
+
+def validate_port(port: Any) -> bool:
+    if port is None:
+        return True
+    try:
+        port_num = int(port)
+        return 1 <= port_num <= 65535
+    except (ValueError, TypeError):
+        return False
+
+def validate_duration(duration: Any, max_duration: int) -> bool:
+    try:
+        dur = int(duration)
+        return 1 <= dur <= max_duration
+    except (ValueError, TypeError):
+        return False
+
+def validate_method(method: str) -> bool:
+    allowed_methods = ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood', 'http', 'pps', 'api']
+    return method.lower() in allowed_methods
 
 def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
     jwt_secret = os.environ.get('JWT_SECRET')
@@ -236,6 +272,31 @@ def handle_start(user_id: int, body_data: Dict[str, Any]) -> Dict[str, Any]:
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
             'body': json.dumps({'error': 'target, duration, and method are required'})
+        }
+    
+    if not validate_target(str(target)):
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'error': 'Invalid target format'})
+        }
+    
+    if not validate_method(str(attack_method)):
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'error': 'Invalid attack method'})
+        }
+    
+    port = body_data.get('port')
+    if not validate_port(port):
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'error': 'Invalid port number'})
         }
     
     dsn = os.environ.get('DATABASE_URL')

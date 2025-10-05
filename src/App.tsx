@@ -53,7 +53,7 @@ const App = () => {
         
         {loading && (
           <div className={`fixed inset-0 z-[9998] flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-1000 pointer-events-none ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
-            <Icon name="Loader2" size={64} className="text-purple-400/80 animate-spin" />
+            <Icon name="Loader2" size={64} className="text-white/80 animate-spin" />
           </div>
         )}
       </TooltipProvider>

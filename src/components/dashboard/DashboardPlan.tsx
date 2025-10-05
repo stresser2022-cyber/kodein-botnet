@@ -85,7 +85,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     
     const interval = setInterval(() => {
       fetchUserPlan();
-    }, 5000);
+    }, 2000);
     
     const handleVisibilityChange = () => {
       if (!document.hidden) {

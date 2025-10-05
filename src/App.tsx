@@ -1,4 +1,4 @@
-
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,30 +13,52 @@ import Deposit from "./pages/Deposit";
 import Documentation from "./pages/Documentation";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
+import Icon from "@/components/ui/icon";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/attacks" element={<Attacks />} />
-          <Route path="/dashboard/plans" element={<Plans />} />
-          <Route path="/dashboard/deposit" element={<Deposit />} />
-          <Route path="/dashboard/docs" element={<Documentation />} />
-          <Route path="/dashboard/history" element={<History />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        
+        {loading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background transition-opacity duration-500">
+            <Icon name="Moon" size={64} className="text-foreground/30 animate-pulse" />
+          </div>
+        )}
+
+        <div className={`transition-opacity duration-500 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/attacks" element={<Attacks />} />
+              <Route path="/dashboard/plans" element={<Plans />} />
+              <Route path="/dashboard/deposit" element={<Deposit />} />
+              <Route path="/dashboard/docs" element={<Documentation />} />
+              <Route path="/dashboard/history" element={<History />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

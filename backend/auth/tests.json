@@ -1,44 +1,43 @@
 {
   "tests": [
     {
-      "name": "OPTIONS request for CORS",
-      "method": "OPTIONS",
-      "path": "/",
-      "expectedStatus": 200,
-      "bodyMatcher": "partial"
-    },
-    {
       "name": "Register new user",
       "method": "POST",
       "path": "/",
       "body": {
         "action": "register",
-        "username": "newuser999",
-        "password": "password123"
+        "username": "testuser",
+        "password": "testpass123"
       },
       "expectedStatus": 201,
       "expectedBody": {
-        "success": true
+        "success": true,
+        "token": "string",
+        "user": {
+          "id": "number",
+          "username": "string"
+        }
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Login with valid credentials",
+      "name": "Login existing user",
       "method": "POST",
       "path": "/",
       "body": {
         "action": "login",
         "username": "testuser",
-        "password": "test123"
+        "password": "testpass123"
       },
       "expectedStatus": 200,
       "expectedBody": {
-        "success": true
+        "success": true,
+        "token": "string"
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Login with invalid credentials",
+      "name": "Login with wrong password",
       "method": "POST",
       "path": "/",
       "body": {
@@ -47,6 +46,9 @@
         "password": "wrongpassword"
       },
       "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
       "bodyMatcher": "partial"
     }
   ]

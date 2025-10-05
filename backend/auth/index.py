@@ -1,282 +1,223 @@
 '''
-Business: User authentication and registration API
-Args: event - dict with httpMethod, body, queryStringParameters
-      context - object with attributes: request_id, function_name, function_version, memory_limit_in_mb
-Returns: HTTP response dict with statusCode, headers, body
+Business: Система регистрации и авторизации пользователей с JWT токенами
+Args: event - dict с httpMethod, body, queryStringParameters
+      context - объект с атрибутами: request_id, function_name
+Returns: HTTP response с JWT токеном или ошибкой
 '''
 
 import json
 import os
-import bcrypt
-import jwt
-import psycopg2
-from psycopg2.extras import RealDictCursor
-from typing import Dict, Any
-from datetime import datetime, timedelta
 import hashlib
+import hmac
+import base64
+from typing import Dict, Any, Optional
+from datetime import datetime, timedelta
 
-JWT_ALGORITHM = 'HS256'
-JWT_EXPIRATION_HOURS = 24
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+except ImportError:
+    psycopg2 = None
 
-rate_limit_store: Dict[str, list] = {}
-RATE_LIMIT_MAX_ATTEMPTS = 10
-RATE_LIMIT_WINDOW_MINUTES = 5
 
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-def verify_password(password: str, password_hash: str) -> bool:
-    import hashlib
-    # Support legacy SHA256 hashes (64 chars hex)
-    if len(password_hash) == 64:
-        try:
-            int(password_hash, 16)
-            return hashlib.sha256(password.encode()).hexdigest() == password_hash
-        except ValueError:
-            pass
-    # Bcrypt hashes start with $2b$
-    if password_hash.startswith('$2b$'):
-        try:
-            return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
-        except Exception:
-            return False
-    return False
-
-def is_rate_limited(ip: str, username: str) -> bool:
-    key = hashlib.sha256(f"{ip}:{username}".encode()).hexdigest()
-    cutoff = datetime.utcnow() - timedelta(minutes=5)
-    
-    if key in rate_limit_store:
-        rate_limit_store[key] = [t for t in rate_limit_store[key] if t > cutoff]
-        if not rate_limit_store[key]:
-            del rate_limit_store[key]
-        return len(rate_limit_store.get(key, [])) >= 10
-    return False
-
-def record_attempt(ip: str, username: str):
-    key = hashlib.sha256(f"{ip}:{username}".encode()).hexdigest()
-    if key not in rate_limit_store:
-        rate_limit_store[key] = []
-    rate_limit_store[key].append(datetime.utcnow())
-
-def create_jwt_token(user_id: int, username: str) -> str:
-    jwt_secret = os.environ.get('JWT_SECRET')
-    if not jwt_secret:
-        raise ValueError('JWT_SECRET not configured')
+def create_jwt(user_id: int, username: str, secret: str) -> str:
+    header = {
+        "alg": "HS256",
+        "typ": "JWT"
+    }
     
     payload = {
-        'user_id': user_id,
-        'username': username,
-        'exp': datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS),
-        'iat': datetime.utcnow()
+        "user_id": user_id,
+        "username": username,
+        "exp": int((datetime.utcnow() + timedelta(days=7)).timestamp())
     }
-    return jwt.encode(payload, jwt_secret, algorithm=JWT_ALGORITHM)
+    
+    header_b64 = base64.urlsafe_b64encode(
+        json.dumps(header).encode()
+    ).decode().rstrip('=')
+    
+    payload_b64 = base64.urlsafe_b64encode(
+        json.dumps(payload).encode()
+    ).decode().rstrip('=')
+    
+    message = f"{header_b64}.{payload_b64}"
+    signature = hmac.new(
+        secret.encode(),
+        message.encode(),
+        hashlib.sha256
+    ).digest()
+    
+    signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip('=')
+    
+    return f"{message}.{signature_b64}"
+
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
+
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     method: str = event.get('httpMethod', 'GET')
     
-    allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*')
-    origin = event.get('headers', {}).get('origin', '')
-    
-    if allowed_origins == '*':
-        allow_origin = '*'
-    else:
-        allowed_list = [o.strip() for o in allowed_origins.split(',')]
-        allow_origin = origin if origin in allowed_list else allowed_list[0] if allowed_list else '*'
-    
-    cors_headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': allow_origin,
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Auth-Token',
-        'Access-Control-Max-Age': '86400'
-    }
-    
     if method == 'OPTIONS':
-        # CORS preflight response
         return {
             'statusCode': 200,
-            'headers': cors_headers,
-            'body': json.dumps({}),
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id, X-Auth-Token',
+                'Access-Control-Max-Age': '86400'
+            },
+            'body': '',
             'isBase64Encoded': False
         }
     
-    database_url = os.environ.get('DATABASE_URL')
-    if not database_url:
-        return {
-            'statusCode': 500,
-            'headers': cors_headers,
-            'body': json.dumps({'error': 'Database not configured'}),
-            'isBase64Encoded': False
-        }
-    
-    try:
-        conn = psycopg2.connect(database_url)
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        
-        if method == 'POST':
-            body_data = json.loads(event.get('body', '{}'))
-            action = body_data.get('action')
-            
-            if action == 'register':
-                username = body_data.get('username', '').strip()
-                password = body_data.get('password', '').strip()
-                
-                if not username or not password:
-                    return {
-                        'statusCode': 400,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'All fields are required'}),
-                        'isBase64Encoded': False
-                    }
-                
-                import re
-                if not re.match(r'^[a-zA-Z0-9_-]{3,50}$', username):
-                    return {
-                        'statusCode': 400,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'Username must be 3-50 characters and contain only letters, numbers, underscore, or dash'}),
-                        'isBase64Encoded': False
-                    }
-                
-                if len(password) < 6:
-                    return {
-                        'statusCode': 400,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'Password must be at least 6 characters'}),
-                        'isBase64Encoded': False
-                    }
-                
-                cur.execute("SELECT id FROM users WHERE username = %s", (username,))
-                existing = cur.fetchone()
-                
-                if existing:
-                    return {
-                        'statusCode': 409,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'User with this username already exists'}),
-                        'isBase64Encoded': False
-                    }
-                
-                password_hash = hash_password(password)
-                email = f"{username}@temp.local"
-                
-                cur.execute(
-                    "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id, username, created_at",
-                    (username, email, password_hash)
-                )
-                user = cur.fetchone()
-                conn.commit()
-                
-                return {
-                    'statusCode': 201,
-                    'headers': cors_headers,
-                    'body': json.dumps({
-                        'success': True,
-                        'message': 'Account created successfully',
-                        'user': {
-                            'id': user['id'],
-                            'username': user['username'],
-                            'created_at': user['created_at'].isoformat() if user['created_at'] else None
-                        }
-                    }),
-                    'isBase64Encoded': False
-                }
-            
-            elif action == 'login':
-                username = body_data.get('username', '').strip()
-                password = body_data.get('password', '').strip()
-                
-                if not username or not password:
-                    return {
-                        'statusCode': 400,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'Username and password are required'}),
-                        'isBase64Encoded': False
-                    }
-                
-                client_ip = event.get('requestContext', {}).get('identity', {}).get('sourceIp', 'unknown')
-                
-                if is_rate_limited(client_ip, username):
-                    return {
-                        'statusCode': 429,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'Too many login attempts. Please try again in 5 minutes.'}),
-                        'isBase64Encoded': False
-                    }
-                
-                record_attempt(client_ip, username)
-                
-                cur.execute(
-                    "SELECT id, username, password_hash, is_active FROM users WHERE username = %s",
-                    (username,)
-                )
-                user = cur.fetchone()
-                
-                if not user or not verify_password(password, user['password_hash']):
-                    return {
-                        'statusCode': 401,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'Invalid username or password'}),
-                        'isBase64Encoded': False
-                    }
-                
-                if not user['is_active']:
-                    return {
-                        'statusCode': 403,
-                        'headers': cors_headers,
-                        'body': json.dumps({'error': 'Account is inactive'}),
-                        'isBase64Encoded': False
-                    }
-                
-                cur.execute(
-                    "UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = %s",
-                    (user['id'],)
-                )
-                conn.commit()
-                
-                token = create_jwt_token(user['id'], user['username'])
-                
-                return {
-                    'statusCode': 200,
-                    'headers': cors_headers,
-                    'body': json.dumps({
-                        'success': True,
-                        'message': 'Logged in successfully',
-                        'token': token,
-                        'user': {
-                            'id': user['id'],
-                            'username': user['username']
-                        }
-                    }),
-                    'isBase64Encoded': False
-                }
-            
-            else:
-                return {
-                    'statusCode': 400,
-                    'headers': cors_headers,
-                    'body': json.dumps({'error': 'Invalid action'}),
-                    'isBase64Encoded': False
-                }
-        
+    if method != 'POST':
         return {
             'statusCode': 405,
-            'headers': cors_headers,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             'body': json.dumps({'error': 'Method not allowed'}),
             'isBase64Encoded': False
         }
     
-    except Exception as e:
+    body_data = json.loads(event.get('body', '{}'))
+    action = body_data.get('action')
+    username = body_data.get('username', '').strip()
+    password = body_data.get('password', '').strip()
+    
+    if not username or not password:
         return {
-            'statusCode': 500,
-            'headers': cors_headers,
-            'body': json.dumps({'error': str(e)}),
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Username and password required'}),
             'isBase64Encoded': False
         }
     
-    finally:
-        if 'cur' in locals():
-            cur.close()
-        if 'conn' in locals():
+    database_url = os.environ.get('DATABASE_URL')
+    jwt_secret = os.environ.get('JWT_SECRET', 'default-secret-key')
+    
+    if not database_url:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Database not configured'}),
+            'isBase64Encoded': False
+        }
+    
+    conn = psycopg2.connect(database_url)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    if action == 'register':
+        cursor.execute(
+            "SELECT id FROM users WHERE username = %s",
+            (username,)
+        )
+        existing = cursor.fetchone()
+        
+        if existing:
+            cursor.close()
             conn.close()
+            return {
+                'statusCode': 409,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Username already exists'}),
+                'isBase64Encoded': False
+            }
+        
+        password_hash = hash_password(password)
+        
+        cursor.execute(
+            "INSERT INTO users (username, password_hash) VALUES (%s, %s) RETURNING id, username, created_at",
+            (username, password_hash)
+        )
+        user = cursor.fetchone()
+        conn.commit()
+        
+        token = create_jwt(user['id'], user['username'], jwt_secret)
+        
+        cursor.close()
+        conn.close()
+        
+        return {
+            'statusCode': 201,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({
+                'success': True,
+                'token': token,
+                'user': {
+                    'id': user['id'],
+                    'username': user['username'],
+                    'created_at': user['created_at'].isoformat()
+                }
+            }),
+            'isBase64Encoded': False
+        }
+    
+    elif action == 'login':
+        password_hash = hash_password(password)
+        
+        cursor.execute(
+            "SELECT id, username, created_at FROM users WHERE username = %s AND password_hash = %s",
+            (username, password_hash)
+        )
+        user = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
+        
+        if not user:
+            return {
+                'statusCode': 401,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Invalid username or password'}),
+                'isBase64Encoded': False
+            }
+        
+        token = create_jwt(user['id'], user['username'], jwt_secret)
+        
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({
+                'success': True,
+                'token': token,
+                'user': {
+                    'id': user['id'],
+                    'username': user['username'],
+                    'created_at': user['created_at'].isoformat()
+                }
+            }),
+            'isBase64Encoded': False
+        }
+    
+    else:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Invalid action. Use "register" or "login"'}),
+            'isBase64Encoded': False
+        }

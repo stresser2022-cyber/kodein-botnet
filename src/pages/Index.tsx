@@ -58,14 +58,14 @@ export default function Index() {
     
     if (authMode === 'register' && !captchaValid) {
       toast({
-        title: 'Error',
-        description: 'Incorrect captcha answer. Please try again.',
+        title: 'Ошибка',
+        description: 'Неверный ответ на капчу. Попробуйте снова.',
         variant: 'destructive'
       });
       return;
     }
     
-    const API_URL = 'https://functions.poehali.dev/8ec3d566-fc44-442e-ad1d-fee49d4a799b';
+    const AUTH_URL = 'https://functions.poehali.dev/8ec3d566-fc44-442e-ad1d-fee49d4a799b';
     
     try {
       if (authMode === 'register') {
@@ -78,7 +78,7 @@ export default function Index() {
           return;
         }
         
-        const response = await fetch(API_URL, {
+        const response = await fetch(AUTH_URL, {
           method: 'POST',
           mode: 'cors',
           headers: {
@@ -111,8 +111,8 @@ export default function Index() {
         setAuthOpen(false);
         
         toast({
-          title: 'Success',
-          description: 'Account created successfully!'
+          title: 'Успешно',
+          description: 'Аккаунт создан! Перенаправляем...'
         });
         
         setPassword('');
@@ -135,7 +135,7 @@ export default function Index() {
           return;
         }
         
-        const response = await fetch(API_URL, {
+        const response = await fetch(AUTH_URL, {
           method: 'POST',
           mode: 'cors',
           headers: {
@@ -168,8 +168,8 @@ export default function Index() {
         setAuthOpen(false);
         
         toast({
-          title: 'Success',
-          description: 'Logged in successfully!'
+          title: 'Успешно',
+          description: 'Вход выполнен! Перенаправляем...'
         });
         
         setPassword('');

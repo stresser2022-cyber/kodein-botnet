@@ -31,15 +31,6 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        
-        {loading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500">
-            <Icon name="Sparkles" size={64} className="text-purple-400/60 animate-pulse" />
-          </div>
-        )}
-
         <div className={`transition-all duration-500 ${loading ? 'opacity-20 blur-md' : 'opacity-100 blur-0'}`}>
           <BrowserRouter>
             <Routes>
@@ -56,6 +47,15 @@ const App = () => {
             </Routes>
           </BrowserRouter>
         </div>
+
+        <Toaster />
+        <Sonner />
+        
+        {loading && (
+          <div className="fixed inset-0 z-[9998] flex items-center justify-center transition-opacity duration-500 pointer-events-none">
+            <Icon name="Sparkles" size={64} className="text-purple-400/60 animate-pulse" />
+          </div>
+        )}
       </TooltipProvider>
     </QueryClientProvider>
   );

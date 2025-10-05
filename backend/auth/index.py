@@ -137,10 +137,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         password_hash = hash_password(password)
+        email = f"{username}@local.domain"
         
         cursor.execute(
-            "INSERT INTO users (username, password_hash) VALUES (%s, %s) RETURNING id, username, created_at",
-            (username, password_hash)
+            "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id, username, created_at",
+            (username, email, password_hash)
         )
         user = cursor.fetchone()
         conn.commit()

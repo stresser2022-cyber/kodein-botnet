@@ -56,12 +56,12 @@ export const Captcha = ({ onVerify, className = '' }: CaptchaProps) => {
             isVerified ? 'text-green-600 dark:text-green-400' : 'text-foreground'
           }`}
         >
-          {isVerifying ? 'Проверяем...' : isVerified ? '✓ Вы человек!' : 'Я не робот'}
+          {isVerifying ? 'Verifying...' : isVerified ? '✓ You are human!' : 'I am not a robot'}
         </label>
       </div>
       
       <div className="mt-3 pt-3 border-t border-muted/50 flex items-center justify-between text-xs text-muted-foreground">
-        <span>Защита от ботов</span>
+        <span>Bot Protection</span>
         <span className="font-mono">CAPTCHA</span>
       </div>
     </div>

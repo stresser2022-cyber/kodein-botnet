@@ -58,8 +58,8 @@ export default function Index() {
     
     if (!captchaValid) {
       toast({
-        title: 'Ошибка',
-        description: 'Пожалуйста, подтвердите что вы не робот',
+        title: 'Error',
+        description: 'Please verify that you are not a robot',
         variant: 'destructive'
       });
       return;
@@ -111,8 +111,8 @@ export default function Index() {
         setAuthOpen(false);
         
         toast({
-          title: 'Успешно',
-          description: 'Аккаунт создан! Перенаправляем...'
+          title: 'Success',
+          description: 'Account created! Redirecting...'
         });
         
         setPassword('');
@@ -168,8 +168,8 @@ export default function Index() {
         setAuthOpen(false);
         
         toast({
-          title: 'Успешно',
-          description: 'Вход выполнен! Перенаправляем...'
+          title: 'Success',
+          description: 'Logged in! Redirecting...'
         });
         
         setPassword('');
@@ -188,14 +188,14 @@ export default function Index() {
       console.error('Error type:', error.name);
       console.error('Error message:', error.message);
       
-      let errorMessage = 'Не удалось подключиться к серверу.';
+      let errorMessage = 'Failed to connect to server.';
       
       if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-        errorMessage = 'Проверьте:\n1. Отключите блокировщик рекламы\n2. Попробуйте другой браузер\n3. Проверьте антивирус/файрвол';
+        errorMessage = 'Please check:\n1. Disable ad blocker\n2. Try different browser\n3. Check antivirus/firewall';
       }
       
       toast({
-        title: 'Ошибка подключения',
+        title: 'Connection Error',
         description: errorMessage,
         variant: 'destructive'
       });

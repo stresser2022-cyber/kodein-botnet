@@ -20,7 +20,7 @@ export default function Header({ isLoggedIn, currentUser, onSignIn, onLogout }: 
         )}
         <a
           className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"
-          href="https://t.me/join_kodein"
+          href="https://t.me/mirai_network"
         >
           <Icon name="Zap" size={14} />
           Telegram

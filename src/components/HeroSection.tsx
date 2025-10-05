@@ -24,7 +24,7 @@ export default function HeroSection() {
         <a
           target="_blank"
           className="button-ghost px-6 py-2.5 rounded-md inline-flex items-center gap-2 text-white text-sm"
-          href="https://t.me/join_kodein"
+          href="https://t.me/mirai_network"
           rel="noreferrer"
         >
           <Icon name="Zap" size={14} />

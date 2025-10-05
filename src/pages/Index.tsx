@@ -212,7 +212,9 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black">
+    <div className="min-h-screen w-full bg-black relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] pointer-events-none" />
+      
       <Header 
         isLoggedIn={isLoggedIn}
         currentUser={currentUser}

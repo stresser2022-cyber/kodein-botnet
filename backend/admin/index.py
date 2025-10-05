@@ -18,7 +18,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cors_headers = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key',
         'Access-Control-Max-Age': '86400'
     }
@@ -221,6 +221,40 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'success': True,
                     'message': f"User {action}d successfully",
                     'user': response_user
+                }),
+                'isBase64Encoded': False
+            }
+        
+        if method == 'DELETE':
+            query_params = event.get('queryStringParameters', {}) or {}
+            user_id = query_params.get('id')
+            
+            if not user_id:
+                return {
+                    'statusCode': 400,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'Missing user ID'}),
+                    'isBase64Encoded': False
+                }
+            
+            cur.execute("DELETE FROM users WHERE id = %s RETURNING id, username", (user_id,))
+            deleted_user = cur.fetchone()
+            conn.commit()
+            
+            if not deleted_user:
+                return {
+                    'statusCode': 404,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': 'User not found'}),
+                    'isBase64Encoded': False
+                }
+            
+            return {
+                'statusCode': 200,
+                'headers': cors_headers,
+                'body': json.dumps({
+                    'success': True,
+                    'message': f"User {deleted_user['username']} deleted successfully"
                 }),
                 'isBase64Encoded': False
             }

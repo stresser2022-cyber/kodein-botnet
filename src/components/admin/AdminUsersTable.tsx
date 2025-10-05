@@ -18,6 +18,7 @@ interface AdminUsersTableProps {
   onSelectAll: () => void;
   onToggleStatus: (userId: number, currentStatus: boolean) => void;
   onUpdatePlan: (userId: number, plan: string, days: number) => void;
+  onDeleteUser: (userId: number) => void;
   formatDate: (dateString: string | null) => string;
   loading: boolean;
   hasNoUsers: boolean;
@@ -32,6 +33,7 @@ export default function AdminUsersTable({
   onSelectAll,
   onToggleStatus,
   onUpdatePlan,
+  onDeleteUser,
   formatDate,
   loading,
   hasNoUsers,
@@ -205,6 +207,17 @@ export default function AdminUsersTable({
                       <option value="ultimate-7">Ultimate (7d)</option>
                       <option value="ultimate-30">Ultimate (30d)</option>
                     </select>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to delete user "${user.username}"? This action cannot be undone.`)) {
+                          onDeleteUser(user.id);
+                        }
+                      }}
+                      className="px-3 py-1 text-xs font-medium bg-red-600/20 text-red-500 hover:bg-red-600/30 rounded-md transition-colors"
+                      title="Delete user"
+                    >
+                      <Icon name="Trash2" size={14} />
+                    </button>
                   </div>
                 </td>
               </tr>

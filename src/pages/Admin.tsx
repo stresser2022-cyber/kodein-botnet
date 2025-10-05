@@ -315,6 +315,41 @@ export default function Admin() {
     setStatusFilter('all');
   };
 
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      const response = await fetch(`${API_URL}?id=${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'X-Admin-Key': adminKey
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to delete user',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      toast({
+        title: 'Success',
+        description: 'User deleted successfully'
+      });
+
+      fetchUsers(adminKey);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Network error',
+        variant: 'destructive'
+      });
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <AdminLogin 
@@ -391,6 +426,7 @@ export default function Admin() {
           onSelectAll={handleSelectAll}
           onToggleStatus={handleToggleStatus}
           onUpdatePlan={handleUpdatePlan}
+          onDeleteUser={handleDeleteUser}
           formatDate={formatDate}
           loading={loading}
           hasNoUsers={users.length === 0}

@@ -122,6 +122,9 @@ export default function AttackForm({
                   <SelectItem value="ovh" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">ovh</SelectItem>
                   <SelectItem value="udpdrop" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">udpdrop</SelectItem>
                   <SelectItem value="rand" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">rand</SelectItem>
+                  <SelectItem value="socket" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">socket</SelectItem>
+                  <SelectItem value="fivem" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">fivem</SelectItem>
+                  <SelectItem value="discord" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">discord</SelectItem>
                   
                   <div className="h-px bg-zinc-700 my-1"></div>
                   <div className="px-2 py-1.5 text-xs font-semibold text-zinc-400">L7 Methods</div>
@@ -129,10 +132,7 @@ export default function AttackForm({
                   <SelectItem value="tls" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">tls</SelectItem>
                   <SelectItem value="flood" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">flood</SelectItem>
                   <SelectItem value="browser" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">browser</SelectItem>
-                  <SelectItem value="socket" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">socket</SelectItem>
                   <SelectItem value="priv-flood" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">priv-flood</SelectItem>
-                  <SelectItem value="fivem" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">fivem</SelectItem>
-                  <SelectItem value="discord" className="text-white hover:text-white focus:text-white hover:bg-zinc-700 focus:bg-zinc-700 cursor-pointer">discord</SelectItem>
                 </SelectContent>
               </Select>
             </div>

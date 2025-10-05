@@ -124,7 +124,7 @@ export default function Index() {
         
         setTimeout(() => {
           window.location.href = '/dashboard';
-        }, 100);
+        }, 1500);
       } else {
         if (!username || !password) {
           toast({
@@ -181,7 +181,7 @@ export default function Index() {
         
         setTimeout(() => {
           window.location.href = '/dashboard';
-        }, 100);
+        }, 1500);
       }
     } catch (error: any) {
       console.error('Auth error:', error);

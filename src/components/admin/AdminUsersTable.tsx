@@ -141,13 +141,10 @@ export default function AdminUsersTable({
                   <div className="flex flex-col gap-1">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full w-fit ${
                       user.plan === 'ultimate' ? 'bg-purple-500/20 text-purple-400' :
-                      user.plan === 'api-enterprise' ? 'bg-indigo-500/20 text-indigo-400' :
                       user.plan === 'pro' ? 'bg-blue-500/20 text-blue-400' :
-                      user.plan === 'api-pro' ? 'bg-cyan-500/20 text-cyan-400' :
                       user.plan === 'advanced' ? 'bg-green-500/20 text-green-400' :
                       user.plan === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
                       user.plan === 'basic' ? 'bg-orange-500/20 text-orange-400' :
-                      user.plan === 'api-basic' ? 'bg-teal-500/20 text-teal-400' :
                       'bg-gray-500/20 text-gray-400'
                     }`}>
                       {user.plan || 'free'}
@@ -199,9 +196,6 @@ export default function AdminUsersTable({
                       <option value="basic-30">Basic (30d)</option>
                       <option value="medium-30">Medium (30d)</option>
                       <option value="advanced-30">Advanced (30d)</option>
-                      <option value="api-basic-30">API Basic (30d)</option>
-                      <option value="api-pro-30">API Pro (30d)</option>
-                      <option value="api-enterprise-30">API Enterprise (30d)</option>
                       <option value="pro-7">Pro (7d)</option>
                       <option value="pro-30">Pro (30d)</option>
                       <option value="ultimate-7">Ultimate (7d)</option>

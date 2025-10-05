@@ -159,7 +159,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 plan = body_data.get('plan')
                 days = body_data.get('days', 30)
                 
-                valid_plans = ['free', 'basic', 'medium', 'advanced', 'api-basic', 'api-pro', 'api-enterprise', 'pro', 'ultimate']
+                valid_plans = ['free', 'basic', 'medium', 'advanced', 'pro', 'ultimate']
                 if not plan or plan not in valid_plans:
                     return {
                         'statusCode': 400,

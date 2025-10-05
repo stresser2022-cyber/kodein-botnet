@@ -35,21 +35,6 @@ const PLAN_LIMITS: Record<string, PlanLimits> = {
     max_duration: 180,
     methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood', 'http']
   },
-  'api-basic': {
-    max_concurrents: 1,
-    max_duration: 180,
-    methods: ['dns', 'udp', 'tcp', 'syn', 'api']
-  },
-  'api-pro': {
-    max_concurrents: 3,
-    max_duration: 180,
-    methods: ['dns', 'udp', 'tcp', 'syn', 'ack', 'flood', 'http', 'api']
-  },
-  'api-enterprise': {
-    max_concurrents: 5,
-    max_duration: 180,
-    methods: 'all'
-  },
   pro: {
     max_concurrents: 3,
     max_duration: 180,
@@ -155,20 +140,14 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     switch (plan) {
       case 'ultimate':
         return 'from-purple-500 to-purple-700';
-      case 'api-enterprise':
-        return 'from-purple-600 to-indigo-700';
       case 'pro':
         return 'from-blue-500 to-blue-700';
-      case 'api-pro':
-        return 'from-blue-600 to-cyan-700';
       case 'advanced':
         return 'from-green-500 to-green-700';
       case 'medium':
         return 'from-yellow-500 to-orange-600';
       case 'basic':
         return 'from-orange-500 to-red-600';
-      case 'api-basic':
-        return 'from-teal-500 to-teal-700';
       default:
         return 'from-gray-500 to-gray-700';
     }
@@ -178,20 +157,14 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     switch (plan) {
       case 'ultimate':
         return 'Crown';
-      case 'api-enterprise':
-        return 'Rocket';
       case 'pro':
         return 'Zap';
-      case 'api-pro':
-        return 'Key';
       case 'advanced':
         return 'Award';
       case 'medium':
         return 'Star';
       case 'basic':
         return 'Package';
-      case 'api-basic':
-        return 'Code';
       default:
         return 'Shield';
     }

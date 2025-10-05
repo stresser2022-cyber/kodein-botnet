@@ -41,7 +41,7 @@ export default function Plans() {
       duration: 30,
       features: {
         concurrents: 1,
-        maxTime: 60,
+        maxTime: 180,
         methods: ['Cooldown: 0s'],
         apiAccess: false
       }
@@ -53,7 +53,7 @@ export default function Plans() {
       duration: 30,
       features: {
         concurrents: 2,
-        maxTime: 120,
+        maxTime: 180,
         methods: ['Cooldown: 0s', 'VIP Access'],
         apiAccess: false
       },
@@ -72,39 +72,27 @@ export default function Plans() {
       }
     },
     {
-      id: 'api-basic',
-      name: 'API Basic',
-      price: 15,
-      duration: 30,
-      features: {
-        concurrents: 1,
-        maxTime: 60,
-        methods: ['Full Documentation'],
-        apiAccess: true
-      }
-    },
-    {
-      id: 'api-pro',
-      name: 'API Pro',
-      price: 35,
+      id: 'pro',
+      name: 'Pro',
+      price: 65,
       duration: 30,
       features: {
         concurrents: 3,
         maxTime: 180,
-        methods: ['Priority Support'],
-        apiAccess: true
+        methods: ['Priority Support', 'VIP Access'],
+        apiAccess: false
       }
     },
     {
-      id: 'api-enterprise',
-      name: 'API Enterprise',
-      price: 75,
+      id: 'ultimate',
+      name: 'Ultimate',
+      price: 100,
       duration: 30,
       features: {
-        concurrents: 5,
-        maxTime: 300,
-        methods: ['Dedicated Support'],
-        apiAccess: true
+        concurrents: 10,
+        maxTime: 180,
+        methods: ['Dedicated Support', 'VIP Access'],
+        apiAccess: false
       }
     }
   ];
@@ -187,7 +175,7 @@ export default function Plans() {
                       </>
                     ) : (
                       <>
-                        <div className="text-3xl font-bold text-foreground">€{plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150}</div>
+                        <div className="text-3xl font-bold text-foreground">€{plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 65 ? 130 : 200}</div>
                         <div className="text-sm text-muted-foreground">one-time payment</div>
                       </>
                     )}
@@ -212,14 +200,7 @@ export default function Plans() {
                     </div>
                   ))}
                   
-                  {plan.features.apiAccess && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Icon name="Key" size={16} className="text-green-400" />
-                      <span className="text-green-400">API Access</span>
-                    </div>
-                  )}
-                  
-                  {!plan.features.apiAccess && plan.name !== 'Basic' && (
+                  {plan.name !== 'Basic' && (
                     <div className="flex items-center gap-2 text-sm">
                       <Icon name="Award" size={16} className="text-yellow-400" />
                       <span className="text-yellow-400">VIP</span>
@@ -263,7 +244,7 @@ export default function Plans() {
                     <td className="py-3 px-4 text-muted-foreground">Price</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4 font-semibold text-foreground">
-                        €{billingCycle === 'monthly' ? plan.price : (plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 15 ? 40 : plan.price === 35 ? 70 : 150)}
+                        €{billingCycle === 'monthly' ? plan.price : (plan.price === 10 ? 30 : plan.price === 25 ? 50 : plan.price === 45 ? 80 : plan.price === 65 ? 130 : 200)}
                       </td>
                     ))}
                   </tr>
@@ -285,24 +266,12 @@ export default function Plans() {
                       <td key={plan.id} className="text-center py-3 px-4">0s</td>
                     ))}
                   </tr>
-                  <tr className="border-b border-border">
+                  <tr>
                     <td className="py-3 px-4 text-muted-foreground">VIP Access</td>
                     {plans.map(plan => (
                       <td key={plan.id} className="text-center py-3 px-4">
-                        {plan.name !== 'Basic' && !plan.features.apiAccess ? (
+                        {plan.name !== 'Basic' ? (
                           <Icon name="Check" size={16} className="inline text-yellow-400" />
-                        ) : (
-                          <Icon name="X" size={16} className="inline text-gray-600" />
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 text-muted-foreground">API Access</td>
-                    {plans.map(plan => (
-                      <td key={plan.id} className="text-center py-3 px-4">
-                        {plan.features.apiAccess ? (
-                          <Icon name="Check" size={16} className="inline text-green-400" />
                         ) : (
                           <Icon name="X" size={16} className="inline text-gray-600" />
                         )}

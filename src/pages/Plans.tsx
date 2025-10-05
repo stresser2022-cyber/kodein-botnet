@@ -198,7 +198,27 @@ export default function Plans() {
             ))}
           </div>
 
-          <div className="mt-12 bg-card border border-border rounded-lg p-6">
+          <div className="mt-12 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <Icon name="Lock" size={24} className="text-yellow-400 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="text-lg font-semibold text-yellow-400 mb-2">VIP Methods</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Unlock 6 premium attack methods with Medium or Advanced plan
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {['cloudflare', 'priv-flood', 'gudp', 'udpbypass', 'tcpbypass', 'ovh'].map((method) => (
+                    <div key={method} className="flex items-center gap-1.5 text-sm">
+                      <Icon name="Crown" size={14} className="text-yellow-400" />
+                      <code className="text-yellow-300 font-mono">{method}</code>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-card border border-border rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">Plan Comparison</h2>
               <div className="text-sm text-muted-foreground">

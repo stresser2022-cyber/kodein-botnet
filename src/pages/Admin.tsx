@@ -5,6 +5,7 @@ import AdminLogin from '@/components/admin/AdminLogin';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminFilters from '@/components/admin/AdminFilters';
 import AdminUsersTable, { User } from '@/components/admin/AdminUsersTable';
+import AdminAnnouncements from '@/components/admin/AdminAnnouncements';
 
 export default function Admin() {
   const [adminKey, setAdminKey] = useState('');
@@ -332,6 +333,23 @@ export default function Admin() {
       />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
+        <AdminAnnouncements
+          adminKey={adminKey}
+          onSuccess={() => {
+            toast({
+              title: 'Success',
+              description: 'Announcement published successfully'
+            });
+          }}
+          onError={(message) => {
+            toast({
+              title: 'Error',
+              description: message,
+              variant: 'destructive'
+            });
+          }}
+        />
+
         <AdminFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}

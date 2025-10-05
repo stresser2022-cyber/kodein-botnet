@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "Get all announcements",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "announcements": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Create announcement without admin key",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "title": "Test",
+        "message": "Test message"
+      },
+      "expectedStatus": 403,
+      "bodyMatcher": "partial"
+    }
+  ]
+}

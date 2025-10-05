@@ -11,7 +11,6 @@ import MethodsSection from '@/components/MethodsSection';
 import Footer from '@/components/Footer';
 
 export default function Index() {
-  const [activeTab, setActiveTab] = useState<'plans' | 'api'>('plans');
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email] = useState('');
@@ -236,7 +235,7 @@ export default function Index() {
       <HeroSection />
       <StatsSection />
       <FeaturesSection />
-      <PricingSection activeTab={activeTab} setActiveTab={setActiveTab} />
+      <PricingSection />
       <AddonsSection />
       <MethodsSection />
       <Footer />

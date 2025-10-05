@@ -1,13 +1,8 @@
-interface PricingSectionProps {
-  activeTab: 'plans' | 'api';
-  setActiveTab: (tab: 'plans' | 'api') => void;
-}
-
-export default function PricingSection({ activeTab, setActiveTab }: PricingSectionProps) {
+export default function PricingSection() {
   const plans = [
     {
       name: 'Basic',
-      price: '10€ Monthly - 30€ Lifetime',
+      price: '10€ Monthly - 50€ Lifetime',
       features: [
         'Concurrent: 1',
         'Max Time: 60s',
@@ -17,7 +12,7 @@ export default function PricingSection({ activeTab, setActiveTab }: PricingSecti
     },
     {
       name: 'Medium',
-      price: '25€ Monthly - 50€ Lifetime',
+      price: '30€ Monthly - 70€ Lifetime',
       features: [
         'Concurrent: 2',
         'Max Time: 120s',
@@ -27,45 +22,12 @@ export default function PricingSection({ activeTab, setActiveTab }: PricingSecti
     },
     {
       name: 'Advanced',
-      price: '45€ Monthly - 80€ Lifetime',
+      price: '50€ Monthly - 100€ Lifetime',
       features: [
         'Concurrent: 3',
         'Max Time: 180s',
         'Cooldown: 0s',
         'With VIP'
-      ]
-    }
-  ];
-
-  const apiPlans = [
-    {
-      name: 'API Basic',
-      price: '15€ Monthly - 40€ Lifetime',
-      features: [
-        'API Access',
-        'Concurrent: 1',
-        'Max Time: 60s',
-        'Full Documentation'
-      ]
-    },
-    {
-      name: 'API Pro',
-      price: '35€ Monthly - 70€ Lifetime',
-      features: [
-        'API Access',
-        'Concurrent: 3',
-        'Max Time: 180s',
-        'Priority Support'
-      ]
-    },
-    {
-      name: 'API Enterprise',
-      price: '75€ Monthly - 150€ Lifetime',
-      features: [
-        'API Access',
-        'Concurrent: 5',
-        'Max Time: 300s',
-        'Dedicated Support'
       ]
     }
   ];
@@ -78,31 +40,9 @@ export default function PricingSection({ activeTab, setActiveTab }: PricingSecti
       <p className="text-zinc-400 text-center max-w-2xl mx-auto mt-4 text-sm">
         Choose the plan that suits your testing needs.
       </p>
-      <div className="mt-8 flex items-center justify-center gap-3">
-        <button
-          className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm text-white ${
-            activeTab === 'plans'
-              ? 'bg-white/[0.08] border border-white/20'
-              : 'button-ghost'
-          }`}
-          onClick={() => setActiveTab('plans')}
-        >
-          Plans
-        </button>
-        <button
-          className={`px-4 py-2 rounded-md cursor-pointer transition-colors text-sm text-white ${
-            activeTab === 'api'
-              ? 'bg-white/[0.08] border border-white/20'
-              : 'button-ghost'
-          }`}
-          onClick={() => setActiveTab('api')}
-        >
-          API Plans
-        </button>
-      </div>
       <div className="mt-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(activeTab === 'plans' ? plans : apiPlans).map((plan, idx) => (
+          {plans.map((plan, idx) => (
             <div
               key={idx}
               className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors flex flex-col"

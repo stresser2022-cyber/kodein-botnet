@@ -40,7 +40,7 @@ const App = () => {
           </div>
         )}
 
-        <div className={`transition-opacity duration-500 ${loading ? 'opacity-20' : 'opacity-100'}`}>
+        <div className={`transition-all duration-500 ${loading ? 'opacity-20 blur-md' : 'opacity-100 blur-0'}`}>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

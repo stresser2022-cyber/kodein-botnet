@@ -31,28 +31,26 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className={`transition-all duration-500 ${loading ? 'opacity-20 blur-md' : 'opacity-100 blur-0'}`}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/attacks" element={<Attacks />} />
-              <Route path="/dashboard/plans" element={<Plans />} />
-              <Route path="/dashboard/deposit" element={<Deposit />} />
-              <Route path="/dashboard/docs" element={<Documentation />} />
-              <Route path="/dashboard/history" element={<History />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/attacks" element={<Attacks />} />
+            <Route path="/dashboard/plans" element={<Plans />} />
+            <Route path="/dashboard/deposit" element={<Deposit />} />
+            <Route path="/dashboard/docs" element={<Documentation />} />
+            <Route path="/dashboard/history" element={<History />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
 
         <Toaster />
         <Sonner />
         
         {loading && (
-          <div className="fixed inset-0 z-[9998] flex items-center justify-center transition-opacity duration-500 pointer-events-none">
+          <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-background/80 backdrop-blur-sm transition-opacity duration-500 pointer-events-none">
             <Icon name="Sparkles" size={64} className="text-purple-400/60 animate-pulse" />
           </div>
         )}

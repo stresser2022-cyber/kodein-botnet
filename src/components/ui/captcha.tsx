@@ -51,7 +51,7 @@ export const Captcha = ({ onVerify, className = '' }: CaptchaProps) => {
             type="number"
             value={userAnswer}
             onChange={(e) => handleAnswerChange(e.target.value)}
-            placeholder="Ответ"
+            placeholder="Answer"
             className={`w-20 text-center ${
               isVerified ? 'border-green-500 bg-green-500/10' : ''
             }`}
@@ -64,13 +64,13 @@ export const Captcha = ({ onVerify, className = '' }: CaptchaProps) => {
         </div>
         
         <div className="pt-2 border-t border-muted/50 flex items-center justify-between text-xs text-muted-foreground">
-          <span>Защита от ботов</span>
+          <span>Bot Protection</span>
           <button
             onClick={generateQuestion}
             className="text-primary hover:underline"
             type="button"
           >
-            Обновить
+            Refresh
           </button>
         </div>
       </div>

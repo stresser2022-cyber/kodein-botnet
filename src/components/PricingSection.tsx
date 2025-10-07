@@ -45,7 +45,8 @@ export default function PricingSection() {
           {plans.map((plan, idx) => (
             <div
               key={idx}
-              className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors flex flex-col"
+              className="soft-border rounded-lg p-6 bg-transparent hover:bg-white/[0.02] transition-colors flex flex-col opacity-0 translate-y-4"
+              data-animate
             >
               <div className="text-lg font-bold text-white">
                 {plan.name} Plan

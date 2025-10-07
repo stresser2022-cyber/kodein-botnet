@@ -1,0 +1,22 @@
+{
+  "tests": [
+    {
+      "name": "Missing token returns error",
+      "method": "POST",
+      "body": {
+        "token": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "Token is required",
+        "success": false
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "expectedStatus": 200
+    }
+  ]
+}

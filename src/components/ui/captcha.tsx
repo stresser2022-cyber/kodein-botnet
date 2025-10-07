@@ -52,7 +52,7 @@ export const Captcha = ({ onVerify, className = '' }: CaptchaProps) => {
             value={userAnswer}
             onChange={(e) => handleAnswerChange(e.target.value)}
             placeholder="Answer"
-            className={`w-20 text-center ${
+            className={`w-24 text-center text-lg font-medium ${
               isVerified ? 'border-green-500 bg-green-500/10' : ''
             }`}
           />

@@ -142,12 +142,12 @@
 
   .animate-in {
     opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
+    animation: fadeInUp 1.2s ease-out forwards;
   }
 
   .animate-out {
     opacity: 1;
-    animation: fadeOutDown 0.4s ease-out forwards;
+    animation: fadeOutDown 0.8s ease-out forwards;
   }
 
   @keyframes fadeIn {

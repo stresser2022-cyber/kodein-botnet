@@ -132,6 +132,19 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
     }
   };
 
+  const getPlanName = (plan: string) => {
+    switch (plan) {
+      case 'advanced':
+        return 'Advanced';
+      case 'medium':
+        return 'Medium';
+      case 'basic':
+        return 'Basic';
+      default:
+        return 'Free';
+    }
+  };
+
   const getPlanColor = (plan: string) => {
     switch (plan) {
       case 'advanced':
@@ -205,7 +218,7 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
       <div className={`bg-gradient-to-r ${getPlanColor(userPlan.plan)} rounded-lg p-4 mb-6`}>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-2xl font-bold text-white capitalize">{userPlan.plan}</h3>
+            <h3 className="text-2xl font-bold text-white">{getPlanName(userPlan.plan)}</h3>
             {userPlan.plan_expires_at && userPlan.plan !== 'free' && (
               <p className="text-sm text-white/80 mt-1">
                 {new Date(userPlan.plan_expires_at) > new Date() 

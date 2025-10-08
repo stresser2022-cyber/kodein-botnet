@@ -140,6 +140,8 @@ export default function Plans() {
       const data = await response.json();
       setUserBalance(data.balance);
       
+      window.dispatchEvent(new Event('balanceUpdated'));
+      
       toast({
         title: 'Plan Activated!',
         description: `${plan.name} plan activated. Remaining balance: $${data.balance.toFixed(2)}`

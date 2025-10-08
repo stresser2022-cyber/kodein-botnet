@@ -22,6 +22,8 @@ export default function DashboardSidebar({
 
   useEffect(() => {
     loadBalance();
+    window.addEventListener('balanceUpdated', loadBalance);
+    return () => window.removeEventListener('balanceUpdated', loadBalance);
   }, [currentUser]);
 
   const loadBalance = async () => {

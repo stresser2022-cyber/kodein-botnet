@@ -1,6 +1,7 @@
 import Icon from '@/components/ui/icon';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
+import { useState, useEffect } from 'react';
 
 interface DashboardSidebarProps {
   currentUser: string;
@@ -17,6 +18,23 @@ export default function DashboardSidebar({
 }: DashboardSidebarProps) {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const [userBalance, setUserBalance] = useState<number>(0);
+
+  useEffect(() => {
+    loadBalance();
+  }, [currentUser]);
+
+  const loadBalance = async () => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/09180f80-0b87-4c34-8c3f-867d7a5ba44b?username=${currentUser}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserBalance(data.balance || 0);
+      }
+    } catch (error) {
+      console.error('Failed to load balance:', error);
+    }
+  };
 
   const menuItems = [
     { icon: 'LayoutDashboard', label: 'Dashboard', path: '/dashboard' },
@@ -137,7 +155,7 @@ export default function DashboardSidebar({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-sidebar-foreground truncate">{currentUser}</p>
-                <p className="text-xs text-muted-foreground">Balance: 0 $</p>
+                <p className="text-xs text-muted-foreground">Balance: ${userBalance.toFixed(2)}</p>
               </div>
             </div>
           </div>

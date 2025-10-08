@@ -115,8 +115,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             )
             existing = cursor.fetchone()
             
+            balance_before = float(existing['balance']) if existing else 0.0
+            new_balance = balance_before + float(amount)
+            
             if existing:
-                new_balance = float(existing['balance']) + float(amount)
                 cursor.execute(
                     "UPDATE user_balances SET balance = %s, updated_at = CURRENT_TIMESTAMP WHERE username = %s RETURNING balance",
                     (new_balance, username)
@@ -127,8 +129,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     (username, amount)
                 )
             
-            conn.commit()
             result = cursor.fetchone()
+            
+            operation_type = 'plan_purchase' if float(amount) < 0 else 'admin_add'
+            description = f"Admin added ${amount}" if float(amount) > 0 else f"Plan purchase -${abs(float(amount))}"
+            
+            cursor.execute(
+                "INSERT INTO balance_history (username, amount, balance_before, balance_after, operation_type, description) VALUES (%s, %s, %s, %s, %s, %s)",
+                (username, float(amount), balance_before, new_balance, operation_type, description)
+            )
+            
+            conn.commit()
             
             return {
                 'statusCode': 200,

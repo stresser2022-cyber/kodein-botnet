@@ -9,11 +9,22 @@ interface User {
   balance: number;
 }
 
+interface HistoryRecord {
+  username: string;
+  amount: number;
+  balance_before: number;
+  balance_after: number;
+  operation_type: string;
+  description: string;
+  created_at: string;
+}
+
 export default function AdminBalance() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+  const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [amount, setAmount] = useState('');
@@ -27,6 +38,7 @@ export default function AdminBalance() {
       return;
     }
     loadUsers();
+    loadHistory();
   }, []);
 
   const loadUsers = async () => {
@@ -53,6 +65,26 @@ export default function AdminBalance() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadHistory = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/c759e730-6c49-4c30-a871-c51a3e77e1ac?limit=50', {
+        method: 'GET',
+        headers: {
+          'X-Admin-Key': adminKey || ''
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load history');
+      }
+
+      const data = await response.json();
+      setHistory(data.history || []);
+    } catch (error) {
+      console.error('Failed to load history:', error);
     }
   };
 
@@ -102,6 +134,7 @@ export default function AdminBalance() {
       setSelectedUser('');
       setAmount('');
       await loadUsers();
+      await loadHistory();
     } catch (error) {
       toast({
         title: 'Error',
@@ -218,6 +251,71 @@ export default function AdminBalance() {
                   ))
                 )}
               </div>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-card border border-zinc-800 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Balance Operation History</h2>
+              <button
+                onClick={loadHistory}
+                className="px-4 py-1 text-sm bg-zinc-800 text-white rounded hover:bg-zinc-700 transition-colors"
+              >
+                Refresh
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800">
+                    <th className="text-left py-3 px-4 text-zinc-400 font-medium">Date</th>
+                    <th className="text-left py-3 px-4 text-zinc-400 font-medium">Username</th>
+                    <th className="text-left py-3 px-4 text-zinc-400 font-medium">Operation</th>
+                    <th className="text-right py-3 px-4 text-zinc-400 font-medium">Amount</th>
+                    <th className="text-right py-3 px-4 text-zinc-400 font-medium">Before</th>
+                    <th className="text-right py-3 px-4 text-zinc-400 font-medium">After</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center py-8 text-zinc-400">
+                        No history found
+                      </td>
+                    </tr>
+                  ) : (
+                    history.map((record, idx) => (
+                      <tr key={idx} className="border-b border-zinc-800 hover:bg-zinc-900/30">
+                        <td className="py-3 px-4 text-zinc-400">
+                          {new Date(record.created_at).toLocaleString()}
+                        </td>
+                        <td className="py-3 px-4 font-medium">{record.username}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            record.operation_type === 'admin_add' 
+                              ? 'bg-green-900/30 text-green-400' 
+                              : 'bg-red-900/30 text-red-400'
+                          }`}>
+                            {record.operation_type === 'admin_add' ? 'Admin Add' : 'Plan Purchase'}
+                          </span>
+                        </td>
+                        <td className={`py-3 px-4 text-right font-medium ${
+                          record.amount > 0 ? 'text-green-400' : 'text-red-400'
+                        }`}>
+                          {record.amount > 0 ? '+' : ''}${record.amount.toFixed(2)}
+                        </td>
+                        <td className="py-3 px-4 text-right text-zinc-400">
+                          ${record.balance_before.toFixed(2)}
+                        </td>
+                        <td className="py-3 px-4 text-right font-medium">
+                          ${record.balance_after.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

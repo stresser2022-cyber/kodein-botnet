@@ -366,6 +366,7 @@ export default function Admin() {
         onRefresh={() => fetchUsers(adminKey)}
         onHome={() => navigate('/')}
         onLogout={handleLogout}
+        onBalances={() => navigate('/admin/balance')}
         loading={loading}
       />
 

@@ -4,10 +4,11 @@ interface AdminHeaderProps {
   onRefresh: () => void;
   onHome: () => void;
   onLogout: () => void;
+  onBalances?: () => void;
   loading: boolean;
 }
 
-export default function AdminHeader({ onRefresh, onHome, onLogout, loading }: AdminHeaderProps) {
+export default function AdminHeader({ onRefresh, onHome, onLogout, onBalances, loading }: AdminHeaderProps) {
   return (
     <header className="border-b border-white/20">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -24,6 +25,15 @@ export default function AdminHeader({ onRefresh, onHome, onLogout, loading }: Ad
             <Icon name="RefreshCw" size={16} />
             Refresh
           </button>
+          {onBalances && (
+            <button
+              onClick={onBalances}
+              className="bg-zinc-700 text-white px-4 py-2 rounded-md hover:bg-zinc-600 transition-colors flex items-center gap-2"
+            >
+              <Icon name="Wallet" size={16} />
+              Balances
+            </button>
+          )}
           <button
             onClick={onHome}
             className="button-ghost px-4 py-2 rounded-md flex items-center gap-2"

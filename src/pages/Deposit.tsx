@@ -40,10 +40,19 @@ export default function Deposit() {
       return;
     }
 
-    toast({
-      title: 'Processing',
-      description: `Depositing $${amountNum} via ${cryptocurrency}...`
-    });
+    const cryptoNames: Record<string, string> = {
+      'bitcoin': 'Bitcoin (BTC)',
+      'ethereum': 'Ethereum (ETH)',
+      'litecoin': 'Litecoin (LTC)',
+      'usdt': 'Tether (USDT)',
+      'bnb': 'BNB (BNB)'
+    };
+
+    const message = `Deposit Request:\nAmount: $${amountNum}\nCryptocurrency: ${cryptoNames[cryptocurrency]}`;
+    const telegramUsername = 'YOUR_TELEGRAM_USERNAME';
+    const telegramUrl = `https://t.me/${telegramUsername}?text=${encodeURIComponent(message)}`;
+    
+    window.open(telegramUrl, '_blank');
   };
 
   const handleCancel = () => {

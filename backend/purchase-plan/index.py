@@ -39,8 +39,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     body_data = json.loads(event.get('body', '{}'))
     username = body_data.get('username')
     amount = body_data.get('amount')
+    plan_id = body_data.get('plan_id')
+    duration_days = body_data.get('duration_days', 30)
     
-    if not username or not amount:
+    if not username or not amount or not plan_id:
         return {
             'statusCode': 400,
             'headers': {
@@ -48,7 +50,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'error': 'Username and amount required'})
+            'body': json.dumps({'error': 'Username, amount, and plan_id required'})
         }
     
     database_url = os.environ.get('DATABASE_URL')
@@ -98,6 +100,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor.execute(
             "INSERT INTO balance_history (username, amount, balance_before, balance_after, operation_type, description) VALUES (%s, %s, %s, %s, %s, %s)",
             (username, -float(amount), current_balance, new_balance, 'plan_purchase', f"Plan purchase -${float(amount)}")
+        )
+        
+        from datetime import datetime, timedelta
+        expires_at = datetime.now() + timedelta(days=duration_days)
+        
+        cursor.execute(
+            "UPDATE users SET plan = %s, plan_expires_at = %s WHERE username = %s",
+            (plan_id, expires_at, username)
         )
         
         conn.commit()

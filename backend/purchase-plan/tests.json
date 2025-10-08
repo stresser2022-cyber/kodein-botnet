@@ -9,7 +9,7 @@
       },
       "expectedStatus": 400,
       "expectedBody": {
-        "error": "Username and amount required"
+        "error": "Username, amount, and plan_id required"
       },
       "bodyMatcher": "partial"
     }

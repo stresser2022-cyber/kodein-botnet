@@ -128,7 +128,9 @@ export default function Plans() {
         },
         body: JSON.stringify({
           username: currentUser,
-          amount: planPrice
+          amount: planPrice,
+          plan_id: planId,
+          duration_days: billingCycle === 'monthly' ? 30 : 365
         })
       });
 
@@ -141,6 +143,7 @@ export default function Plans() {
       setUserBalance(data.balance);
       
       window.dispatchEvent(new Event('balanceUpdated'));
+      window.dispatchEvent(new Event('planUpdated'));
       
       toast({
         title: 'Plan Activated!',

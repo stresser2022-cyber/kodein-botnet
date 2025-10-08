@@ -68,11 +68,17 @@ export default function DashboardPlan({ currentUser }: DashboardPlanProps) {
       }
     };
     
+    const handlePlanUpdate = () => {
+      fetchUserPlan();
+    };
+    
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('planUpdated', handlePlanUpdate);
     
     return () => {
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('planUpdated', handlePlanUpdate);
     };
   }, [currentUser]);
 

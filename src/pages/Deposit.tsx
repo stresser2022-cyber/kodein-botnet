@@ -49,7 +49,7 @@ export default function Deposit() {
     };
 
     const message = `Deposit Request:\nAmount: $${amountNum}\nCryptocurrency: ${cryptoNames[cryptocurrency]}`;
-    const telegramUsername = 'YOUR_TELEGRAM_USERNAME';
+    const telegramUsername = 'mirai_network';
     const telegramUrl = `https://t.me/${telegramUsername}?text=${encodeURIComponent(message)}`;
     
     window.open(telegramUrl, '_blank');

@@ -24,6 +24,7 @@ export default function Plans() {
   const { toast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [purchasingPlan, setPurchasingPlan] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'lifetime'>('monthly');
   const [userBalance, setUserBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -119,6 +120,7 @@ export default function Plans() {
     }
 
     setSelectedPlan(planId);
+    setPurchasingPlan(planId);
     
     try {
       const response = await fetch('https://functions.poehali.dev/e48d00a7-e6ba-442c-89f1-dfa185eb059a', {
@@ -150,11 +152,14 @@ export default function Plans() {
         description: `${plan.name} plan activated. Remaining balance: $${data.balance.toFixed(2)}`
       });
     } catch (error) {
+      setPurchasingPlan(null);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to activate plan. Please contact support.',
         variant: 'destructive'
       });
+    } finally {
+      setPurchasingPlan(null);
     }
   };
 
@@ -272,13 +277,21 @@ export default function Plans() {
 
                 <Button
                   onClick={() => handleSelectPlan(plan.id)}
+                  disabled={purchasingPlan !== null}
                   className={`w-full ${
                     plan.popular 
                       ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
                       : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
                   }`}
                 >
-                  {billingCycle === 'monthly' ? 'Subscribe Monthly' : 'Buy Lifetime'}
+                  {purchasingPlan === plan.id ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Icon name="Loader2" size={16} className="animate-spin" />
+                      Processing...
+                    </span>
+                  ) : (
+                    billingCycle === 'monthly' ? 'Subscribe Monthly' : 'Buy Lifetime'
+                  )}
                 </Button>
               </div>
             ))}

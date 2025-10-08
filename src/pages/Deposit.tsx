@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,10 +10,31 @@ export default function Deposit() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [amount, setAmount] = useState('');
   const [cryptocurrency, setCryptocurrency] = useState('');
+  const [userBalance, setUserBalance] = useState<number>(0);
 
   const MIN_DEPOSIT = 10;
 
   const currentUser = localStorage.getItem('current_user');
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/');
+      return;
+    }
+    loadBalance();
+  }, []);
+
+  const loadBalance = async () => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/09180f80-0b87-4c34-8c3f-867d7a5ba44b?username=${currentUser}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserBalance(data.balance || 0);
+      }
+    } catch (error) {
+      console.error('Failed to load balance:', error);
+    }
+  };
 
   if (!currentUser) {
     navigate('/');
@@ -53,6 +74,11 @@ export default function Deposit() {
     const telegramUrl = `https://t.me/${telegramUsername}?text=${encodeURIComponent(message)}`;
     
     window.open(telegramUrl, '_blank');
+    
+    toast({
+      title: 'Deposit Request Sent',
+      description: 'Please complete the payment in Telegram. Your balance will be updated after confirmation.'
+    });
   };
 
   const handleCancel = () => {
@@ -76,8 +102,16 @@ export default function Deposit() {
         <div className="flex justify-center pt-12 p-8">
           <div className="w-full max-w-xl bg-card border border-zinc-800 rounded-xl p-8">
             <div className="mb-6">
-              <h1 className="text-2xl font-semibold mb-2">Deposit</h1>
-              <p className="text-zinc-400 text-sm">Top up your balance using cryptocurrency.</p>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-2xl font-semibold mb-2">Deposit</h1>
+                  <p className="text-zinc-400 text-sm">Top up your balance using cryptocurrency.</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-zinc-500 mb-1">Current Balance</p>
+                  <p className="text-2xl font-bold text-green-500">${userBalance.toFixed(2)}</p>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-6">

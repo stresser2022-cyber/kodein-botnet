@@ -1,0 +1,17 @@
+{
+  "tests": [
+    {
+      "name": "Purchase without username returns 400",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "amount": 10
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "Username and amount required"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

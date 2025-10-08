@@ -1,4 +1,6 @@
 {
+  "purchase-plan": "https://functions.poehali.dev/e48d00a7-e6ba-442c-89f1-dfa185eb059a",
+  "user-balance": "https://functions.poehali.dev/09180f80-0b87-4c34-8c3f-867d7a5ba44b",
   "balance-history": "https://functions.poehali.dev/c759e730-6c49-4c30-a871-c51a3e77e1ac",
   "manage-balance": "https://functions.poehali.dev/9a41fb04-1027-4f22-b119-794df42bdde1",
   "announcements": "https://functions.poehali.dev/51925830-8d38-4748-99dc-dc5df4e26ac4",

@@ -40,11 +40,8 @@ export default function Plans() {
 
   const loadBalance = async () => {
     try {
-      const response = await fetch(`https://functions.poehali.dev/9a41fb04-1027-4f22-b119-794df42bdde1?username=${currentUser}`, {
-        method: 'GET',
-        headers: {
-          'X-Admin-Key': localStorage.getItem('admin_key') || ''
-        }
+      const response = await fetch(`https://functions.poehali.dev/09180f80-0b87-4c34-8c3f-867d7a5ba44b?username=${currentUser}`, {
+        method: 'GET'
       });
 
       if (response.ok) {
@@ -124,30 +121,33 @@ export default function Plans() {
     setSelectedPlan(planId);
     
     try {
-      const newBalance = userBalance - planPrice;
-      const response = await fetch('https://functions.poehali.dev/9a41fb04-1027-4f22-b119-794df42bdde1', {
+      const response = await fetch('https://functions.poehali.dev/e48d00a7-e6ba-442c-89f1-dfa185eb059a', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-Admin-Key': localStorage.getItem('admin_key') || ''
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           username: currentUser,
-          amount: -planPrice
+          amount: planPrice
         })
       });
 
-      if (!response.ok) throw new Error('Payment failed');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Payment failed');
+      }
 
-      setUserBalance(newBalance);
+      const data = await response.json();
+      setUserBalance(data.balance);
+      
       toast({
         title: 'Plan Activated!',
-        description: `${plan.name} plan activated. Remaining balance: $${newBalance.toFixed(2)}`
+        description: `${plan.name} plan activated. Remaining balance: $${data.balance.toFixed(2)}`
       });
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to activate plan. Please contact support.',
+        description: error instanceof Error ? error.message : 'Failed to activate plan. Please contact support.',
         variant: 'destructive'
       });
     }

@@ -77,7 +77,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             else:
                 cursor.execute(
-                    "SELECT username, balance, created_at, updated_at FROM user_balances ORDER BY username"
+                    "SELECT u.username, COALESCE(ub.balance, 0.00) as balance FROM users u LEFT JOIN user_balances ub ON u.username = ub.username ORDER BY u.username"
                 )
                 users = cursor.fetchall()
                 

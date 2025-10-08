@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { Button } from '@/components/ui/button';
@@ -25,8 +25,38 @@ export default function Plans() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'lifetime'>('monthly');
+  const [userBalance, setUserBalance] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
   const currentUser = localStorage.getItem('current_user');
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/');
+      return;
+    }
+    loadBalance();
+  }, []);
+
+  const loadBalance = async () => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/9a41fb04-1027-4f22-b119-794df42bdde1?username=${currentUser}`, {
+        method: 'GET',
+        headers: {
+          'X-Admin-Key': localStorage.getItem('admin_key') || ''
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserBalance(data.balance || 0);
+      }
+    } catch (error) {
+      console.error('Failed to load balance:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!currentUser) {
     navigate('/');
@@ -73,13 +103,54 @@ export default function Plans() {
     }
   ];
 
-  const handleSelectPlan = (planId: string) => {
+  const handleSelectPlan = async (planId: string) => {
+    const plan = plans.find(p => p.id === planId);
+    if (!plan) return;
+
+    const planPrice = billingCycle === 'monthly' 
+      ? plan.price 
+      : (plan.price === 10 ? 50 : plan.price === 30 ? 70 : 100);
+
+    if (userBalance < planPrice) {
+      toast({
+        title: 'Insufficient Balance',
+        description: `You need $${planPrice} but have $${userBalance.toFixed(2)}. Please add balance first.`,
+        variant: 'destructive'
+      });
+      setTimeout(() => navigate('/dashboard/deposit'), 1500);
+      return;
+    }
+
     setSelectedPlan(planId);
-    toast({
-      title: 'Plan Selected',
-      description: 'Proceed to deposit to activate this plan'
-    });
-    setTimeout(() => navigate('/deposit'), 1500);
+    
+    try {
+      const newBalance = userBalance - planPrice;
+      const response = await fetch('https://functions.poehali.dev/9a41fb04-1027-4f22-b119-794df42bdde1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Key': localStorage.getItem('admin_key') || ''
+        },
+        body: JSON.stringify({
+          username: currentUser,
+          amount: -planPrice
+        })
+      });
+
+      if (!response.ok) throw new Error('Payment failed');
+
+      setUserBalance(newBalance);
+      toast({
+        title: 'Plan Activated!',
+        description: `${plan.name} plan activated. Remaining balance: $${newBalance.toFixed(2)}`
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to activate plan. Please contact support.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
@@ -97,8 +168,18 @@ export default function Plans() {
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
         <div className="p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Choose Your Plan</h1>
-            <p className="text-muted-foreground">Select the plan that fits your needs</p>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">Choose Your Plan</h1>
+                <p className="text-muted-foreground">Select the plan that fits your needs</p>
+              </div>
+              <div className="bg-card border border-border rounded-lg px-6 py-3">
+                <div className="text-sm text-muted-foreground mb-1">Your Balance</div>
+                <div className="text-2xl font-bold text-foreground">
+                  {loading ? '...' : `$${userBalance.toFixed(2)}`}
+                </div>
+              </div>
+            </div>
             
             <div className="mt-6 flex items-center justify-center gap-3">
               <button

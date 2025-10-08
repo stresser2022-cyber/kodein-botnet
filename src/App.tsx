@@ -12,6 +12,7 @@ import Plans from "./pages/Plans";
 import Deposit from "./pages/Deposit";
 import Documentation from "./pages/Documentation";
 import History from "./pages/History";
+import AdminBalance from "./pages/AdminBalance";
 import NotFound from "./pages/NotFound";
 import Icon from "@/components/ui/icon";
 
@@ -43,6 +44,7 @@ const App = () => {
             <Route path="/dashboard/deposit" element={<Deposit />} />
             <Route path="/dashboard/docs" element={<Documentation />} />
             <Route path="/dashboard/history" element={<History />} />
+            <Route path="/admin/balance" element={<AdminBalance />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

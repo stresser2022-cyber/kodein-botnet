@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { useToast } from '@/hooks/use-toast';
+import Icon from '@/components/ui/icon';
 
 interface User {
   username: string;
@@ -131,8 +132,19 @@ export default function AdminBalance() {
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
         <div className="p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold">Manage User Balances</h1>
-            <p className="text-zinc-400 mt-2">Add balance to users for purchasing plans</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Manage User Balances</h1>
+                <p className="text-zinc-400 mt-2">Add balance to users for purchasing plans</p>
+              </div>
+              <button
+                onClick={() => navigate('/admin')}
+                className="bg-zinc-700 text-white px-4 py-2 rounded-md hover:bg-zinc-600 transition-colors flex items-center gap-2"
+              >
+                <Icon name="ArrowLeft" size={16} />
+                Back to Admin
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
